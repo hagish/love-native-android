@@ -1,0 +1,21 @@
+Currently this is quite a license mess 
+because we just put everything together in one
+big project. Here is a list of the licenses of the used
+libraries.
+
+freetype2-android/		-	Freetype License
+lua-5.1.4/				-	MIT
+physfs-2.0.2/			-	zlib, LGPL
+love/					-	MIT? BSD?
+tiff-3.9.5/				-	MIT? BSD?
+libmng-1.0.10/			-	zlib? and other, see details
+lcms2-2.2/				-	MIT? BSD?
+libpng-1.5.6/			-	libpng, see details
+jpeg-8c/				-	MIT? BSD?, see details
+jasper-1.900.1/			-	JasPer License Version 2.0
+devil-1.7.8/			-	LGPL 2.1
+openal-soft-android/	-	LGPL 2
+mpg123-1.13.4/			-	LGPL 2.1
+libvorbis-1.3.2/		-	MIT? BSD?
+libogg-1.3.0/			-	MIT? BSD?
+libmodplug-0.8.8.4/		-	public domain

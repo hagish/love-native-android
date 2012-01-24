@@ -1,0 +1,337 @@
+LOVE 0.7.2 [Game Slave]
+-----------------------
+
+  * Added Framebuffer:get/setWrap.
+  * Added love.event.clear.
+  * Added support for any number of arguments to love.keyboard.isDown, love.mouse.isDown and love.joystick.isDown.
+  * Added SpriteBatch:setImage().
+ 
+  * Fixed fused games not working.
+  * Fixed ParticleSystem:setSize ignoring the variation argument.
+  * Fixed some file-opening exceptions not being caught.
+  * Fixed files loaded by libmodplug being too loud.
+  * Fixed paths with periods in them not working.
+  * Fixed love.graphics.getBlendMode not detecting subtractive and multiplicative blend modes.
+  * Fixed crash when there was no memory available for newImageData(w, h).
+
+  * Updated PhysicsFS version to 2.0.2 on Windows
+  * Updated OpenAL Soft version to 1.13 on Windows
+  * Updated libmodplug version to 0.8.8.1 on Windows
+  * Updated FreeType version to 2.4.4 on Windows
+  * Updated libmpg123 version to 1.13.2 on Windows
+  * Windows binary no longer depends on VC2005 runtime.
+  * Windows binary no longer depends on SSE2 support.
+
+LOVE 0.7.1 [Game Slave]
+-----------------------
+
+  * Added source:isPaused()
+  * Added error when initial window can't be created.
+  * Added framebuffer filter modes.
+  * Added love.filesystem.getLastModified.
+  * Added filter modes for ImageFonts.
+  * Added dead key support by using "unknown" key with correct unicode value.
+  * Added 0 width and height in love.conf. (for current desktop resolution)
+  * Added alpha support when encoding TGA images.
+
+  * Fixed a lot of bugs regarding zero characters in threads.
+  * Fixed handling of a directory named "love" in current directory.
+  * Fixed a few unhandled errors in setScissor.
+  * Fixed a bug where old physics callbacks were never dereferenced.
+  * Fixed loss of mouse visibility settings on setMode.
+  * Fixed creation of a framebuffer unbinding current framebuffer.
+  * Fixed several race conditions in love.thread.
+  * Fixed 'love .', so it won't use lovedir/. as save dir.
+  * Fixed setLineHeight.
+  * Fixed extended ascii and ImageFonts.
+  * Fixed printf's line wrapping.
+  * Fixed crash when playing sounds.
+  * Fixed playback of mp3s with arbitrary sample rates.
+  * Fixed handling of negative indices in love.joystick.
+  * Fixed toggleFullscreen.
+  * Fixed unexpected behaviour with hash tables to love.graphics.line.
+  * Fixed mouse coordinates being capped after setMode.
+  * Fixed setFont's error handling on a non-existant file.
+  * Fixed issue where Windows builds would hard crash on Lua errors
+
+  * Removed custom sample rates for Decoders.
+
+LOVE 0.7.0 [Game Slave]
+-----------------------
+
+  * Added love.thread.
+  * Added love.font.
+  * Added love.graphics.Framebuffer.
+  * Added Source:play, Source:pause, etc.
+  * Added Source:isStatic().
+  * Added get/setPosition, get/setVelocity, and get/setDirection to Source.
+  * Added get/setGroupIndex to CircleShape and PolygonShape.
+  * Added Font:getWrap.
+  * Added identity field to love.conf.
+  * Added love.quit callback.
+  * Added love.focus callback.
+  * Added extra meter parameter to love.physics.newWorld.
+  * Added love.graphics.setIcon.
+  * Added way to make the window desktop resolution.
+  * Added subtractive and multiplicative blend modes.
+  * Added body:getAllowSleeping.
+  * Added shape:getBody.
+  * Added love.filesystem.FileData for public usage.
+  * Added base64 support for love.filesystem.FileData.
+  * Added table support for love.graphics.setColor and love.graphics.setBackgroundColor.
+  * Added love.graphics.hasFocus().
+  * Added ?/init.lua to the loader.
+
+  * Fixed the debug module not being an upvalue of the error handlers. (you can now override debug)
+  * Fixed some cases when love.audio.pause and friends, were acting on everything, not just the passed Source.
+  * Fixed setFixedRotation enabling other flags.
+  * Fixed a bug in the loader (for require).
+  * Fixed ParticleSystem::setSprite not retaining the new image.
+  * Fixed setMode removing images settings (wrapping, filters).
+  * Fixed shape:getBody, it's now exposed for LÖVE usage.
+  * Fixed DistanceJoint:getType() returning "circle" - it now returns "distance".
+  * Fixed SpriteBatches being unaffected by setColor
+  * Fixed the audio bug.
+  * Fixed invalid FSAA values crashing LÖVE.
+  * Fixed a bunch of compiler warnings.
+  * Fixed OS X not properly using UTIs for .love files.
+  * Fixed the modplug decoder not properly handeling files that fail to load.
+  * Fixed a memory leak in setFont.
+  * Fixed bug where errors in threads wouldn't get picked up by demand.
+  * Fixed part of the bug with newlines when scaling text (rotating still messes up the lines).
+  * Fixed the bug where newImageFont would try to created ImageData out of ImageData.
+  * Fixed error handler not resetting the blend mode.
+
+  * Changed fonts, they're now po2 safe.
+  * Changed the traceback in the error screen.
+  * Changed font origin to top-left.
+  * Changed linux save dir location to obey to Freedesktop.org's XDG specs. (~/.local/share/love by default.)
+
+  * Removed font functions from love.graphics.
+  * Removed love.physics.newWorld(w, h). Use love.physics.newWorld(x1, y1, x2, y2) instead.
+
+LOVE 0.6.2 [Jiggly Juice]
+-------------------------
+
+  * Fixed a bug causing ImageFonts to cut off some pixels.
+  * Fixed a bug where filled rectangles were too small.
+  * Fixed a bug in Image:setFilter where it would switch the parameters.
+  * Fixed a bug in ImageRasterizer where it wasn't using the data.
+  * Image filter and wrap modes now use string constants as well.
+  * Fixed double-transform bug in SpriteBatch.
+  * Errors are reported on stdout again.
+  * Another fix for the icons on ubuntu.
+
+LOVE 0.6.1 [Jiggly Juice]
+-------------------------
+
+  * Added Shape:setGroupIndex and getGroupIndex.
+  * Added Body:setFixedRotation and Body:getFixedRotation.
+  * Added Body:setInertia.
+  * Added CircleShape:getLocalCenter and CircleShape:getWorldCenter.
+  * Added icons and file associations for the debs.
+  * Added the demos folder to the Mac OS X DMG.
+  * It's now possible to run a .love from Resources in Mac OS X, thanks to Steve Johnson.
+  * Fixed a bug with multiple Sources on the same Music.
+  * Fixed a bug so the mouse doesn't get crippled when the keyboard is disabled.
+  * Fixed a bug where love.graphics.rectangle drew a too large rectangle.
+  * Fixed a bug where memory wouldn't be released correctly.
+  * Fixed epic physics typo (getRestituion->getRestitution).
+  * Fixed crash on opening non-existent image.
+  * The error screen redraws when an event occurs.
+  * The default love.run() now gracefully handles disabled modules.
+  * The debian packages should now successfully include icons, file associations, etc, and should give the correct architecture.
+  * Added support for drawing polylines to love.graphics.line - the syntax is the same as love.graphics.polygon.
+  * Removed Music and Sound. There are now only sources.
+  * Improved the stability of love.audio/love.sound.
+
+LOVE 0.6.0 [Jiggly Juice]
+-------------------------
+
+  * Lost track of 0.6.0 changes a long while ago. Don't trust the list below.
+
+  * Added love.graphics.print()/printf().
+  * Added unicode-translated parameter to love.keypressed().
+  * Added love.event.
+  * Added love.filesystem.setIdentity().
+  * Added OpenAL dependency.
+
+  * Fixed love.fileystem problems with internal \0 in strings.
+  * Fixed love.filesystem.mkdir/remove not working when write directory not set.
+  * Fixed position of Window.
+
+  * Changed parameter order of draws().
+  * Changed origin for images to top-left.
+  * Changed love.filesystem.open to accept mode (removed from love.filesystem.newFile).
+  * Changed love.filesystem.read() which now returns two parameters (data, length).
+  * Changed love.filesystem.write() which now takes up to four parameters (file, data, length, mode).
+  * Changed default color mode to "modulate".
+  * Changed name of love.color_normal to "replace".
+  * Changed name of love.blend_normal to "alpha".
+  * Changed the conf file format.
+
+  * Removed Color object.
+  * Removed Animation.
+  * Removed several constants.
+  * Removed love.graphics.draw() for strings.
+  * Removed love.system.
+  * Removed SWIG.
+  * Removed boost.
+  * Removed SDL_mixer.
+
+
+LOVE 0.5.0 [Salted Nuts]
+------------------------
+
+  * Added love.joystick.
+  * Added network support via LuaSocket.
+  * Added support for loading of appended .love-file.
+
+  * Added love.filesystem.lines().
+  * Added a loader function to enable use of normal require().
+  * Added love.filesystem.load().
+  * Added love.filesystem.getSaveDirectory()
+  * Added love.filesystem.getWorkingDirectory()
+
+  * Added optional explicit destruction of Box2D objects.
+  * Added shape:testSegment().
+  * Added love.graphics.screenshot() (.bmp only).
+  * Added default size (12) to font-related functions.
+  * Added love.graphics.setFont( filename, size )
+  * Added love.graphics.setLineStippe and related functions.
+  * Added love.graphics.setPointSize and related functions.
+
+  * Changed love.filesystem.read() to accept file name.
+  * Changed love.filesystem.write() to accept file name.
+  * Changed love.graphics.triangle() to accept CCW and CW ordering.
+
+  * Fixed love.graphics.read adding bogus characters at the end of string.
+  * Fixed epic swigfusion bug.
+  * Fixed love.graphics.getFont so it returns nil if no font is present.
+  * Fixed bug where love.graphics.getBlendMode() always returns blend_normal.
+  * Fixed bug which caused error screen to be scissored (when enabled).
+  * Fixed Body:setAngle to accept degrees like everything else.
+
+  * Cleaned up love::File and love_physfs.
+  * Cleaned up love::Reference so it stores its reference in _G.
+
+LOVE 0.4.0 [Taco Beam]
+----------------------
+
+  * Added love.physics. (YES!)
+  * Added love.audio.setMode().
+  * Added love.audio.setChannels().
+  * Added love.graphics.polygon().
+  * Added love.graphics.setScissor() and love.graphics.getScissor() to handle scissoring the graphical area.
+  * Fixed missing constants related to image optimization.
+  * Fixed memory leak related to love::File (thanks amnesiasoft!).
+
+
+LOVE 0.3.2 [Lemony Fresh]
+-------------------------
+
+  * Added love.graphics.rectangle()
+  * Added love.graphics.setLineWidth()
+  * Added love.graphics.setLineStyle()
+  * Added love.graphics.getLineWidth()
+  * Added love.graphics.getLineStyle()
+  * Added love.mouse.getPosition()
+  * Added love.audio_loop
+  * Added love.timer.getTime()
+  * Changed love.graphics.quad() to accept CCW and CW ordering.
+  * Fixed default color mode bug.
+  * Fixed line width being applied unnecessarily.
+  * Fixed line width bug related to fullscreen toggle.
+  * Fixed music not looping.
+
+LOVE 0.3.1 [Space Meat]
+-----------------------
+
+  * Fixed segfault related to graphics.
+  * Fixed wait-forever bug related to audio.
+  * Fixed error reporting not working across modules.
+  * Fixed bug where games with a trailing "/" would not start.
+  * Fixed bug which caused love.timer.sleep to delay for (way) too long.
+
+LOVE 0.3.0 [Mutant Vermin]
+--------------------------
+
+  * Added ParticleSystem.
+  * Added visual error reporting.
+  * Added love.system for game control needs.
+  * Added input grabbing.
+  * Added functions in love.graphics for display management.
+  * Added love.graphics.point().
+  * Added functions in love.graphics for getting current color, font, etc.
+  * Added love.filesystem.enumerate() for getting folder contents.
+  * Added functions for setting the window caption.
+  * Added version checking. An error occurs if the game is incompatible.
+  * Fixed print() :)
+  * Removed all keyboard shortcuts.
+  * Save folders are now created only if required.
+  * On Windows, the new save location is %APPDATA%\LOVE\game
+
+LOVE 0.2.1 [Impending Doom]
+---------------------------
+
+  * Added many functions in love.filesystem.
+  * Added a dedicated save-folder for each game.
+  * Added timer.sleep.
+  * Added line heights to font objects.
+  * Added love.graphics.getWidth/getHeight.
+  * Added scaling and rotation for text.
+  * Added variable spacing to ImageFont.
+  * Added support for variable line quality when drawing primitives.
+  * Added several functions for drawing sections of images. (love.graphics.draws)
+  * Added image optimization function and padding function.
+  * Added love.graphics.getWidth/Height.
+
+  * Split devices up into actual SWIG-modules. This means that:
+    - Functions are used like this: love.graphics.draw, not love.graphics:draw
+    - love.objects is no more. Objects are created by an appropriate device.
+  * How you draw primitives has been altered.
+  * draw(string, x, y, wrap, align) has become drawf(string, x, y, wrap, align)
+
+  * Changed getFps to getFPS.
+  * Escape is no more ... enter: Alt+F4.
+  * love.filesystem.include has been renamed to love.filesystem.require.
+  * ImageFonts now consider the spacing as well as the glyph size.
+  * Fixed a massive ImageFont bug which resulted in float-positioning failure.
+  * Fixed a bug when loading fonts where the specified size doesn't represent the true size of the font.
+
+  * Updated DevIL to version 1.6.8-rc2 (Windows)
+  * Updated FreeType to freetype-2.3.5-1 (Windows)
+  * Updated Lua to 5.1.3 (Windows)
+  * Updated SDL to 1.2.13 (Windows)
+  * Removed boost::filesystem.
+
+LOVE 0.2.0 [Mini-Moose]
+-----------------------
+
+  * Added ImageFont
+  * Added Animation
+  * Added text formatting functions
+  * Added setCenter for Image and Animation.
+  * Added methods for rendering of scaled/rotated sprites.
+  * Added the drawing of basic shapes.
+  * Added default font and embedded resources.
+  * Added Ctrl+R for reload.
+  * Added blending and color modes.
+  * Fixed memory usage of Graphics.
+  * Fixed a bug where the set text color would change the color of any images rendered.
+  * Fixed CWD bug.
+  * Fixed titlebar. Game title is now displayed.
+
+
+LOVE 0.1.1 [Santa-Power]
+------------------------
+
+Initial release!
+
+ * Image loading and rendering.
+ * Sound loading and playing.
+ * Font loading and rendering.
+ * Lua-scriptable games.
+ * Config files.
+ * Stuff is loadable from archive files.
+ * Keyboard, mouse, display, timer, etc. (Basic devices).

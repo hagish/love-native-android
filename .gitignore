@@ -1,0 +1,16 @@
+.a
+.dex
+.ap_
+.apk
+.o
+.class
+.o.d
+obj
+.gitignore~
+Debug
+Release
+adb
+eclipse
+bin/
+libs/
+.settings
