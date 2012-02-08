@@ -3,6 +3,9 @@ package net.schattenkind.nativelove;
 public class LoveJNI {
 
      static {
+    	 System.loadLibrary("ogg");
+    	 System.loadLibrary("vorbis");
+    	 System.loadLibrary("mpg123");
          System.loadLibrary("love");
      }
 

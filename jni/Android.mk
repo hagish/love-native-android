@@ -14,12 +14,6 @@
 #
 LOCAL_PATH:= $(call my-dir)
 
-include $(CLEAR_VARS)
-
-LOCAL_MODULE    := liblove
-LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
-LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
-
 FREETYPE_SRC_PATH	:= freetype2-android/
 LUA_SRC_PATH 		:= lua-5.1.4/
 PHYSFS_SRC_PATH 	:= physfs-2.0.2/
@@ -36,6 +30,135 @@ MPG123_SRC_PATH		:= mpg123-1.13.4/
 VORBIS_SRC_PATH		:= libvorbis-1.3.2/
 OGG_SRC_PATH		:= libogg-1.3.0/
 MODPLUG_SRC_PATH	:= libmodplug-0.8.8.4/
+
+# libogg
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libogg
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${OGG_SRC_PATH}/include
+		
+LOCAL_SRC_FILES := \
+	${OGG_SRC_PATH}src/framing.c \
+	${OGG_SRC_PATH}src/bitwise.c \
+
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libvorbis
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libvorbis
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${VORBIS_SRC_PATH}include \
+	${OGG_SRC_PATH}/include
+		
+LOCAL_SRC_FILES := \
+	${VORBIS_SRC_PATH}lib/mdct.c \
+	${VORBIS_SRC_PATH}lib/smallft.c \
+	${VORBIS_SRC_PATH}lib/block.c \
+	${VORBIS_SRC_PATH}lib/envelope.c \
+	${VORBIS_SRC_PATH}lib/window.c \
+	${VORBIS_SRC_PATH}lib/lsp.c \
+	${VORBIS_SRC_PATH}lib/lpc.c \
+	${VORBIS_SRC_PATH}lib/analysis.c \
+	${VORBIS_SRC_PATH}lib/synthesis.c \
+	${VORBIS_SRC_PATH}lib/psy.c \
+	${VORBIS_SRC_PATH}lib/info.c \
+	${VORBIS_SRC_PATH}lib/floor1.c \
+	${VORBIS_SRC_PATH}lib/floor0.c \
+	${VORBIS_SRC_PATH}lib/res0.c \
+	${VORBIS_SRC_PATH}lib/mapping0.c \
+	${VORBIS_SRC_PATH}lib/registry.c \
+	${VORBIS_SRC_PATH}lib/codebook.c \
+	${VORBIS_SRC_PATH}lib/sharedbook.c \
+	${VORBIS_SRC_PATH}lib/lookup.c \
+	${VORBIS_SRC_PATH}lib/bitrate.c \
+	${VORBIS_SRC_PATH}lib/vorbisfile.c 
+
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := libogg
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libmpg123
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libmpg123
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  := ${LUA_SRC_PATH}src \
+	${OPENAL_SRC_PATH}include/ \
+	${OPENAL_SRC_PATH}OpenAL32/Include \
+	${TIFF_SRC_PATH}libtiff/ \
+	${MNG_SRC_PATH} \
+	${LCMS_SRC_PATH}include/ \
+	${PNG_SRC_PATH} \
+	${JPEG_SRC_PATH} \
+	${JASPER_SRC_PATH}src/libjasper/include \
+	${DEVIL_SRC_PATH}include \
+	${DEVIL_SRC_PATH}src-IL/include \
+	${LOVE_SRC_PATH}src \
+	${LOVE_SRC_PATH}src/modules \
+	$(FREETYPE_SRC_PATH)include \
+	$(FREETYPE_SRC_PATH)src \
+	${PHYSFS_SRC_PATH} \
+	${MPG123_SRC_PATH}src/libmpg123/ \
+	${MODPLUG_SRC_PATH}src/ \
+	${MODPLUG_SRC_PATH}src/libmodplug \
+	${VORBIS_SRC_PATH}include \
+	${OGG_SRC_PATH}/include
+		
+LOCAL_SRC_FILES := \
+	${MPG123_SRC_PATH}src/libmpg123/compat.c \
+	${MPG123_SRC_PATH}src/libmpg123/parse.c \
+	${MPG123_SRC_PATH}src/libmpg123/frame.c \
+	${MPG123_SRC_PATH}src/libmpg123/format.c \
+	${MPG123_SRC_PATH}src/libmpg123/dct64.c \
+	${MPG123_SRC_PATH}src/libmpg123/equalizer.c \
+	${MPG123_SRC_PATH}src/libmpg123/id3.c \
+	${MPG123_SRC_PATH}src/libmpg123/optimize.c \
+	${MPG123_SRC_PATH}src/libmpg123/readers.c \
+	${MPG123_SRC_PATH}src/libmpg123/tabinit.c \
+	${MPG123_SRC_PATH}src/libmpg123/libmpg123.c \
+	${MPG123_SRC_PATH}src/libmpg123/index.c \
+	${MPG123_SRC_PATH}src/libmpg123/stringbuf.c \
+	${MPG123_SRC_PATH}src/libmpg123/icy.c \
+	${MPG123_SRC_PATH}src/libmpg123/icy2utf8.c \
+	${MPG123_SRC_PATH}src/libmpg123/ntom.c \
+	${MPG123_SRC_PATH}src/libmpg123/synth.c \
+	${MPG123_SRC_PATH}src/libmpg123/synth_8bit.c \
+	${MPG123_SRC_PATH}src/libmpg123/layer1.c \
+	${MPG123_SRC_PATH}src/libmpg123/layer2.c \
+	${MPG123_SRC_PATH}src/libmpg123/layer3.c \
+	${MPG123_SRC_PATH}src/libmpg123/synth_s32.c \
+	${MPG123_SRC_PATH}src/libmpg123/synth_real.c \
+	${MPG123_SRC_PATH}src/libmpg123/feature.c \
+
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+ LOCAL_STATIC_LIBRARIES := 
+
+include $(BUILD_SHARED_LIBRARY)
+
+#liblove
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := liblove
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
 
 LOCAL_C_INCLUDES  := ${LUA_SRC_PATH}src \
 	${OPENAL_SRC_PATH}include/ \
@@ -60,29 +183,6 @@ LOCAL_C_INCLUDES  := ${LUA_SRC_PATH}src \
 	${OGG_SRC_PATH}/include
 		
 LOCAL_SRC_FILES := love.cpp \
-	${VORBIS_SRC_PATH}lib/mdct.c \
-	${VORBIS_SRC_PATH}lib/smallft.c \
-	${VORBIS_SRC_PATH}lib/block.c \
-	${VORBIS_SRC_PATH}lib/envelope.c \
-	${VORBIS_SRC_PATH}lib/window.c \
-	${VORBIS_SRC_PATH}lib/lsp.c \
-	${VORBIS_SRC_PATH}lib/lpc.c \
-	${VORBIS_SRC_PATH}lib/analysis.c \
-	${VORBIS_SRC_PATH}lib/synthesis.c \
-	${VORBIS_SRC_PATH}lib/psy.c \
-	${VORBIS_SRC_PATH}lib/info.c \
-	${VORBIS_SRC_PATH}lib/floor1.c \
-	${VORBIS_SRC_PATH}lib/floor0.c \
-	${VORBIS_SRC_PATH}lib/res0.c \
-	${VORBIS_SRC_PATH}lib/mapping0.c \
-	${VORBIS_SRC_PATH}lib/registry.c \
-	${VORBIS_SRC_PATH}lib/codebook.c \
-	${VORBIS_SRC_PATH}lib/sharedbook.c \
-	${VORBIS_SRC_PATH}lib/lookup.c \
-	${VORBIS_SRC_PATH}lib/bitrate.c \
-	${VORBIS_SRC_PATH}lib/vorbisfile.c \
-	${OGG_SRC_PATH}src/framing.c \
-	${OGG_SRC_PATH}src/bitwise.c \
 	${MODPLUG_SRC_PATH}src/sndmix.cpp \
 	${MODPLUG_SRC_PATH}src/sndfile.cpp \
 	${MODPLUG_SRC_PATH}src/snd_fx.cpp \
@@ -117,30 +217,6 @@ LOCAL_SRC_FILES := love.cpp \
 	${MODPLUG_SRC_PATH}src/load_mid.cpp \
 	${MODPLUG_SRC_PATH}src/load_pat.cpp \
 	${MODPLUG_SRC_PATH}src/modplug.cpp \
-	${MPG123_SRC_PATH}src/libmpg123/compat.c \
-	${MPG123_SRC_PATH}src/libmpg123/parse.c \
-	${MPG123_SRC_PATH}src/libmpg123/frame.c \
-	${MPG123_SRC_PATH}src/libmpg123/format.c \
-	${MPG123_SRC_PATH}src/libmpg123/dct64.c \
-	${MPG123_SRC_PATH}src/libmpg123/equalizer.c \
-	${MPG123_SRC_PATH}src/libmpg123/id3.c \
-	${MPG123_SRC_PATH}src/libmpg123/optimize.c \
-	${MPG123_SRC_PATH}src/libmpg123/readers.c \
-	${MPG123_SRC_PATH}src/libmpg123/tabinit.c \
-	${MPG123_SRC_PATH}src/libmpg123/libmpg123.c \
-	${MPG123_SRC_PATH}src/libmpg123/index.c \
-	${MPG123_SRC_PATH}src/libmpg123/stringbuf.c \
-	${MPG123_SRC_PATH}src/libmpg123/icy.c \
-	${MPG123_SRC_PATH}src/libmpg123/icy2utf8.c \
-	${MPG123_SRC_PATH}src/libmpg123/ntom.c \
-	${MPG123_SRC_PATH}src/libmpg123/synth.c \
-	${MPG123_SRC_PATH}src/libmpg123/synth_8bit.c \
-	${MPG123_SRC_PATH}src/libmpg123/layer1.c \
-	${MPG123_SRC_PATH}src/libmpg123/layer2.c \
-	${MPG123_SRC_PATH}src/libmpg123/layer3.c \
-	${MPG123_SRC_PATH}src/libmpg123/synth_s32.c \
-	${MPG123_SRC_PATH}src/libmpg123/synth_real.c \
-	${MPG123_SRC_PATH}src/libmpg123/feature.c \
 	${LOVE_SRC_PATH}src/modules/sound/wrap_SoundData.cpp \
 	${LOVE_SRC_PATH}src/modules/sound/Sound.cpp \
 	${LOVE_SRC_PATH}src/modules/sound/lullaby/Decoder.cpp \
@@ -719,5 +795,11 @@ LOCAL_SRC_FILES := love.cpp \
 
 
 LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := \
+    libmpg123 \
+    libvorbis \
+    libogg \
+  
 
 include $(BUILD_SHARED_LIBRARY)
