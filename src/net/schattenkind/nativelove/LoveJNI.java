@@ -3,9 +3,22 @@ package net.schattenkind.nativelove;
 public class LoveJNI {
 
      static {
+    	 // whatever you do, do not change the order!
     	 System.loadLibrary("ogg");
     	 System.loadLibrary("vorbis");
     	 System.loadLibrary("mpg123");
+    	 System.loadLibrary("modplug");
+    	 System.loadLibrary("openal");
+    	 System.loadLibrary("physfs");
+    	 System.loadLibrary("tiff");
+    	 System.loadLibrary("jpeg");
+    	 System.loadLibrary("mng");
+    	 System.loadLibrary("png");
+    	 System.loadLibrary("jasper");
+    	 System.loadLibrary("lcms");
+    	 System.loadLibrary("devil");
+    	 System.loadLibrary("freetype");
+    	 System.loadLibrary("lua");
          System.loadLibrary("love");
      }
 

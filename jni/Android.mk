@@ -153,36 +153,18 @@ LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
 
 include $(BUILD_SHARED_LIBRARY)
 
-#liblove
+#libmodplug
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := liblove
+LOCAL_MODULE    := libmodplug
 LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
 LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
 
-LOCAL_C_INCLUDES  := ${LUA_SRC_PATH}src \
-	${OPENAL_SRC_PATH}include/ \
-	${OPENAL_SRC_PATH}OpenAL32/Include \
-	${TIFF_SRC_PATH}libtiff/ \
-	${MNG_SRC_PATH} \
-	${LCMS_SRC_PATH}include/ \
-	${PNG_SRC_PATH} \
-	${JPEG_SRC_PATH} \
-	${JASPER_SRC_PATH}src/libjasper/include \
-	${DEVIL_SRC_PATH}include \
-	${DEVIL_SRC_PATH}src-IL/include \
-	${LOVE_SRC_PATH}src \
-	${LOVE_SRC_PATH}src/modules \
-	$(FREETYPE_SRC_PATH)include \
-	$(FREETYPE_SRC_PATH)src \
-	${PHYSFS_SRC_PATH} \
-	${MPG123_SRC_PATH}src/libmpg123/ \
+LOCAL_C_INCLUDES  :=  \
 	${MODPLUG_SRC_PATH}src/ \
-	${MODPLUG_SRC_PATH}src/libmodplug \
-	${VORBIS_SRC_PATH}include \
-	${OGG_SRC_PATH}/include
+	${MODPLUG_SRC_PATH}src/libmodplug
 		
-LOCAL_SRC_FILES := love.cpp \
+LOCAL_SRC_FILES := \
 	${MODPLUG_SRC_PATH}src/sndmix.cpp \
 	${MODPLUG_SRC_PATH}src/sndfile.cpp \
 	${MODPLUG_SRC_PATH}src/snd_fx.cpp \
@@ -217,16 +199,27 @@ LOCAL_SRC_FILES := love.cpp \
 	${MODPLUG_SRC_PATH}src/load_mid.cpp \
 	${MODPLUG_SRC_PATH}src/load_pat.cpp \
 	${MODPLUG_SRC_PATH}src/modplug.cpp \
-	${LOVE_SRC_PATH}src/modules/sound/wrap_SoundData.cpp \
-	${LOVE_SRC_PATH}src/modules/sound/Sound.cpp \
-	${LOVE_SRC_PATH}src/modules/sound/lullaby/Decoder.cpp \
-	${LOVE_SRC_PATH}src/modules/sound/lullaby/Mpg123Decoder.cpp \
-	${LOVE_SRC_PATH}src/modules/sound/lullaby/Sound.cpp \
-	${LOVE_SRC_PATH}src/modules/sound/lullaby/VorbisDecoder.cpp \
-	${LOVE_SRC_PATH}src/modules/sound/lullaby/ModPlugDecoder.cpp \
-	${LOVE_SRC_PATH}src/modules/sound/wrap_Sound.cpp \
-	${LOVE_SRC_PATH}src/modules/sound/SoundData.cpp \
-	${LOVE_SRC_PATH}src/modules/sound/wrap_Decoder.cpp \
+
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := 
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libopenal
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libopenal
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${OPENAL_SRC_PATH}include/ \
+	${OPENAL_SRC_PATH}OpenAL32/Include \
+	${OPENAL_SRC_PATH}
+		
+LOCAL_SRC_FILES := \
 	${OPENAL_SRC_PATH}OpenAL32/alAuxEffectSlot.c \
 	${OPENAL_SRC_PATH}OpenAL32/alBuffer.c \
 	${OPENAL_SRC_PATH}OpenAL32/alEffect.c \
@@ -254,104 +247,25 @@ LOCAL_SRC_FILES := love.cpp \
 	${OPENAL_SRC_PATH}Alc/backends/loopback.c \
 	${OPENAL_SRC_PATH}Alc/backends/null.c \
 	${OPENAL_SRC_PATH}Alc/backends/android.c \
-	${OPENAL_SRC_PATH}Alc/backends/wave.c \
-	${TIFF_SRC_PATH}libtiff/tif_dir.c \
-	${TIFF_SRC_PATH}libtiff/tif_codec.c \
-	${TIFF_SRC_PATH}libtiff/tif_predict.c \
-	${TIFF_SRC_PATH}libtiff/tif_tile.c \
-	${TIFF_SRC_PATH}libtiff/tif_version.c \
-	${TIFF_SRC_PATH}libtiff/tif_unix.c \
-	${TIFF_SRC_PATH}libtiff/tif_swab.c \
-	${TIFF_SRC_PATH}libtiff/tif_thunder.c \
-	${TIFF_SRC_PATH}libtiff/tif_next.c \
-	${TIFF_SRC_PATH}libtiff/tif_strip.c \
-	${TIFF_SRC_PATH}libtiff/tif_extension.c \
-	${TIFF_SRC_PATH}libtiff/tif_error.c \
-	${TIFF_SRC_PATH}libtiff/tif_dirwrite.c \
-	${TIFF_SRC_PATH}libtiff/tif_fax3sm.c \
-	${TIFF_SRC_PATH}libtiff/tif_ojpeg.c \
-	${TIFF_SRC_PATH}libtiff/tif_flush.c \
-	${TIFF_SRC_PATH}libtiff/tif_warning.c \
-	${TIFF_SRC_PATH}libtiff/tif_fax3.c \
-	${TIFF_SRC_PATH}libtiff/tif_jbig.c \
-	${TIFF_SRC_PATH}libtiff/tif_open.c \
-	${TIFF_SRC_PATH}libtiff/tif_write.c \
-	${TIFF_SRC_PATH}libtiff/tif_packbits.c \
-	${TIFF_SRC_PATH}libtiff/tif_compress.c \
-	${TIFF_SRC_PATH}libtiff/tif_color.c \
-	${TIFF_SRC_PATH}libtiff/tif_print.c \
-	${TIFF_SRC_PATH}libtiff/tif_zip.c \
-	${TIFF_SRC_PATH}libtiff/tif_aux.c \
-	${TIFF_SRC_PATH}libtiff/tif_dumpmode.c \
-	${TIFF_SRC_PATH}libtiff/tif_dirread.c \
-	${TIFF_SRC_PATH}libtiff/tif_getimage.c \
-	${TIFF_SRC_PATH}libtiff/tif_jpeg.c \
-	${TIFF_SRC_PATH}libtiff/tif_close.c \
-	${TIFF_SRC_PATH}libtiff/tif_read.c \
-	${TIFF_SRC_PATH}libtiff/tif_luv.c \
-	${TIFF_SRC_PATH}libtiff/tif_dirinfo.c \
-	${TIFF_SRC_PATH}libtiff/tif_lzw.c \
-	${TIFF_SRC_PATH}libtiff/tif_pixarlog.c \
-	${TIFF_SRC_PATH}port/lfind.c \
-	${MNG_SRC_PATH}libmng_write.c \
-	${MNG_SRC_PATH}libmng_object_prc.c \
-	${MNG_SRC_PATH}libmng_display.c \
-	${MNG_SRC_PATH}libmng_chunk_xs.c \
-	${MNG_SRC_PATH}libmng_chunk_io.c \
-	${MNG_SRC_PATH}libmng_read.c \
-	${MNG_SRC_PATH}libmng_prop_xs.c \
-	${MNG_SRC_PATH}libmng_filter.c \
-	${MNG_SRC_PATH}libmng_chunk_descr.c \
-	${MNG_SRC_PATH}libmng_cms.c \
-	${MNG_SRC_PATH}libmng_zlib.c \
-	${MNG_SRC_PATH}libmng_pixels.c \
-	${MNG_SRC_PATH}libmng_error.c \
-	${MNG_SRC_PATH}libmng_trace.c \
-	${MNG_SRC_PATH}libmng_jpeg.c \
-	${MNG_SRC_PATH}libmng_callback_xs.c \
-	${MNG_SRC_PATH}libmng_dither.c \
-	${MNG_SRC_PATH}libmng_hlapi.c \
-	${MNG_SRC_PATH}libmng_chunk_prc.c \
-	${LCMS_SRC_PATH}src/cmscam02.c \
-	${LCMS_SRC_PATH}src/cmserr.c \
-	${LCMS_SRC_PATH}src/cmstypes.c \
-	${LCMS_SRC_PATH}src/cmsmd5.c \
-	${LCMS_SRC_PATH}src/cmswtpnt.c \
-	${LCMS_SRC_PATH}src/cmsgmt.c \
-	${LCMS_SRC_PATH}src/cmspcs.c \
-	${LCMS_SRC_PATH}src/cmsopt.c \
-	${LCMS_SRC_PATH}src/cmscnvrt.c \
-	${LCMS_SRC_PATH}src/cmsps2.c \
-	${LCMS_SRC_PATH}src/cmssamp.c \
-	${LCMS_SRC_PATH}src/cmsplugin.c \
-	${LCMS_SRC_PATH}src/cmsmtrx.c \
-	${LCMS_SRC_PATH}src/cmspack.c \
-	${LCMS_SRC_PATH}src/cmsio0.c \
-	${LCMS_SRC_PATH}src/cmsgamma.c \
-	${LCMS_SRC_PATH}src/cmscgats.c \
-	${LCMS_SRC_PATH}src/cmsxform.c \
-	${LCMS_SRC_PATH}src/cmsnamed.c \
-	${LCMS_SRC_PATH}src/cmssm.c \
-	${LCMS_SRC_PATH}src/cmsio1.c \
-	${LCMS_SRC_PATH}src/cmsintrp.c \
-	${LCMS_SRC_PATH}src/cmslut.c \
-	${LCMS_SRC_PATH}src/cmsvirt.c \
-	${PNG_SRC_PATH}pngerror.c \
-	${PNG_SRC_PATH}pngwio.c \
-	${PNG_SRC_PATH}pngwrite.c \
-	${PNG_SRC_PATH}pngwutil.c \
-	${PNG_SRC_PATH}pngwtran.c \
-	${PNG_SRC_PATH}pngset.c \
-	${PNG_SRC_PATH}pngtrans.c \
-	${PNG_SRC_PATH}example.c \
-	${PNG_SRC_PATH}png.c \
-	${PNG_SRC_PATH}pngrtran.c \
-	${PNG_SRC_PATH}pngmem.c \
-	${PNG_SRC_PATH}pngpread.c \
-	${PNG_SRC_PATH}pngrutil.c \
-	${PNG_SRC_PATH}pngrio.c \
-	${PNG_SRC_PATH}pngget.c \
-	${PNG_SRC_PATH}pngread.c \
+	${OPENAL_SRC_PATH}Alc/backends/wave.c 
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := 
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libjpeg
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libjpeg
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${JPEG_SRC_PATH} 
+		
+LOCAL_SRC_FILES := \
 	${JPEG_SRC_PATH}jquant1.c \
 	${JPEG_SRC_PATH}jdtrans.c \
 	${JPEG_SRC_PATH}jerror.c \
@@ -411,7 +325,343 @@ LOCAL_SRC_FILES := love.cpp \
 	${JPEG_SRC_PATH}jcapistd.c \
 	${JPEG_SRC_PATH}rdswitch.c \
 	${JPEG_SRC_PATH}jdatadst.c \
-	${JPEG_SRC_PATH}jdinput.c \
+	${JPEG_SRC_PATH}jdinput.c 
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := 
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libtiff
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libtiff
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${TIFF_SRC_PATH}libtiff/ \
+	${JPEG_SRC_PATH} \
+		
+LOCAL_SRC_FILES := \
+	${TIFF_SRC_PATH}libtiff/tif_dir.c \
+	${TIFF_SRC_PATH}libtiff/tif_codec.c \
+	${TIFF_SRC_PATH}libtiff/tif_predict.c \
+	${TIFF_SRC_PATH}libtiff/tif_tile.c \
+	${TIFF_SRC_PATH}libtiff/tif_version.c \
+	${TIFF_SRC_PATH}libtiff/tif_unix.c \
+	${TIFF_SRC_PATH}libtiff/tif_swab.c \
+	${TIFF_SRC_PATH}libtiff/tif_thunder.c \
+	${TIFF_SRC_PATH}libtiff/tif_next.c \
+	${TIFF_SRC_PATH}libtiff/tif_strip.c \
+	${TIFF_SRC_PATH}libtiff/tif_extension.c \
+	${TIFF_SRC_PATH}libtiff/tif_error.c \
+	${TIFF_SRC_PATH}libtiff/tif_dirwrite.c \
+	${TIFF_SRC_PATH}libtiff/tif_fax3sm.c \
+	${TIFF_SRC_PATH}libtiff/tif_ojpeg.c \
+	${TIFF_SRC_PATH}libtiff/tif_flush.c \
+	${TIFF_SRC_PATH}libtiff/tif_warning.c \
+	${TIFF_SRC_PATH}libtiff/tif_fax3.c \
+	${TIFF_SRC_PATH}libtiff/tif_jbig.c \
+	${TIFF_SRC_PATH}libtiff/tif_open.c \
+	${TIFF_SRC_PATH}libtiff/tif_write.c \
+	${TIFF_SRC_PATH}libtiff/tif_packbits.c \
+	${TIFF_SRC_PATH}libtiff/tif_compress.c \
+	${TIFF_SRC_PATH}libtiff/tif_color.c \
+	${TIFF_SRC_PATH}libtiff/tif_print.c \
+	${TIFF_SRC_PATH}libtiff/tif_zip.c \
+	${TIFF_SRC_PATH}libtiff/tif_aux.c \
+	${TIFF_SRC_PATH}libtiff/tif_dumpmode.c \
+	${TIFF_SRC_PATH}libtiff/tif_dirread.c \
+	${TIFF_SRC_PATH}libtiff/tif_getimage.c \
+	${TIFF_SRC_PATH}libtiff/tif_jpeg.c \
+	${TIFF_SRC_PATH}libtiff/tif_close.c \
+	${TIFF_SRC_PATH}libtiff/tif_read.c \
+	${TIFF_SRC_PATH}libtiff/tif_luv.c \
+	${TIFF_SRC_PATH}libtiff/tif_dirinfo.c \
+	${TIFF_SRC_PATH}libtiff/tif_lzw.c \
+	${TIFF_SRC_PATH}libtiff/tif_pixarlog.c \
+	${TIFF_SRC_PATH}port/lfind.c 
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := libjpeg libphysfs
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libphysfs
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libphysfs
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${PHYSFS_SRC_PATH} 
+		
+LOCAL_SRC_FILES := \
+	${PHYSFS_SRC_PATH}/physfs.c \
+	${PHYSFS_SRC_PATH}/physfs_byteorder.c \
+	${PHYSFS_SRC_PATH}/physfs_unicode.c \
+	${PHYSFS_SRC_PATH}/platform/os2.c \
+	${PHYSFS_SRC_PATH}/platform/pocketpc.c \
+	${PHYSFS_SRC_PATH}/platform/posix.c \
+	${PHYSFS_SRC_PATH}/platform/unix.c \
+	${PHYSFS_SRC_PATH}/platform/macosx.c \
+	${PHYSFS_SRC_PATH}/platform/windows.c \
+	${PHYSFS_SRC_PATH}/archivers/dir.c \
+	${PHYSFS_SRC_PATH}/archivers/grp.c \
+	${PHYSFS_SRC_PATH}/archivers/hog.c \
+	${PHYSFS_SRC_PATH}/archivers/lzma.c \
+	${PHYSFS_SRC_PATH}/archivers/mvl.c \
+	${PHYSFS_SRC_PATH}/archivers/qpak.c \
+	${PHYSFS_SRC_PATH}/archivers/wad.c \
+	${PHYSFS_SRC_PATH}/archivers/zip.c \
+	${PHYSFS_SRC_PATH}/lzma/C/7zCrc.c \
+	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zBuffer.c \
+	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zDecode.c \
+	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zExtract.c \
+	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zHeader.c \
+	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zIn.c \
+	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zItem.c \
+	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zMethodID.c \
+	${PHYSFS_SRC_PATH}/lzma/C/Compress/Branch/BranchX86.c \
+	${PHYSFS_SRC_PATH}/lzma/C/Compress/Branch/BranchX86_2.c \
+	${PHYSFS_SRC_PATH}/lzma/C/Compress/Lzma/LzmaDecode.c \
+	${PHYSFS_SRC_PATH}/zlib123/adler32.c \
+	${PHYSFS_SRC_PATH}/zlib123/compress.c \
+	${PHYSFS_SRC_PATH}/zlib123/crc32.c \
+	${PHYSFS_SRC_PATH}/zlib123/deflate.c \
+	${PHYSFS_SRC_PATH}/zlib123/gzio.c \
+	${PHYSFS_SRC_PATH}/zlib123/infback.c \
+	${PHYSFS_SRC_PATH}/zlib123/inffast.c \
+	${PHYSFS_SRC_PATH}/zlib123/inflate.c \
+	${PHYSFS_SRC_PATH}/zlib123/inftrees.c \
+	${PHYSFS_SRC_PATH}/zlib123/trees.c \
+	${PHYSFS_SRC_PATH}/zlib123/uncompr.c \
+	${PHYSFS_SRC_PATH}/zlib123/zutil.c \
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := 
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libmng
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libmng
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${JPEG_SRC_PATH} \
+	${MNG_SRC_PATH}
+		
+LOCAL_SRC_FILES := \
+	${MNG_SRC_PATH}libmng_write.c \
+	${MNG_SRC_PATH}libmng_object_prc.c \
+	${MNG_SRC_PATH}libmng_display.c \
+	${MNG_SRC_PATH}libmng_chunk_xs.c \
+	${MNG_SRC_PATH}libmng_chunk_io.c \
+	${MNG_SRC_PATH}libmng_read.c \
+	${MNG_SRC_PATH}libmng_prop_xs.c \
+	${MNG_SRC_PATH}libmng_filter.c \
+	${MNG_SRC_PATH}libmng_chunk_descr.c \
+	${MNG_SRC_PATH}libmng_cms.c \
+	${MNG_SRC_PATH}libmng_zlib.c \
+	${MNG_SRC_PATH}libmng_pixels.c \
+	${MNG_SRC_PATH}libmng_error.c \
+	${MNG_SRC_PATH}libmng_trace.c \
+	${MNG_SRC_PATH}libmng_jpeg.c \
+	${MNG_SRC_PATH}libmng_callback_xs.c \
+	${MNG_SRC_PATH}libmng_dither.c \
+	${MNG_SRC_PATH}libmng_hlapi.c \
+	${MNG_SRC_PATH}libmng_chunk_prc.c \
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := libjpeg libphysfs
+
+include $(BUILD_SHARED_LIBRARY)
+
+#liblua
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := liblua
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${LUA_SRC_PATH}src 
+		
+LOCAL_SRC_FILES := \
+	${LUA_SRC_PATH}src/loadlib.c \
+	${LUA_SRC_PATH}src/lvm.c \
+	${LUA_SRC_PATH}src/ldo.c \
+	${LUA_SRC_PATH}src/lstate.c \
+	${LUA_SRC_PATH}src/ltablib.c \
+	${LUA_SRC_PATH}src/ltm.c \
+	${LUA_SRC_PATH}src/linit.c \
+	${LUA_SRC_PATH}src/liolib.c \
+	${LUA_SRC_PATH}src/ldblib.c \
+	${LUA_SRC_PATH}src/lcode.c \
+	${LUA_SRC_PATH}src/loslib.c \
+	${LUA_SRC_PATH}src/lgc.c \
+	${LUA_SRC_PATH}src/print.c \
+	${LUA_SRC_PATH}src/llex.c \
+	${LUA_SRC_PATH}src/lfunc.c \
+	${LUA_SRC_PATH}src/lparser.c \
+	${LUA_SRC_PATH}src/ldump.c \
+	${LUA_SRC_PATH}src/lundump.c \
+	${LUA_SRC_PATH}src/lmathlib.c \
+	${LUA_SRC_PATH}src/lauxlib.c \
+	${LUA_SRC_PATH}src/lopcodes.c \
+	${LUA_SRC_PATH}src/lapi.c \
+	${LUA_SRC_PATH}src/lmem.c \
+	${LUA_SRC_PATH}src/lstrlib.c \
+	${LUA_SRC_PATH}src/lzio.c \
+	${LUA_SRC_PATH}src/lstring.c \
+	${LUA_SRC_PATH}src/lbaselib.c \
+	${LUA_SRC_PATH}src/ltable.c \
+	${LUA_SRC_PATH}src/ldebug.c \
+	${LUA_SRC_PATH}src/lobject.c 
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES :=  
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libfreetype
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libfreetype
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	$(FREETYPE_SRC_PATH)include \
+	$(FREETYPE_SRC_PATH)src \
+		
+LOCAL_SRC_FILES := \
+    $(FREETYPE_SRC_PATH)src/autofit/autofit.c \
+    $(FREETYPE_SRC_PATH)src/base/basepic.c \
+    $(FREETYPE_SRC_PATH)src/base/ftapi.c \
+    $(FREETYPE_SRC_PATH)src/base/ftbase.c \
+    $(FREETYPE_SRC_PATH)src/base/ftbbox.c \
+    $(FREETYPE_SRC_PATH)src/base/ftbitmap.c \
+    $(FREETYPE_SRC_PATH)src/base/ftdbgmem.c \
+    $(FREETYPE_SRC_PATH)src/base/ftdebug.c \
+    $(FREETYPE_SRC_PATH)src/base/ftglyph.c \
+    $(FREETYPE_SRC_PATH)src/base/ftinit.c \
+    $(FREETYPE_SRC_PATH)src/base/ftpic.c \
+    $(FREETYPE_SRC_PATH)src/base/ftstroke.c \
+    $(FREETYPE_SRC_PATH)src/base/ftsynth.c \
+    $(FREETYPE_SRC_PATH)src/base/ftsystem.c \
+    $(FREETYPE_SRC_PATH)src/cff/cff.c \
+    $(FREETYPE_SRC_PATH)src/pshinter/pshinter.c \
+    $(FREETYPE_SRC_PATH)src/psnames/psnames.c \
+    $(FREETYPE_SRC_PATH)src/raster/raster.c \
+    $(FREETYPE_SRC_PATH)src/sfnt/sfnt.c \
+    $(FREETYPE_SRC_PATH)src/smooth/smooth.c \
+    $(FREETYPE_SRC_PATH)src/truetype/truetype.c 
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES :=  
+
+include $(BUILD_SHARED_LIBRARY)
+
+#liblcms
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := liblcms
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${LCMS_SRC_PATH}include/ \
+		
+LOCAL_SRC_FILES := \
+	${LCMS_SRC_PATH}src/cmscam02.c \
+	${LCMS_SRC_PATH}src/cmserr.c \
+	${LCMS_SRC_PATH}src/cmstypes.c \
+	${LCMS_SRC_PATH}src/cmsmd5.c \
+	${LCMS_SRC_PATH}src/cmswtpnt.c \
+	${LCMS_SRC_PATH}src/cmsgmt.c \
+	${LCMS_SRC_PATH}src/cmspcs.c \
+	${LCMS_SRC_PATH}src/cmsopt.c \
+	${LCMS_SRC_PATH}src/cmscnvrt.c \
+	${LCMS_SRC_PATH}src/cmsps2.c \
+	${LCMS_SRC_PATH}src/cmssamp.c \
+	${LCMS_SRC_PATH}src/cmsplugin.c \
+	${LCMS_SRC_PATH}src/cmsmtrx.c \
+	${LCMS_SRC_PATH}src/cmspack.c \
+	${LCMS_SRC_PATH}src/cmsio0.c \
+	${LCMS_SRC_PATH}src/cmsgamma.c \
+	${LCMS_SRC_PATH}src/cmscgats.c \
+	${LCMS_SRC_PATH}src/cmsxform.c \
+	${LCMS_SRC_PATH}src/cmsnamed.c \
+	${LCMS_SRC_PATH}src/cmssm.c \
+	${LCMS_SRC_PATH}src/cmsio1.c \
+	${LCMS_SRC_PATH}src/cmsintrp.c \
+	${LCMS_SRC_PATH}src/cmslut.c \
+	${LCMS_SRC_PATH}src/cmsvirt.c \
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES :=  
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libpng
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libpng
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${PNG_SRC_PATH} \
+		
+LOCAL_SRC_FILES := \
+	${PNG_SRC_PATH}pngerror.c \
+	${PNG_SRC_PATH}pngwio.c \
+	${PNG_SRC_PATH}pngwrite.c \
+	${PNG_SRC_PATH}pngwutil.c \
+	${PNG_SRC_PATH}pngwtran.c \
+	${PNG_SRC_PATH}pngset.c \
+	${PNG_SRC_PATH}pngtrans.c \
+	${PNG_SRC_PATH}example.c \
+	${PNG_SRC_PATH}png.c \
+	${PNG_SRC_PATH}pngrtran.c \
+	${PNG_SRC_PATH}pngmem.c \
+	${PNG_SRC_PATH}pngpread.c \
+	${PNG_SRC_PATH}pngrutil.c \
+	${PNG_SRC_PATH}pngrio.c \
+	${PNG_SRC_PATH}pngget.c \
+	${PNG_SRC_PATH}pngread.c \
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := libphysfs
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libjasper
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libjasper
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${JASPER_SRC_PATH}src/libjasper/include \
+	${JPEG_SRC_PATH} \
+		
+LOCAL_SRC_FILES := \
 	${JASPER_SRC_PATH}src/libjasper/base/jas_cm.c \
 	${JASPER_SRC_PATH}src/libjasper/base/jas_getopt.c \
 	${JASPER_SRC_PATH}src/libjasper/base/jas_seq.c \
@@ -465,6 +715,31 @@ LOCAL_SRC_FILES := love.cpp \
 	${JASPER_SRC_PATH}src/libjasper/ras/ras_dec.c \
 	${JASPER_SRC_PATH}src/libjasper/ras/ras_enc.c \
 	${JASPER_SRC_PATH}src/libjasper/mif/mif_cod.c \
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := libjpeg
+
+include $(BUILD_SHARED_LIBRARY)
+
+#libdevil
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := libdevil
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  :=  \
+	${DEVIL_SRC_PATH}include \
+	${DEVIL_SRC_PATH}src-IL/include \
+	${JASPER_SRC_PATH}src/libjasper/include \
+	${PNG_SRC_PATH} \
+	${MNG_SRC_PATH} \
+	${JPEG_SRC_PATH} \
+	${LCMS_SRC_PATH}include/ \
+	${TIFF_SRC_PATH}libtiff/ \
+		
+LOCAL_SRC_FILES := \
 	${DEVIL_SRC_PATH}src-IL/src/il_sun.c \
 	${DEVIL_SRC_PATH}src-IL/src/il_wdp.c \
 	${DEVIL_SRC_PATH}src-IL/src/il_doom.c \
@@ -542,97 +817,60 @@ LOCAL_SRC_FILES := love.cpp \
 	${DEVIL_SRC_PATH}src-IL/src/altivec_common.c \
 	${DEVIL_SRC_PATH}src-IL/src/il_dpx.c \
 	${DEVIL_SRC_PATH}src-IL/src/il_rawdata.c \
-	${PHYSFS_SRC_PATH}/physfs.c \
-	${PHYSFS_SRC_PATH}/physfs_byteorder.c \
-	${PHYSFS_SRC_PATH}/physfs_unicode.c \
-	${PHYSFS_SRC_PATH}/platform/os2.c \
-	${PHYSFS_SRC_PATH}/platform/pocketpc.c \
-	${PHYSFS_SRC_PATH}/platform/posix.c \
-	${PHYSFS_SRC_PATH}/platform/unix.c \
-	${PHYSFS_SRC_PATH}/platform/macosx.c \
-	${PHYSFS_SRC_PATH}/platform/windows.c \
-	${PHYSFS_SRC_PATH}/archivers/dir.c \
-	${PHYSFS_SRC_PATH}/archivers/grp.c \
-	${PHYSFS_SRC_PATH}/archivers/hog.c \
-	${PHYSFS_SRC_PATH}/archivers/lzma.c \
-	${PHYSFS_SRC_PATH}/archivers/mvl.c \
-	${PHYSFS_SRC_PATH}/archivers/qpak.c \
-	${PHYSFS_SRC_PATH}/archivers/wad.c \
-	${PHYSFS_SRC_PATH}/archivers/zip.c \
-	${PHYSFS_SRC_PATH}/lzma/C/7zCrc.c \
-	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zBuffer.c \
-	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zDecode.c \
-	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zExtract.c \
-	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zHeader.c \
-	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zIn.c \
-	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zItem.c \
-	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zMethodID.c \
-	${PHYSFS_SRC_PATH}/lzma/C/Compress/Branch/BranchX86.c \
-	${PHYSFS_SRC_PATH}/lzma/C/Compress/Branch/BranchX86_2.c \
-	${PHYSFS_SRC_PATH}/lzma/C/Compress/Lzma/LzmaDecode.c \
-	${PHYSFS_SRC_PATH}/zlib123/adler32.c \
-	${PHYSFS_SRC_PATH}/zlib123/compress.c \
-	${PHYSFS_SRC_PATH}/zlib123/crc32.c \
-	${PHYSFS_SRC_PATH}/zlib123/deflate.c \
-	${PHYSFS_SRC_PATH}/zlib123/gzio.c \
-	${PHYSFS_SRC_PATH}/zlib123/infback.c \
-	${PHYSFS_SRC_PATH}/zlib123/inffast.c \
-	${PHYSFS_SRC_PATH}/zlib123/inflate.c \
-	${PHYSFS_SRC_PATH}/zlib123/inftrees.c \
-	${PHYSFS_SRC_PATH}/zlib123/trees.c \
-	${PHYSFS_SRC_PATH}/zlib123/uncompr.c \
-	${PHYSFS_SRC_PATH}/zlib123/zutil.c \
-	${LUA_SRC_PATH}src/loadlib.c \
-	${LUA_SRC_PATH}src/lvm.c \
-	${LUA_SRC_PATH}src/ldo.c \
-	${LUA_SRC_PATH}src/lstate.c \
-	${LUA_SRC_PATH}src/ltablib.c \
-	${LUA_SRC_PATH}src/ltm.c \
-	${LUA_SRC_PATH}src/linit.c \
-	${LUA_SRC_PATH}src/liolib.c \
-	${LUA_SRC_PATH}src/ldblib.c \
-	${LUA_SRC_PATH}src/lcode.c \
-	${LUA_SRC_PATH}src/loslib.c \
-	${LUA_SRC_PATH}src/lgc.c \
-	${LUA_SRC_PATH}src/print.c \
-	${LUA_SRC_PATH}src/llex.c \
-	${LUA_SRC_PATH}src/lfunc.c \
-	${LUA_SRC_PATH}src/lparser.c \
-	${LUA_SRC_PATH}src/ldump.c \
-	${LUA_SRC_PATH}src/lundump.c \
-	${LUA_SRC_PATH}src/lmathlib.c \
-	${LUA_SRC_PATH}src/lauxlib.c \
-	${LUA_SRC_PATH}src/lopcodes.c \
-	${LUA_SRC_PATH}src/lapi.c \
-	${LUA_SRC_PATH}src/lmem.c \
-	${LUA_SRC_PATH}src/lstrlib.c \
-	${LUA_SRC_PATH}src/lzio.c \
-	${LUA_SRC_PATH}src/lstring.c \
-	${LUA_SRC_PATH}src/lbaselib.c \
-	${LUA_SRC_PATH}src/ltable.c \
-	${LUA_SRC_PATH}src/ldebug.c \
-	${LUA_SRC_PATH}src/lobject.c \
-    $(FREETYPE_SRC_PATH)src/autofit/autofit.c \
-    $(FREETYPE_SRC_PATH)src/base/basepic.c \
-    $(FREETYPE_SRC_PATH)src/base/ftapi.c \
-    $(FREETYPE_SRC_PATH)src/base/ftbase.c \
-    $(FREETYPE_SRC_PATH)src/base/ftbbox.c \
-    $(FREETYPE_SRC_PATH)src/base/ftbitmap.c \
-    $(FREETYPE_SRC_PATH)src/base/ftdbgmem.c \
-    $(FREETYPE_SRC_PATH)src/base/ftdebug.c \
-    $(FREETYPE_SRC_PATH)src/base/ftglyph.c \
-    $(FREETYPE_SRC_PATH)src/base/ftinit.c \
-    $(FREETYPE_SRC_PATH)src/base/ftpic.c \
-    $(FREETYPE_SRC_PATH)src/base/ftstroke.c \
-    $(FREETYPE_SRC_PATH)src/base/ftsynth.c \
-    $(FREETYPE_SRC_PATH)src/base/ftsystem.c \
-    $(FREETYPE_SRC_PATH)src/cff/cff.c \
-    $(FREETYPE_SRC_PATH)src/pshinter/pshinter.c \
-    $(FREETYPE_SRC_PATH)src/psnames/psnames.c \
-    $(FREETYPE_SRC_PATH)src/raster/raster.c \
-    $(FREETYPE_SRC_PATH)src/sfnt/sfnt.c \
-    $(FREETYPE_SRC_PATH)src/smooth/smooth.c \
-    $(FREETYPE_SRC_PATH)src/truetype/truetype.c \
+
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+
+LOCAL_STATIC_LIBRARIES := \
+    libjasper \
+    libpng \
+    libmng \
+    libjpeg \
+    liblcms \
+    libtiff
+
+include $(BUILD_SHARED_LIBRARY)
+
+#liblove
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := liblove
+LOCAL_CFLAGS    := -g -Dlinux -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT
+LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
+
+LOCAL_C_INCLUDES  := \
+	${LUA_SRC_PATH}src \
+	${OPENAL_SRC_PATH}include/ \
+	${OPENAL_SRC_PATH}OpenAL32/Include \
+	${TIFF_SRC_PATH}libtiff/ \
+	${MNG_SRC_PATH} \
+	${LCMS_SRC_PATH}include/ \
+	${PNG_SRC_PATH} \
+	${JPEG_SRC_PATH} \
+	${JASPER_SRC_PATH}src/libjasper/include \
+	${DEVIL_SRC_PATH}include \
+	${DEVIL_SRC_PATH}src-IL/include \
+	${LOVE_SRC_PATH}src \
+	${LOVE_SRC_PATH}src/modules \
+	$(FREETYPE_SRC_PATH)include \
+	$(FREETYPE_SRC_PATH)src \
+	${PHYSFS_SRC_PATH} \
+	${MPG123_SRC_PATH}src/libmpg123/ \
+	${MODPLUG_SRC_PATH}src/ \
+	${MODPLUG_SRC_PATH}src/libmodplug \
+	${VORBIS_SRC_PATH}include \
+	${OGG_SRC_PATH}/include
+		
+LOCAL_SRC_FILES := love.cpp \
+	${LOVE_SRC_PATH}src/modules/sound/wrap_SoundData.cpp \
+	${LOVE_SRC_PATH}src/modules/sound/Sound.cpp \
+	${LOVE_SRC_PATH}src/modules/sound/lullaby/Decoder.cpp \
+	${LOVE_SRC_PATH}src/modules/sound/lullaby/Mpg123Decoder.cpp \
+	${LOVE_SRC_PATH}src/modules/sound/lullaby/Sound.cpp \
+	${LOVE_SRC_PATH}src/modules/sound/lullaby/VorbisDecoder.cpp \
+	${LOVE_SRC_PATH}src/modules/sound/lullaby/ModPlugDecoder.cpp \
+	${LOVE_SRC_PATH}src/modules/sound/wrap_Sound.cpp \
+	${LOVE_SRC_PATH}src/modules/sound/SoundData.cpp \
+	${LOVE_SRC_PATH}src/modules/sound/wrap_Decoder.cpp \
 	${LOVE_SRC_PATH}src/love.cpp \
 	${LOVE_SRC_PATH}src/modules/event/sdl/wrap_Event.cpp \
 	${LOVE_SRC_PATH}src/modules/event/sdl/Event.cpp \
@@ -800,6 +1038,18 @@ LOCAL_STATIC_LIBRARIES := \
     libmpg123 \
     libvorbis \
     libogg \
+    libmodplug \
+    libopenal \
+    libtiff \
+    libjpeg \
+    libphysfs \
+    libmng \
+    liblua \
+    libfreetype \
+    liblcms \
+    libpng \
+    libjasper \
+    libdevil
   
 
 include $(BUILD_SHARED_LIBRARY)
