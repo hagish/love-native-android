@@ -243,7 +243,8 @@ function love.init()
 			keyboard = true,
 			mouse = true,
 			timer = true,
-			joystick = true,
+--			joystick = true,
+			joystick = false, --not yet supported
 			image = true,
 			graphics = true,
 			audio = true,

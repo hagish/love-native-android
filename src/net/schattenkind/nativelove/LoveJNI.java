@@ -10,8 +10,8 @@ public class LoveJNI {
     	 System.loadLibrary("modplug");
     	 System.loadLibrary("openal");
     	 System.loadLibrary("physfs");
-    	 System.loadLibrary("tiff");
     	 System.loadLibrary("jpeg");
+    	 System.loadLibrary("tiff");
     	 System.loadLibrary("mng");
     	 System.loadLibrary("png");
     	 System.loadLibrary("jasper");
