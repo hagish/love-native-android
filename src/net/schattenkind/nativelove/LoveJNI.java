@@ -25,8 +25,9 @@ public class LoveJNI {
     /**
      * @param width the current view width
      * @param height the current view height
+     * @param file the love file to open
      */
-     public static native void init(int width, int height);
+     public static native void init(int width, int height, String file);
      public static native void step();
      public static native void deinit();     
      public static native boolean onKeyDown(int keyCode);

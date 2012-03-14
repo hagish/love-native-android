@@ -28,7 +28,7 @@ class LoveRenderView extends GLSurfaceView
             public void onSurfaceChanged(GL10 gl, int width, int height)
             {
 				System.out.println("java: init");
-	            LoveJNI.init(width, height, loveFile);
+	            LoveJNI.init(width, height);
             }
 
 			@Override

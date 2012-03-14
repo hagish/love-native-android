@@ -37,7 +37,6 @@ public class LoveNative extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
     	//Temporary fix for exiting the application
-	//TODO Remove this when implemented into Love.cpp instead
     	if (keyCode == KeyEvent.KEYCODE_BACK) {
     		return super.onKeyDown(keyCode, event);
     	}
@@ -50,12 +49,6 @@ public class LoveNative extends Activity {
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event)
     {
-    	//Temporary fix for exiting the application
-	//TODO Remove this when implemented into Love.cpp instead
-    	if (keyCode == KeyEvent.KEYCODE_BACK) {
-    		return super.onKeyUp(keyCode, event);
-    	}
-
     	if(LoveJNI.onKeyUp(keyCode))
         	return true;
         return super.onKeyUp(keyCode, event);
