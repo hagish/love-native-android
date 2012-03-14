@@ -14,3 +14,4 @@ eclipse
 bin/
 libs/
 .settings
+*~
