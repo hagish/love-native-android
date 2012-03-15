@@ -21,16 +21,17 @@ int gScreenWidth = 0;
 int gScreenHeight = 0;
 
 extern "C" {
-    JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height);
+    JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height, jstring file);
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_step(JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_deinit(JNIEnv * env, jobject obj);
     JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onKeyDown(JNIEnv * env, jobject obj, int keyCode);
     JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onKeyUp(JNIEnv * env, jobject obj, int keyCode);
     JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseDown(JNIEnv * env, jobject obj, int x, int y);
     JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseUp(JNIEnv * env, jobject obj, int x, int y);
+    JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseMove(JNIEnv * env, jobject obj, int x, int y);
 };
 
-JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height)
+JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height, jstring file)
 {
 	LOGI("init");
 
@@ -45,8 +46,10 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * en
 	char **argv = new char *[2];
 	argv[0] = new char[5];
 	strcpy(argv[0], "love");
-	argv[1] = new char[strlen("/mnt/sdcard/love/iyfct")+1];
-	strcpy(argv[1], "/mnt/sdcard/love/iyfct");
+	const char * loveFile = env->GetStringUTFChars(file, NULL);
+	argv[1] = new char[strlen(loveFile)+1];
+	strcpy(argv[1], loveFile);
+	env->ReleaseStringUTFChars(file, loveFile);
 
 	pthread_mutex_init(&gEventMutex, NULL);
 	pthread_cond_init(&gEventCond, NULL);
@@ -137,3 +140,11 @@ JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseUp(JNIEnv
 
 	return true;
 }
+
+JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseMove(JNIEnv * env, jobject obj, int x, int y)
+{
+	//LOGI("onMouseMove");
+	gMouseState.x = x;
+	gMouseState.y = y;
+}
+

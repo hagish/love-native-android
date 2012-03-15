@@ -8,10 +8,14 @@ import android.opengl.GLSurfaceView;
 
 class LoveRenderView extends GLSurfaceView
 {
+	private final String loveFile;
 
-	public LoveRenderView(Context context)
+	public LoveRenderView(Context context, String filePath)
     {
 	    super(context);
+
+	    loveFile = filePath;
+
 	    setRenderer(new Renderer() {
 			@Override
             public void onDrawFrame(GL10 gl)
@@ -24,7 +28,7 @@ class LoveRenderView extends GLSurfaceView
             public void onSurfaceChanged(GL10 gl, int width, int height)
             {
 				System.out.println("java: init");
-	            LoveJNI.init(width, height);
+	            LoveJNI.init(width, height, loveFile);
             }
 
 			@Override
