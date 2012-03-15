@@ -28,6 +28,7 @@ extern "C" {
     JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onKeyUp(JNIEnv * env, jobject obj, int keyCode);
     JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseDown(JNIEnv * env, jobject obj, int x, int y);
     JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseUp(JNIEnv * env, jobject obj, int x, int y);
+    JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseMove(JNIEnv * env, jobject obj, int x, int y);
 };
 
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height, jstring file)
@@ -140,4 +141,10 @@ JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseUp(JNIEnv
 	return true;
 }
 
+JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseMove(JNIEnv * env, jobject obj, int x, int y)
+{
+	//LOGI("onMouseMove");
+	gMouseState.x = x;
+	gMouseState.y = y;
+}
 

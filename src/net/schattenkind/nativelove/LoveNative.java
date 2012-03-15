@@ -74,6 +74,10 @@ public class LoveNative extends Activity {
     		LoveJNI.onMouseUp((int)event.getX(), (int)event.getY());
     		return true;
     	}
+    	else if (event.getAction() == MotionEvent.ACTION_MOVE)
+    	{
+    		LoveJNI.onMouseMove((int)event.getX(), (int)event.getY());
+    	}
         return super.onTouchEvent(event);
     }
     

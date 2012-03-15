@@ -34,4 +34,5 @@ public class LoveJNI {
      public static native boolean onKeyUp(int keyCode);
      public static native boolean onMouseDown(int x, int y);
      public static native boolean onMouseUp(int x, int y);
+     public static native void onMouseMove(int x, int y);
 }
