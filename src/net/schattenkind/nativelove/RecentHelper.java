@@ -3,8 +3,6 @@ package net.schattenkind.nativelove;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,10 +17,10 @@ public class RecentHelper {
 	
 	public static void addRecent(Context context, String path) {
 		SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-		Set<String> recentSet = preferences.getStringSet(FIELD_RECENT, null);
+		String recentString = preferences.getString(FIELD_RECENT, null);
 		ArrayList<String> recentArrayList;
-		if (recentSet != null) {
-			recentArrayList = new ArrayList<String>(recentSet);
+		if (recentString != null) {
+			recentArrayList = StoredArrayHelper.convertFromString(recentString);
 		}
 		else {
 			recentArrayList = new ArrayList<String>();
@@ -38,24 +36,25 @@ public class RecentHelper {
 		
 		recentArrayList.add(new RecentObject(path).toString());
 
-		recentSet = new HashSet<String>(recentArrayList);
+		recentString = StoredArrayHelper.convertToString(recentArrayList);
 		Editor editor = preferences.edit();
-		editor.putStringSet(FIELD_RECENT, recentSet);
+		editor.putString(FIELD_RECENT, recentString);
 		editor.commit();
 	}
 	
 	public static String[] getRecent(Context context) {
 		SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-		Set<String> recentSet = preferences.getStringSet(FIELD_RECENT, null);
-		if (recentSet == null) {
+		String recentString = preferences.getString(FIELD_RECENT, null);
+		if (recentString == null) {
 			return new String[0];
 		}
 		
+		ArrayList<String> recentArray = StoredArrayHelper.convertFromString(recentString);
 		
-		RecentObject[] recent = new RecentObject[recentSet.size()];
+		RecentObject[] recent = new RecentObject[recentArray.size()];
 		
 		int i = 0;
-		for (String path : recentSet) {
+		for (String path : recentArray) {
 			recent[i] = RecentObject.parseFromString(path);
 			i++;
 		}
@@ -124,6 +123,30 @@ public class RecentHelper {
 			}
 			
 			return o1.path.compareToIgnoreCase(o2.path);
+		}
+	}
+	
+	/**
+	 * Used to replace the old method SharedPreferences.getStringSet, which increased the target API level to >= 11 (Honeycomb)
+	 */
+	public static class StoredArrayHelper {
+		
+		public static String convertToString(ArrayList<String> list) {
+			String result = "";
+			for (String string : list) {
+				if (result.length() != 0) {
+					result += '\n';
+				}
+				
+				result += string;
+			}
+			
+			return result;
+		}
+		
+		public static ArrayList<String> convertFromString(String string) {
+			String[] lines = string.split("\n");
+			return new ArrayList<String>(Arrays.asList(lines));
 		}
 	}
 }
