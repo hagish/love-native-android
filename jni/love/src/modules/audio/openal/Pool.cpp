@@ -44,6 +44,7 @@ namespace audio
 namespace openal
 {
 	Pool::Pool()
+	: mutex(new pthread_mutex_t)
 	{
 		// Generate sources.
 		alGenSources(NUM_SOURCES, sources);
@@ -64,6 +65,7 @@ namespace openal
 		stop();
 
 		pthread_mutex_destroy(mutex);
+		delete mutex;
 
 		// Free all sources.
 		alDeleteSources(NUM_SOURCES, sources);
