@@ -80,6 +80,7 @@ namespace openal
 		pthread_join(*thread, NULL);
 
 		delete pool;
+		delete thread;
 		
 		alcMakeContextCurrent(0);
 		alcDestroyContext(context);
