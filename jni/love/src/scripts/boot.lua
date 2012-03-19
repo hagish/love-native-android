@@ -889,8 +889,6 @@ function love.errhand(msg)
 end
 
 function _love_draw()
-	if not _love_update_loaded then return end
-
 	if love.graphics then
 		love.graphics.clear()
 		if love.draw then love.draw() end
