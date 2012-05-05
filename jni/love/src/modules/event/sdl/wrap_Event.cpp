@@ -26,6 +26,8 @@
 // sdlevent
 #include "Event.h"
 
+extern void sendAndroidExitSignal(void);
+
 namespace love
 {
 namespace event
@@ -115,6 +117,7 @@ namespace sdl
 			lua_pushboolean(L, msg.focus.f);
 			return 2;
 		case Event::TYPE_QUIT:
+			sendAndroidExitSignal();
 			return 1;
 		default:
 			return 0;

@@ -31,6 +31,25 @@ extern "C" {
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseMove(JNIEnv * env, jobject obj, int x, int y);
 };
 
+JNIEnv *gEnv = NULL;
+jobject *gObj = NULL;
+
+void sendAndroidExitSignal(void)
+{
+  if(gEnv && gObj)
+  {
+	//jclass cls = gEnv->GetObjectClass(*gObj);
+	
+	jclass cls = gEnv->FindClass("net/schattenkind/nativelove/LoveJNI");
+
+	jmethodID mid = gEnv->GetStaticMethodID(cls, "exitLove", "()V");
+	if (mid == 0)
+		return;
+	gEnv->CallStaticVoidMethod(cls, mid);
+  }
+}
+
+
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height, jstring file)
 {
 	LOGI("init");
@@ -64,7 +83,11 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * en
 
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_step(JNIEnv * env, jobject obj)
 {
+	gEnv = env;
+	gObj = &obj;
 	main_step();
+	gEnv = NULL;
+	gObj = NULL;
 }
 
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_deinit(JNIEnv * env, jobject obj)

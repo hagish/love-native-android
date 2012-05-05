@@ -133,9 +133,9 @@ namespace sdl
 //				m.focus.f = (e.active.gain != 0);
 //				return true;
 //			} else break;
-//		case SDL_QUIT:
-//			m.type = Event::TYPE_QUIT;
-//			return true;
+		case ANDROID_QUIT:
+			m.type = Event::TYPE_QUIT;
+			return true;
 		}
 
 		return false;
@@ -169,9 +169,9 @@ namespace sdl
 //			e.active.state = SDL_APPINPUTFOCUS;
 //			e.active.gain = m.focus.f;
 //			return true;
-//		case Event::TYPE_QUIT:
-//			e.type = SDL_QUIT;
-//			return true;
+		case Event::TYPE_QUIT:
+			e.event = ANDROID_QUIT;
+			return true;
 		default:
 			return true;
 		}

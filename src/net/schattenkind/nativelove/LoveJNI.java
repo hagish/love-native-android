@@ -1,5 +1,7 @@
 package net.schattenkind.nativelove;
 
+import android.app.Activity;
+
 public class LoveJNI {
 
      static {
@@ -35,4 +37,16 @@ public class LoveJNI {
      public static native boolean onMouseDown(int x, int y);
      public static native boolean onMouseUp(int x, int y);
      public static native void onMouseMove(int x, int y);
+     
+     public static void exitLove() {
+    	 deinit(); // clean love
+    	 // uncomment to kill launcher, too
+//    	 if(mAndroidActivity != null)
+//    		 mAndroidActivity.finish();
+     }
+     
+     private static Activity mAndroidActivity = null;
+     public static void setActivity(Activity activity) {
+    	 mAndroidActivity = activity;
+     }
 }

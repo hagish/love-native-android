@@ -29,6 +29,7 @@ public class LoveNative extends Activity {
         }
         
         //setContentView(R.layout.main);
+        LoveJNI.setActivity(this);
         setContentView(new LoveRenderView(this, filePath));
         //LoveJNI.step();
     }
@@ -95,11 +96,20 @@ public class LoveNative extends Activity {
         return super.onKeyLongPress(keyCode, event);
     }
     
+    // clean up love at onPause call - native memory is not protected afterwards
+    // we need a solution to store the game state at that moment
     @Override
-    public void onDestroy()
+    public void onPause()
     {
     	LoveJNI.deinit();
-    	super.onDestroy();
+    	super.onPause();
     }
+    
+//    @Override
+//    public void onDestroy()
+//    {
+//    	LoveJNI.deinit();
+//    	super.onDestroy();
+//    }
     
 }
