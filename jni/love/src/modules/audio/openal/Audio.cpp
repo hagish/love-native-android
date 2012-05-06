@@ -30,6 +30,9 @@ namespace audio
 {
 namespace openal
 {
+	float requestedDeviceAudioVolume = 1;
+	float currentDeviceAudioVolume = 1;
+
 	Audio::Audio()
 		: finish(false)
 	{
@@ -66,6 +69,12 @@ namespace openal
 			std::cerr << "Warning, couldn't open capture device! No audio input!" << std::endl;
 		}*/
 
+		// set initial listener volume
+		{
+			ALfloat volume;
+			alGetListenerf(AL_GAIN, &listenerVolume);
+		}
+
 		// pool must be allocated after AL context.
 		pool = new Pool();
 
@@ -94,6 +103,15 @@ namespace openal
 		
 		while(!instance->finish)
 		{
+			// update device volume modifier
+			float dVolume = currentDeviceAudioVolume - requestedDeviceAudioVolume;
+			float absDVolume = (dVolume < 0 ? -dVolume : dVolume);
+			if (absDVolume > 0.001f)
+			{
+				currentDeviceAudioVolume = requestedDeviceAudioVolume;
+				instance->setVolume(instance->getVolume());
+			}
+
 			instance->pool->update();
 			usleep(5 * 1000);
 		}
@@ -173,14 +191,13 @@ namespace openal
 
 	void Audio::setVolume(float volume)
 	{
-		alListenerf(AL_GAIN, volume);
+		listenerVolume = volume;
+		alListenerf(AL_GAIN, listenerVolume * currentDeviceAudioVolume);
 	}
 
 	float Audio::getVolume() const
 	{
-		ALfloat volume;
-		alGetListenerf(AL_GAIN, &volume);
-		return volume;
+		return listenerVolume;
 	}
 
 	void Audio::getPosition(float * v) const

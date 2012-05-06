@@ -38,6 +38,12 @@ public class LoveJNI {
      public static native boolean onMouseUp(int x, int y);
      public static native void onMouseMove(int x, int y);
      
+     /**
+      * @param volume 0 (mute) - 1f (max)
+      */
+     public static native void setDeviceAudioVolume(float volume);
+     public static native float getDeviceAudioVolume();
+     
      public static void exitLove() {
     	 deinit(); // clean love
     	 // uncomment to kill launcher, too

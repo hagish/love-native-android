@@ -79,6 +79,9 @@ namespace openal
 
 		static int run(void * unused);
 
+		// this is without device output volume
+		float listenerVolume;
+
 	public:
 
 		Audio();

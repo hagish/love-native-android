@@ -3,6 +3,7 @@ package net.schattenkind.nativelove;
 import java.io.File;
 
 import android.app.Activity;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -13,6 +14,8 @@ public class LoveNative extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
         String filePath = "/mnt/sdcard/love/iyfct";
         
@@ -37,6 +40,20 @@ public class LoveNative extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
+    	// hardware sound button handling
+    	if (keyCode == KeyEvent.KEYCODE_MUTE)
+    	{
+    		LoveJNI.setDeviceAudioVolume(0f);
+    	}
+    	if (keyCode == KeyEvent.KEYCODE_VOLUME_UP)
+    	{
+    		LoveJNI.setDeviceAudioVolume(LoveJNI.getDeviceAudioVolume() + 0.1f);
+    	}
+    	if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+    	{
+    		LoveJNI.setDeviceAudioVolume(LoveJNI.getDeviceAudioVolume() - 0.1f);
+    	}
+    	
     	//Temporary fix for exiting the application
 	//TODO Remove this when implemented into Love.cpp instead
     	if (keyCode == KeyEvent.KEYCODE_BACK) {

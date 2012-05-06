@@ -20,6 +20,14 @@ std::map<int, bool> gKeyState;
 int gScreenWidth = 0;
 int gScreenHeight = 0;
 
+namespace love {
+namespace audio {
+namespace openal {
+extern float requestedDeviceAudioVolume;
+}
+}
+}
+
 extern "C" {
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height, jstring file);
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_step(JNIEnv * env, jobject obj);
@@ -29,6 +37,8 @@ extern "C" {
     JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseDown(JNIEnv * env, jobject obj, int x, int y);
     JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseUp(JNIEnv * env, jobject obj, int x, int y);
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseMove(JNIEnv * env, jobject obj, int x, int y);
+    JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_setDeviceAudioVolume(JNIEnv * env, jobject obj, float volume);
+    JNIEXPORT float JNICALL Java_net_schattenkind_nativelove_LoveJNI_getDeviceAudioVolume(JNIEnv * env, jobject obj);
 };
 
 JNIEnv *gEnv = NULL;
@@ -171,3 +181,18 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseMove(JNIE
 	gMouseState.y = y;
 }
 
+JNIEXPORT float JNICALL Java_net_schattenkind_nativelove_LoveJNI_getDeviceAudioVolume(JNIEnv * env, jobject obj)
+{
+	return love::audio::openal::requestedDeviceAudioVolume;
+}
+
+JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_setDeviceAudioVolume(JNIEnv * env, jobject obj, float volume)
+{
+	LOGI("adjust volume");
+
+	// clamp
+	if (volume < 0)volume = 0;
+	if (volume > 1)volume = 1;
+
+	love::audio::openal::requestedDeviceAudioVolume = volume;
+}
