@@ -19,6 +19,7 @@ CurrentMouseState gMouseState;
 std::map<int, bool> gKeyState;
 int gScreenWidth = 0;
 int gScreenHeight = 0;
+bool gDeinitDone = false;
 
 namespace love {
 namespace audio {
@@ -102,8 +103,12 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_step(JNIEnv * en
 
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_deinit(JNIEnv * env, jobject obj)
 {
-	LOGI("deinit");
-	main_shutdown();
+	if(!gDeinitDone)
+	{
+		LOGI("deinit");
+		main_shutdown();
+		gDeinitDone = true;
+	}
 }
 
 JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onKeyDown(JNIEnv * env, jobject obj, int keyCode)

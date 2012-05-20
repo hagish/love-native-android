@@ -44,11 +44,14 @@ public class LoveJNI {
      public static native void setDeviceAudioVolume(float volume);
      public static native float getDeviceAudioVolume();
      
+     public static boolean mExitQueued = false;
      public static void exitLove() {
-    	 deinit(); // clean love
-    	 // uncomment to kill launcher, too
-//    	 if(mAndroidActivity != null)
-//    		 mAndroidActivity.finish();
+    	 mExitQueued = true;
+     }
+     
+     public static void doExit() {
+    	 if(mAndroidActivity != null)
+    		 mAndroidActivity.finish();
      }
      
      private static Activity mAndroidActivity = null;

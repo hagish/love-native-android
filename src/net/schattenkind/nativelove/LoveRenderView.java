@@ -21,7 +21,10 @@ class LoveRenderView extends GLSurfaceView
             public void onDrawFrame(GL10 gl)
             {
 				//System.out.println("java: step");
-	            LoveJNI.step();
+				if(!LoveJNI.mExitQueued)
+					LoveJNI.step();
+				else
+					LoveJNI.doExit();
             }
 
 			@Override
