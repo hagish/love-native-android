@@ -1,5 +1,4 @@
 #!/bin/bash
 
-pushd love/src/scripts
-lua auto.lua audio graphics boot
-popd
+cd love/src/scripts
+lua auto.lua audio graphics boot android

@@ -60,6 +60,7 @@
 
 // Scripts
 #include "scripts/boot.lua.h"
+#include "scripts/android.lua.h"
 
 #include "loveLog.h"
 
@@ -252,6 +253,9 @@ void android_prepare(lua_State * L)
 {
 	lua_pushcfunction(L, android_print);
 	lua_setglobal(L, "print");
+
+	if (luaL_loadbuffer(L, (const char *)love::android_lua, sizeof(love::android_lua), "android.lua") == 0)
+				lua_call(L, 0, 0);
 }
 
 #ifdef LOVE_BUILD_EXE

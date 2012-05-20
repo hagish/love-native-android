@@ -41,6 +41,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseMove(JNIEnv * env, jobject obj, int x, int y);
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_setDeviceAudioVolume(JNIEnv * env, jobject obj, float volume);
     JNIEXPORT float JNICALL Java_net_schattenkind_nativelove_LoveJNI_getDeviceAudioVolume(JNIEnv * env, jobject obj);
+    JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onScreenSizeChanged(JNIEnv * env, jobject obj, int width, int height);
 };
 
 JNIEnv *gEnv = NULL;
@@ -168,6 +169,16 @@ JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseDown(JNIE
 	pthread_cond_signal(&gEventCond);
 
 	return true;
+}
+
+JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onScreenSizeChanged(JNIEnv * env, jobject obj, int width, int height)
+{
+	LOGI("onScreenSizeChanged w=%i h=%i", width, height);
+
+	gScreenWidth = width;
+	gScreenHeight = height;
+
+
 }
 
 JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseUp(JNIEnv * env, jobject obj, int x, int y)

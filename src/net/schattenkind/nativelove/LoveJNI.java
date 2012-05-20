@@ -37,6 +37,7 @@ public class LoveJNI {
      public static native boolean onMouseDown(int x, int y);
      public static native boolean onMouseUp(int x, int y);
      public static native void onMouseMove(int x, int y);
+     public static native void onScreenSizeChanged(int width, int height);
      
      /**
       * @param volume 0 (mute) - 1f (max)

@@ -9,6 +9,7 @@ import android.opengl.GLSurfaceView;
 class LoveRenderView extends GLSurfaceView
 {
 	private final String loveFile;
+	private boolean loveCreated = false;
 
 	public LoveRenderView(Context context, String filePath)
     {
@@ -30,14 +31,22 @@ class LoveRenderView extends GLSurfaceView
 			@Override
             public void onSurfaceChanged(GL10 gl, int width, int height)
             {
-				System.out.println("java: init");
-	            LoveJNI.init(width, height, loveFile);
+				if (loveCreated == false)
+				{
+					System.out.println("java: init");
+		            LoveJNI.init(width, height, loveFile);	     
+		            loveCreated = true;
+				}
+				else
+				{
+					LoveJNI.onScreenSizeChanged(width, height);
+				}
             }
 
 			@Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config)
             {
-	            
+				       
             }
 	    });
     }
