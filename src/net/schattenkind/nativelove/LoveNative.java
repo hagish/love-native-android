@@ -3,9 +3,11 @@ package net.schattenkind.nativelove;
 import java.io.File;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -121,6 +123,12 @@ public class LoveNative extends Activity {
     	//LoveJNI.deinit();
     	LoveJNI.exitLove();
     	super.onPause();
+    }
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+    	super.onConfigurationChanged(newConfig);
     }
     
 //    @Override
