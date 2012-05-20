@@ -68,180 +68,180 @@ namespace opengl
 	{
 		DisplayState s;
 		//create a table in which to store the color data in float format, before converting it
-//		float color[4];
-//		//get the color
-//		glGetFloatv(GL_CURRENT_COLOR, color);
-//		s.color.r = (GLubyte)(color[0]*255.0f);
-//		s.color.g = (GLubyte)(color[1]*255.0f);
-//		s.color.b = (GLubyte)(color[2]*255.0f);
-//		s.color.a = (GLubyte)(color[3]*255.0f);
-//		//get the background color
-//		glGetFloatv(GL_COLOR_CLEAR_VALUE, color);
-//		s.backgroundColor.r = (GLubyte)(color[0]*255.0f);
-//		s.backgroundColor.g = (GLubyte)(color[1]*255.0f);
-//		s.backgroundColor.b = (GLubyte)(color[2]*255.0f);
-//		s.backgroundColor.a = (GLubyte)(color[3]*255.0f);
-//		//store modes here
-//		GLint mode;
-//		//get blend mode
-//		glGetIntegerv(GL_BLEND_DST, &mode);
-//		//following syntax seems better than if-else every time
-//		s.blendMode = (mode == GL_ONE) ? Graphics::BLEND_ADDITIVE : Graphics::BLEND_ALPHA;
-//		//get color mode
-//		glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &mode);
-//		s.colorMode = (mode == GL_MODULATE) ? Graphics::COLOR_MODULATE : Graphics::COLOR_REPLACE;
-//		//get the line width (directly to corresponding variable)
-//		glGetFloatv(GL_LINE_WIDTH, &s.lineWidth);
-//		//get line style
-//		s.lineStyle = (glIsEnabled(GL_LINE_SMOOTH) == GL_TRUE) ? Graphics::LINE_SMOOTH : Graphics::LINE_ROUGH;
-//		//get line stipple
-//		s.stipple = (glIsEnabled(GL_LINE_STIPPLE) == GL_TRUE);
-//		if (s.stipple)
-//		{
-//			//get the stipple repeat
-//			glGetIntegerv(GL_LINE_STIPPLE_REPEAT, &s.stippleRepeat);
-//			//get the stipple pattern
-//			glGetIntegerv(GL_LINE_STIPPLE_PATTERN, &s.stipplePattern);
-//		}
-//		//get the point size
-//		glGetFloatv(GL_POINT_SIZE, &s.pointSize);
-//		//get point style
-//		s.pointStyle = (glIsEnabled(GL_POINT_SMOOTH) == GL_TRUE) ? Graphics::POINT_SMOOTH : Graphics::POINT_ROUGH;
-//		//get scissor status
-//		s.scissor = (glIsEnabled(GL_SCISSOR_TEST) == GL_TRUE);
-//		//do we have scissor, if so, store the box
-//		if (s.scissor)
-//			glGetIntegerv(GL_SCISSOR_BOX, s.scissorBox);
-//
-//		char *cap = 0;
-//		SDL_WM_GetCaption(&cap, 0);
-//		s.caption = cap;
-//		s.mouseVisible = (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE) ? true : false;
+		float color[4];
+		//get the color
+		glGetFloatv(GL_CURRENT_COLOR, color);
+		s.color.r = (GLubyte)(color[0]*255.0f);
+		s.color.g = (GLubyte)(color[1]*255.0f);
+		s.color.b = (GLubyte)(color[2]*255.0f);
+		s.color.a = (GLubyte)(color[3]*255.0f);
+		//get the background color
+		glGetFloatv(GL_COLOR_CLEAR_VALUE, color);
+		s.backgroundColor.r = (GLubyte)(color[0]*255.0f);
+		s.backgroundColor.g = (GLubyte)(color[1]*255.0f);
+		s.backgroundColor.b = (GLubyte)(color[2]*255.0f);
+		s.backgroundColor.a = (GLubyte)(color[3]*255.0f);
+		//store modes here
+		GLint mode;
+		//get blend mode
+		glGetIntegerv(GL_BLEND_DST, &mode);
+		//following syntax seems better than if-else every time
+		s.blendMode = (mode == GL_ONE) ? Graphics::BLEND_ADDITIVE : Graphics::BLEND_ALPHA;
+		//get color mode
+		glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &mode);
+		s.colorMode = (mode == GL_MODULATE) ? Graphics::COLOR_MODULATE : Graphics::COLOR_REPLACE;
+		//get the line width (directly to corresponding variable)
+		glGetFloatv(GL_LINE_WIDTH, &s.lineWidth);
+		//get line style
+		s.lineStyle = (glIsEnabled(GL_LINE_SMOOTH) == GL_TRUE) ? Graphics::LINE_SMOOTH : Graphics::LINE_ROUGH;
+		//get line stipple
+// 		s.stipple = (glIsEnabled(GL_LINE_STIPPLE) == GL_TRUE);
+// 		if (s.stipple)
+// 		{
+// 			//get the stipple repeat
+// 			glGetIntegerv(GL_LINE_STIPPLE_REPEAT, &s.stippleRepeat);
+// 			//get the stipple pattern
+// 			glGetIntegerv(GL_LINE_STIPPLE_PATTERN, &s.stipplePattern);
+// 		}
+		//get the point size
+		glGetFloatv(GL_POINT_SIZE, &s.pointSize);
+		//get point style
+		s.pointStyle = (glIsEnabled(GL_POINT_SMOOTH) == GL_TRUE) ? Graphics::POINT_SMOOTH : Graphics::POINT_ROUGH;
+		//get scissor status
+		s.scissor = (glIsEnabled(GL_SCISSOR_TEST) == GL_TRUE);
+		//do we have scissor, if so, store the box
+		if (s.scissor)
+			glGetIntegerv(GL_SCISSOR_BOX, s.scissorBox);
+
+// 		char *cap = 0;
+// 		SDL_WM_GetCaption(&cap, 0);
+// 		s.caption = cap;
+// 		s.mouseVisible = (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE) ? true : false;
 		return s;
 	}
 
 	void Graphics::restoreState(const DisplayState & s)
 	{
-//		setColor(s.color);
-//		setBackgroundColor(s.backgroundColor);
-//		setBlendMode(s.blendMode);
-//		setColorMode(s.colorMode);
-//		setLine(s.lineWidth, s.lineStyle);
-//		if (s.stipple)
-//			setLineStipple(s.stipplePattern, s.stippleRepeat);
-//		else
-//			setLineStipple();
-//		setPoint(s.pointSize, s.pointStyle);
-//		if (s.scissor)
-//			setScissor(s.scissorBox[0], s.scissorBox[1], s.scissorBox[2], s.scissorBox[3]);
-//		else
-//			setScissor();
-//
-//		setCaption(s.caption.c_str());
-//		SDL_ShowCursor(s.mouseVisible ? SDL_ENABLE : SDL_DISABLE);
+		setColor(s.color);
+		setBackgroundColor(s.backgroundColor);
+		setBlendMode(s.blendMode);
+		setColorMode(s.colorMode);
+		setLine(s.lineWidth, s.lineStyle);
+		if (s.stipple)
+			setLineStipple(s.stipplePattern, s.stippleRepeat);
+		else
+			setLineStipple();
+		setPoint(s.pointSize, s.pointStyle);
+		if (s.scissor)
+			setScissor(s.scissorBox[0], s.scissorBox[1], s.scissorBox[2], s.scissorBox[3]);
+		else
+			setScissor();
+
+// 		setCaption(s.caption.c_str());
+// 		SDL_ShowCursor(s.mouseVisible ? SDL_ENABLE : SDL_DISABLE);
 	}
 
 	bool Graphics::setMode(int width, int height, bool fullscreen, bool vsync, int fsaa)
 	{
 		width = gScreenWidth;
 		height = gScreenHeight;
-//		// This operation destroys the OpenGL context, so
-//		// we must save the state.
-//		DisplayState tempState;
-//		if (isCreated())
-//			tempState = saveState();
-//
-//		// Unlad all volatile objects. These must be reloaded after
-//		// the display mode change.
-//		Volatile::unloadAll();
-//
-//		// Get caption.
-//
-//		// We need to restart the subsystem for two reasons:
-//		// 1) Special case for fullscreen -> windowed. Windows XP did not
-//		//    work well with "normal" display mode change in this case.
-//		//    The application window does leave fullscreen, but the desktop
-//		//    resolution does not revert to the correct one. Restarting the
-//		//    SDL video subsystem does the trick, though.
-//		// 2) Restart the event system (for whatever reason the event system
-//		//    started and stopped with SDL_INIT_VIDEO, see:
-//		//    http://sdl.beuc.net/sdl.wiki/Introduction_to_Events)
-//		//    because the mouse position will not be able to exceed
-//		//    the previous' video mode window size (i.e. alway
-//		//    love.mouse.getX() < 800 when switching from 800x600 to a
-//		//    higher resolution)
-//		SDL_QuitSubSystem(SDL_INIT_VIDEO);
-//		if(SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
-//		{
-//			std::cout << "Could not init SDL_VIDEO: " << SDL_GetError() << std::endl;
-//			return false;
-//		}
-//
-//		// Set caption.
-//
-//		// Set GL attributes
-//		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 0);
-//		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 0);
-//		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 0);
-//		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-//		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, (vsync ? 1 : 0));
-//
-//		// FSAA
-//		if(fsaa > 0)
-//		{
-//			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 ) ;
-//			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, fsaa ) ;
-//		}
-//
-//		// Fullscreen?
-//		Uint32 sdlflags = fullscreen ? (SDL_OPENGL | SDL_FULLSCREEN) : SDL_OPENGL;
-//
-//		if(!isCreated())
-//			setCaption("");
-//
-//		// Have SDL set the video mode.
-//		if(SDL_SetVideoMode(width, height, 32, sdlflags ) == 0)
-//		{
-//			bool failed = true;
-//			if(fsaa > 0)
-//			{
-//				// FSAA might have failed, disable it and try again
-//				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-//				failed = SDL_SetVideoMode(width, height, 32, sdlflags ) == 0;
-//				if (failed)
-//				{
-//					// There might be no FSAA at all
-//					SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
-//					failed = SDL_SetVideoMode(width, height, 32, sdlflags ) == 0;
-//				}
-//			}
-//			if(failed)
-//			{
-//				std::cerr << "Could not set video mode: "  << SDL_GetError() << std::endl;
-//				return false;
-//			}
-//		}
-//
-//		if (width == 0 || height == 0)
-//		{
-//			const SDL_VideoInfo* videoinfo = SDL_GetVideoInfo();
-//			width = videoinfo->current_w;
-//			height = videoinfo->current_h;
-//		}
+		// This operation destroys the OpenGL context, so
+		// we must save the state.
+		DisplayState tempState;
+		if (isCreated())
+			tempState = saveState();
 
-		// Check if FSAA failed or not
-//		if(fsaa > 0)
-//		{
-//			GLint buffers;
-//			GLint samples;
-//
-//			glGetIntegerv( GL_SAMPLE_BUFFERS_ARB, & buffers ) ;
-//			glGetIntegerv( GL_SAMPLES_ARB, & samples ) ;
-//
-//			// Don't fail because of this, but issue a warning.
-//			if ( ! buffers || (samples != fsaa))
-//				std::cerr << "Warning, quality setting failed! (Result: buffers: " << buffers << ", samples: " << samples << ")" << std::endl;
-//		}
+		// Unlad all volatile objects. These must be reloaded after
+		// the display mode change.
+		Volatile::unloadAll();
+
+		// Get caption.
+
+// 		// We need to restart the subsystem for two reasons:
+// 		// 1) Special case for fullscreen -> windowed. Windows XP did not
+// 		//    work well with "normal" display mode change in this case.
+// 		//    The application window does leave fullscreen, but the desktop
+// 		//    resolution does not revert to the correct one. Restarting the
+// 		//    SDL video subsystem does the trick, though.
+// 		// 2) Restart the event system (for whatever reason the event system
+// 		//    started and stopped with SDL_INIT_VIDEO, see:
+// 		//    http://sdl.beuc.net/sdl.wiki/Introduction_to_Events)
+// 		//    because the mouse position will not be able to exceed
+// 		//    the previous' video mode window size (i.e. alway
+// 		//    love.mouse.getX() < 800 when switching from 800x600 to a
+// 		//    higher resolution)
+// 		SDL_QuitSubSystem(SDL_INIT_VIDEO);
+// 		if(SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
+// 		{
+// 			std::cout << "Could not init SDL_VIDEO: " << SDL_GetError() << std::endl;
+// 			return false;
+// 		}
+// 
+// 		// Set caption.
+// 
+// 		// Set GL attributes
+// 		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 0);
+// 		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 0);
+// 		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 0);
+// 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+// 		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, (vsync ? 1 : 0));
+// 
+// 		// FSAA
+// 		if(fsaa > 0)
+// 		{
+// 			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 ) ;
+// 			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, fsaa ) ;
+// 		}
+// 
+// 		// Fullscreen?
+// 		Uint32 sdlflags = fullscreen ? (SDL_OPENGL | SDL_FULLSCREEN) : SDL_OPENGL;
+// 
+// 		if(!isCreated())
+// 			setCaption("");
+// 
+// 		// Have SDL set the video mode.
+// 		if(SDL_SetVideoMode(width, height, 32, sdlflags ) == 0)
+// 		{
+// 			bool failed = true;
+// 			if(fsaa > 0)
+// 			{
+// 				// FSAA might have failed, disable it and try again
+// 				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+// 				failed = SDL_SetVideoMode(width, height, 32, sdlflags ) == 0;
+// 				if (failed)
+// 				{
+// 					// There might be no FSAA at all
+// 					SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+// 					failed = SDL_SetVideoMode(width, height, 32, sdlflags ) == 0;
+// 				}
+// 			}
+// 			if(failed)
+// 			{
+// 				std::cerr << "Could not set video mode: "  << SDL_GetError() << std::endl;
+// 				return false;
+// 			}
+// 		}
+// 
+// 		if (width == 0 || height == 0)
+// 		{
+// 			const SDL_VideoInfo* videoinfo = SDL_GetVideoInfo();
+// 			width = videoinfo->current_w;
+// 			height = videoinfo->current_h;
+// 		}
+// 
+// 		Check if FSAA failed or not
+// 		if(fsaa > 0)
+// 		{
+// 			GLint buffers;
+// 			GLint samples;
+// 
+// 			glGetIntegerv( GL_SAMPLE_BUFFERS_ARB, & buffers ) ;
+// 			glGetIntegerv( GL_SAMPLES_ARB, & samples ) ;
+// 
+// 			// Don't fail because of this, but issue a warning.
+// 			if ( ! buffers || (samples != fsaa))
+// 				std::cerr << "Warning, quality setting failed! (Result: buffers: " << buffers << ", samples: " << samples << ")" << std::endl;
+// 		}
 
 		// Okay, setup OpenGL.
 

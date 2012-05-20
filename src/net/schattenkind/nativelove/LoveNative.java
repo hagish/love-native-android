@@ -118,7 +118,8 @@ public class LoveNative extends Activity {
     @Override
     public void onPause()
     {
-    	LoveJNI.deinit();
+    	//LoveJNI.deinit();
+    	LoveJNI.exitLove();
     	super.onPause();
     }
     

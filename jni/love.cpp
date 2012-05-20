@@ -20,6 +20,7 @@ std::map<int, bool> gKeyState;
 int gScreenWidth = 0;
 int gScreenHeight = 0;
 bool gDeinitDone = false;
+bool gInitDone = false;
 
 namespace love {
 namespace audio {
@@ -63,33 +64,41 @@ void sendAndroidExitSignal(void)
 
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height, jstring file)
 {
-	LOGI("init");
+	if(gInitDone)
+		Java_net_schattenkind_nativelove_LoveJNI_deinit(env, obj);
+	
+	if(!gInitDone)
+	{
+		LOGI("init");
 
-	/*
-	int argc = 1;
-	char **argv = new char *[1];
-	argv[0] = new char[5];
-	strcpy(argv[0], "love");
-	*/
+		/*
+		int argc = 1;
+		char **argv = new char *[1];
+		argv[0] = new char[5];
+		strcpy(argv[0], "love");
+		*/
 
-	int argc = 2;
-	char **argv = new char *[2];
-	argv[0] = new char[5];
-	strcpy(argv[0], "love");
-	const char * loveFile = env->GetStringUTFChars(file, NULL);
-	argv[1] = new char[strlen(loveFile)+1];
-	strcpy(argv[1], loveFile);
-	env->ReleaseStringUTFChars(file, loveFile);
+		int argc = 2;
+		char **argv = new char *[2];
+		argv[0] = new char[5];
+		strcpy(argv[0], "love");
+		const char * loveFile = env->GetStringUTFChars(file, NULL);
+		argv[1] = new char[strlen(loveFile)+1];
+		strcpy(argv[1], loveFile);
+		env->ReleaseStringUTFChars(file, loveFile);
 
-	pthread_mutex_init(&gEventMutex, NULL);
-	pthread_cond_init(&gEventCond, NULL);
+		pthread_mutex_init(&gEventMutex, NULL);
+		pthread_cond_init(&gEventCond, NULL);
 
-	gScreenWidth = width;
-	gScreenHeight = height;
+		gScreenWidth = width;
+		gScreenHeight = height;
 
-	main_prepare(argc, argv);
+		main_prepare(argc, argv);
 
-	delete argv;
+		delete argv;
+		gInitDone = true;
+		gDeinitDone = false;
+	}
 }
 
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_step(JNIEnv * env, jobject obj)
@@ -108,6 +117,7 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_deinit(JNIEnv * 
 		LOGI("deinit");
 		main_shutdown();
 		gDeinitDone = true;
+		gInitDone = false;
 	}
 }
 
