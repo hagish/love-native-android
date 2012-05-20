@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class FileBrowser extends ListActivity implements OnItemLongClickListener {
 	public static final String EXTRA_PATH = "browser_path";
@@ -99,21 +100,32 @@ public class FileBrowser extends ListActivity implements OnItemLongClickListener
 		}
 		
 		File[] files = file.listFiles(new LoveFilter());
-		content = new String[files.length];
 		
-		for (int i = 0; i < files.length; i++) {
-			File curFile = files[i];
-			String name = curFile.getName();
-			if (curFile.isDirectory()) {
-				name += "/";
-			}
-			content[i] = name;
+		if (files == null)
+		{
+			Toast toastedIoError = Toast.makeText(getApplicationContext(), "IO Error! SD card unmounted?", Toast.LENGTH_LONG);
+			toastedIoError.show();
+			return;
 		}
 		
-		Arrays.sort(content, new FileSorter());
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, content);
-		setListAdapter(adapter);
+		if (files.length > 0)
+		{
+			content = new String[files.length];
+			
+			for (int i = 0; i < files.length; i++) {
+				File curFile = files[i];
+				String name = curFile.getName();
+				if (curFile.isDirectory()) {
+					name += "/";
+				}
+				content[i] = name;
+			}
+			
+			Arrays.sort(content, new FileSorter());
+			
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, content);
+			setListAdapter(adapter);
+		}
 	}
 	
 	public class FileSorter implements Comparator<String> {
