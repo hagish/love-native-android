@@ -131,6 +131,7 @@ namespace opengl
 
 		Font * currentFont;
 		DisplayMode currentMode;
+		DisplayState storedDisplayState;
 
 	public:
 
@@ -511,6 +512,16 @@ namespace opengl
 		void drawTest(Image * image, float x, float y, float a, float sx, float sy, float ox, float oy);
 
 		bool hasFocus();
+		
+		/**
+		 * save current status settings
+		 **/
+		void saveSettings(void);
+		
+		/**
+		 * restore last status settings
+		 **/
+		void restoreSettings(void);
 
 	}; // Graphics
 

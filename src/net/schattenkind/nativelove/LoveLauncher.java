@@ -49,6 +49,7 @@ public class LoveLauncher extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Intent i = new Intent(LoveLauncher.this, LoveNative.class);
 				i.setData(Uri.parse("file://" + (String) (parent.getAdapter().getItem(position))));
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
 			}
 			

@@ -13,6 +13,9 @@ import android.view.MotionEvent;
 
 public class LoveNative extends Activity {
     /** Called when the activity is first created. */
+	private LoveRenderView mGLView; 
+	private float mOldVolume = 1.f;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +38,8 @@ public class LoveNative extends Activity {
         
         //setContentView(R.layout.main);
         LoveJNI.setActivity(this);
-        setContentView(new LoveRenderView(this, filePath));
+        mGLView = new LoveRenderView(this, filePath);
+        setContentView(mGLView);
         //LoveJNI.step();
     }
     
@@ -104,8 +108,9 @@ public class LoveNative extends Activity {
     @Override
     public void onBackPressed()
     {
-        // TODO Auto-generated method stub
         super.onBackPressed();
+//        LoveJNI.deinit();
+        mGLView.onPause(); 
     }
     
     @Override
@@ -120,9 +125,19 @@ public class LoveNative extends Activity {
     @Override
     public void onPause()
     {
-    	//LoveJNI.deinit();
-    	LoveJNI.exitLove();
+    	//mGLView.onPause(); // TODO: FIX OpenGL cleanup
+    	mGLView.stopRendering();
+    	mOldVolume = LoveJNI.getDeviceAudioVolume();
+    	LoveJNI.setDeviceAudioVolume(0.f);
     	super.onPause();
+    }
+    
+    @Override 
+    protected void onResume() {
+        super.onResume();
+        mGLView.continueRendering();
+        LoveJNI.setDeviceAudioVolume(mOldVolume);
+        //mGLView.onResume(); // TODO: FIX OpenGL cleanup
     }
     
     @Override
@@ -131,11 +146,17 @@ public class LoveNative extends Activity {
     	super.onConfigurationChanged(newConfig);
     }
     
-//    @Override
-//    public void onDestroy()
-//    {
-//    	LoveJNI.deinit();
-//    	super.onDestroy();
-//    }
+    @Override
+    public void onDestroy()
+    {
+    	Log.i("LoveNative", "onDestroy");
+    	LoveJNI.deinit();
+    	super.onDestroy();
+    }
     
+//    @Override
+//    public void onStop()
+//    {
+//    	android.os.Process.killProcess(android.os.Process.myPid());
+//    }
 }

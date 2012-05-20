@@ -15,3 +15,6 @@ bin/
 libs/
 .settings
 *~
+*.Po
+*.Plo
+love-0.8.0

@@ -10,6 +10,7 @@ class LoveRenderView extends GLSurfaceView
 {
 	private final String loveFile;
 	private boolean loveCreated = false;
+	private boolean mSkipRendering = false;
 
 	public LoveRenderView(Context context, String filePath)
     {
@@ -23,9 +24,27 @@ class LoveRenderView extends GLSurfaceView
             {
 				//System.out.println("java: step");
 				if(!LoveJNI.mExitQueued)
-					LoveJNI.step();
+				{
+					if(mSkipRendering)
+					{
+						try
+                        {
+	                        Thread.sleep(250);
+                        }
+                        catch(InterruptedException e)
+                        {
+                        }
+					}
+					else
+					{
+						LoveJNI.step();
+					}
+					
+				}
 				else
+				{
 					LoveJNI.doExit();
+				}
             }
 
 			@Override
@@ -49,5 +68,30 @@ class LoveRenderView extends GLSurfaceView
 				       
             }
 	    });
+    }
+	
+	@Override
+	public void onPause()
+    {
+		LoveJNI.saveOpenGLState();
+		super.onPause();
+    }
+	
+	@Override 
+    public void onResume() {
+        super.onResume();
+        LoveJNI.restoreOpenGLState();
+    }
+
+	public void stopRendering()
+    {
+	    mSkipRendering = true;
+	    
+    }
+
+	public void continueRendering()
+    {
+		mSkipRendering  = false;
+	    
     }
 }

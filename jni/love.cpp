@@ -11,6 +11,7 @@
 #include <map>
 
 #include "AndroidEvent.h"
+#include "love/src/modules/graphics/opengl/Graphics.h"
 
 std::queue<AndroidEvent*> gAndroidEvents;
 pthread_mutex_t gEventMutex;
@@ -22,13 +23,8 @@ int gScreenHeight = 0;
 bool gDeinitDone = false;
 bool gInitDone = false;
 
-namespace love {
-namespace audio {
-namespace openal {
-extern float requestedDeviceAudioVolume;
-}
-}
-}
+namespace love { namespace audio { namespace openal { extern float requestedDeviceAudioVolume; } } }
+namespace love { namespace graphics { namespace opengl { Graphics* getGraphicsInstance(void); } } }
 
 extern "C" {
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height, jstring file);
@@ -42,6 +38,9 @@ extern "C" {
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_setDeviceAudioVolume(JNIEnv * env, jobject obj, float volume);
     JNIEXPORT float JNICALL Java_net_schattenkind_nativelove_LoveJNI_getDeviceAudioVolume(JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onScreenSizeChanged(JNIEnv * env, jobject obj, int width, int height);
+	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_saveOpenGLState(JNIEnv * env, jobject obj);
+	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_restoreOpenGLState(JNIEnv * env, jobject obj);
+	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_muteAudio(JNIEnv * env, jobject obj, jboolean mute);
 };
 
 JNIEnv *gEnv = NULL;
@@ -117,6 +116,13 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_deinit(JNIEnv * 
 	{
 		LOGI("deinit");
 		main_shutdown();
+		pthread_mutex_destroy(&gEventMutex);
+		pthread_cond_destroy(&gEventCond);
+		while(!gAndroidEvents.empty())
+		{
+			delete gAndroidEvents.front();
+			gAndroidEvents.pop();
+		}
 		gDeinitDone = true;
 		gInitDone = false;
 	}
@@ -221,4 +227,18 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_setDeviceAudioVo
 	if (volume > 1)volume = 1;
 
 	love::audio::openal::requestedDeviceAudioVolume = volume;
+}
+
+JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_saveOpenGLState(JNIEnv * env, jobject obj)
+{
+	love::graphics::opengl::Graphics * instance = love::graphics::opengl::getGraphicsInstance();
+	if(instance)
+	  instance->saveSettings();
+}
+
+JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_restoreOpenGLState(JNIEnv * env, jobject obj)
+{
+	love::graphics::opengl::Graphics * instance = love::graphics::opengl::getGraphicsInstance();
+	if(instance)
+	  instance->restoreSettings();
 }

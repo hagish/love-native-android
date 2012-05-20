@@ -38,6 +38,8 @@ public class LoveJNI {
      public static native boolean onMouseUp(int x, int y);
      public static native void onMouseMove(int x, int y);
      public static native void onScreenSizeChanged(int width, int height);
+     public static native void saveOpenGLState();
+     public static native void restoreOpenGLState();
      
      /**
       * @param volume 0 (mute) - 1f (max)

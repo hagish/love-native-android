@@ -33,6 +33,10 @@ namespace graphics
 namespace opengl
 {
 	static Graphics * instance = 0;
+	Graphics* getGraphicsInstance(void)
+	{
+		return instance;
+	}
 
 	int w_checkMode(lua_State * L)
 	{

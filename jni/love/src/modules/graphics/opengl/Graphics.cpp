@@ -141,6 +141,57 @@ namespace opengl
 // 		SDL_ShowCursor(s.mouseVisible ? SDL_ENABLE : SDL_DISABLE);
 	}
 
+	void Graphics::saveSettings(void)
+	{
+		// This operation destroys the OpenGL context, so
+		// we must save the state.
+		if (isCreated())
+			storedDisplayState = saveState();
+
+		// Unlad all volatile objects. These must be reloaded after
+		// the display mode change.
+		Volatile::unloadAll();
+	}
+		
+	void Graphics::restoreSettings(void)
+	{
+		// Enable blending
+		glEnable(GL_BLEND);
+
+		// "Normal" blending
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Enable line/point smoothing.
+		glEnable(GL_LINE_SMOOTH);
+		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+		glEnable(GL_POINT_SMOOTH);
+		glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+
+		// Enable textures
+		glEnable(GL_TEXTURE_2D);
+
+		// Set the viewport to top-left corner
+		glViewport(0,0, gScreenWidth, gScreenHeight);
+
+		// Reset the projection matrix
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+
+		// Set up orthographic view (no depth)
+		glOrthof(0.0, gScreenWidth, gScreenHeight,0.0, -1.0, 1.0);
+
+		// Reset modelview matrix
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		// Reload all volatile objects.
+		if(!Volatile::loadAll())
+			std::cerr << "Could not reload all volatile objects." << std::endl;
+		
+		// Restore the display state.
+		restoreState(storedDisplayState);
+	}
+	
 	bool Graphics::setMode(int width, int height, bool fullscreen, bool vsync, int fsaa)
 	{
 		width = gScreenWidth;
@@ -287,7 +338,7 @@ namespace opengl
 			std::cerr << "Could not reload all volatile objects." << std::endl;
 
 		// Restore the display state.
-		//restoreState(tempState);
+		restoreState(tempState);
 
 		return true;
 	}
