@@ -75,7 +75,7 @@ namespace freetype
 		
 		if( FT_Get_Glyph(face->glyph, &ftglyph) )
 			throw love::Exception("TrueTypeFont Loading vm->error: FT_Get_Glyph failed\n");
-			
+
 		FT_Glyph_To_Bitmap(&ftglyph, FT_RENDER_MODE_NORMAL, 0, 1);
 		FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)ftglyph;
 		FT_Bitmap& bitmap = bitmap_glyph->bitmap; //just to make things easier
@@ -87,7 +87,7 @@ namespace freetype
 		glyphMetrics.width = bitmap.width;
 		glyphMetrics.advance = face->glyph->metrics.horiAdvance >> 6;
 
-		GlyphData * glyphData = new GlyphData(glyph, glyphMetrics, GlyphData::FORMAT_LUMINANCE_ALPHA);
+		GlyphData * glyphData = new GlyphData(glyph, glyphMetrics, GlyphData::FORMAT_RGBA);
 
 		{
 			int size = bitmap.rows*bitmap.width;
@@ -97,8 +97,10 @@ namespace freetype
 			// our luminosity-alpha format. 
 			for(int i = 0; i<size; i++)
 			{
-				dst[2*i] = 255;
-				dst[2*i+1] = bitmap.buffer[i];
+				dst[4*i+0] = bitmap.buffer[i];
+				dst[4*i+1] = bitmap.buffer[i];
+				dst[4*i+2] = bitmap.buffer[i];
+				dst[4*i+3] = bitmap.buffer[i];
 			}
 		}
 		

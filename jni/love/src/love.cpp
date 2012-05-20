@@ -328,6 +328,11 @@ int main_prepare(int argc, char ** argv)
 	return 0;
 }
 
+lua_State *main_getLuaState()
+{
+	return L;
+}
+
 int main_step()
 {
 	if (L == 0)return 0;

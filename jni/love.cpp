@@ -1,5 +1,12 @@
 #include <jni.h>
 
+// Lua
+extern "C" {
+	#include <lua.h>
+	#include <lualib.h>
+	#include <lauxlib.h>
+}
+
 #include <loveLog.h>
 #include <loveCore.h>
 
@@ -184,7 +191,17 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onScreenSizeChan
 	gScreenWidth = width;
 	gScreenHeight = height;
 
+	lua_State *L = main_getLuaState();
 
+	/* push functions and arguments */
+	lua_getglobal(L, "android_onScreenSizeChanged");  /* function to be called */
+	lua_pushnumber(L, width);   /* push 1st argument */
+	lua_pushnumber(L, height);   /* push 2nd argument */
+
+	/* do the call (2 arguments, 0 result) */
+	if (lua_pcall(L, 2, 0, 0) != 0) {
+		LOGE("error running function `f': %s", lua_tostring(L, -1));
+	}
 }
 
 JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onMouseUp(JNIEnv * env, jobject obj, int x, int y)

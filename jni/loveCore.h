@@ -11,5 +11,6 @@
 int main_prepare(int argc, char ** argv);
 int main_step();
 int main_shutdown();
+lua_State *main_getLuaState();
 
 #endif /* LOVECORE_H_ */
