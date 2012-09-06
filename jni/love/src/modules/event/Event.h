@@ -26,6 +26,7 @@
 #include <common/StringMap.h>
 #include <keyboard/Keyboard.h>
 #include <mouse/Mouse.h>
+#include "../../../../lua-5.1.4/src/llimits.h"
 
 namespace love
 {
@@ -44,6 +45,9 @@ namespace event
 		   TYPE_MOUSE_RELEASED,
 		   TYPE_JOYSTICK_RELEASED,
 		   TYPE_JOYSTICK_PRESSED,
+		   TYPE_TOUCH_PRESSED,
+		   TYPE_TOUCH_RELEASED,
+		   TYPE_TOUCH_MOVED,
 		   TYPE_FOCUS,
 		   TYPE_QUIT,
 		   TYPE_MAX_ENUM = 32
@@ -74,6 +78,15 @@ namespace event
 				love::keyboard::Keyboard::Key k;
 				unsigned short u;
 			} keyboard;
+			
+			struct
+			{
+			  Type type;
+			  unsigned *x;
+			  unsigned *y;
+			  int size;
+			  int actionIndex;
+			} touch;
 
 			struct
 			{

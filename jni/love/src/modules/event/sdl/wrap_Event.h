@@ -38,6 +38,8 @@ namespace sdl
 	int w_clear(lua_State * L);
 
 	extern "C" LOVE_EXPORT int luaopen_love_event(lua_State * L);
+	
+	void push_int_array(lua_State * L, unsigned int *array, int size);
 
 } // sdl
 } // event

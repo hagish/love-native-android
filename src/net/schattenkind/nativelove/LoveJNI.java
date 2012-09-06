@@ -31,7 +31,7 @@ public class LoveJNI {
      */
      public static native void init(int width, int height, String file);
      public static native void step();
-     public static native void deinit();     
+     public static native void deinit();
      public static native boolean onKeyDown(int keyCode);
      public static native boolean onKeyUp(int keyCode);
      public static native boolean onMouseDown(int x, int y);
@@ -40,23 +40,26 @@ public class LoveJNI {
      public static native void onScreenSizeChanged(int width, int height);
      public static native void saveOpenGLState();
      public static native void restoreOpenGLState();
-     
+     public static native boolean onTouchDown(int count, int eventId, int x[], int y[]);
+     public static native boolean onTouchUp(int count, int eventId, int x[], int y[]);
+     public static native boolean onTouchMove(int count, int eventId, int x[], int y[]);
+
      /**
       * @param volume 0 (mute) - 1f (max)
       */
      public static native void setDeviceAudioVolume(float volume);
      public static native float getDeviceAudioVolume();
-     
+
      public static boolean mExitQueued = false;
      public static void exitLove() {
     	 mExitQueued = true;
      }
-     
+
      public static void doExit() {
     	 if(mAndroidActivity != null)
     		 mAndroidActivity.finish();
      }
-     
+
      private static Activity mAndroidActivity = null;
      public static void setActivity(Activity activity) {
     	 mAndroidActivity = activity;

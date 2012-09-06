@@ -66,6 +66,9 @@ namespace event
 		{"mr", Event::TYPE_MOUSE_RELEASED},
 		{"jp", Event::TYPE_JOYSTICK_PRESSED},
 		{"jr", Event::TYPE_JOYSTICK_RELEASED},
+		{"tp", Event::TYPE_TOUCH_PRESSED},
+		{"tr", Event::TYPE_TOUCH_RELEASED},
+		{"tm", Event::TYPE_TOUCH_MOVED},
 		{"f", Event::TYPE_FOCUS},
 		{"q", Event::TYPE_QUIT},
 	};

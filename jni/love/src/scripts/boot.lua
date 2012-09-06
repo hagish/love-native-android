@@ -172,6 +172,15 @@ function love.createhandlers()
 		jr = function (j,b)
 			if love.joystickreleased then love.joystickreleased(j,b) end
 		end,
+		tp = function (x,y,i)
+			if love.touchpressed then love.touchpressed(x,y,i) end
+		end,
+		tr = function (x,y,i)
+			if love.touchreleased then love.touchreleased(x,y,i) end
+		end,
+		tm = function (x,y,i)
+			if love.touchmove then love.touchmove(x,y,i) end
+		end,
 		f = function (f)
 			if love.focus then love.focus(f) end
 		end,

@@ -19,6 +19,7 @@
 **/
 
 #include "Event.h"
+#include "../../../../../AndroidEvent.h"
 
 #include <keyboard/Keyboard.h>
 #include <mouse/Mouse.h>
@@ -121,6 +122,27 @@ namespace sdl
 			m.mouse.x = e.x;
 			m.mouse.y = e.y;
 			return buttons.find(e.keyCode, m.mouse.b);
+		case ANDROID_TOUCH_DOWN:
+			m.type = Event::TYPE_TOUCH_PRESSED;
+			m.touch.x = e.xArr;
+			m.touch.y = e.yArr;
+			m.touch.actionIndex = e.keyCode;
+			m.touch.size = e.arraySize;
+			return true;
+		case ANDROID_TOUCH_MOVE:
+			m.type = Event::TYPE_TOUCH_MOVED;
+			m.touch.x = e.xArr;
+			m.touch.y = e.yArr;
+			m.touch.actionIndex = e.keyCode;
+			m.touch.size = e.arraySize;
+			return true;
+		case ANDROID_TOUCH_UP:
+			m.type = Event::TYPE_TOUCH_RELEASED;
+			m.touch.x = e.xArr;
+			m.touch.y = e.yArr;
+			m.touch.actionIndex = e.keyCode;
+			m.touch.size = e.arraySize;
+			return true;
 //		case SDL_JOYBUTTONDOWN:
 //		case SDL_JOYBUTTONUP:
 //			m.type = (e.type == SDL_JOYBUTTONDOWN) ? Event::TYPE_JOYSTICK_PRESSED : Event::TYPE_JOYSTICK_RELEASED;
@@ -158,6 +180,27 @@ namespace sdl
 			e.x = m.mouse.x;
 			e.y = m.mouse.y;
 			return buttons.find(m.mouse.b, e.keyCode);
+		case Event::TYPE_TOUCH_PRESSED:
+			e.event = ANDROID_TOUCH_DOWN;
+			e.xArr = m.touch.x;
+			e.yArr = m.touch.y;
+			e.keyCode = m.touch.actionIndex;
+			e.arraySize = m.touch.size;
+			return true;
+		case Event::TYPE_TOUCH_MOVED:
+			e.event = ANDROID_TOUCH_MOVE;
+			e.xArr = m.touch.x;
+			e.yArr = m.touch.y;
+			e.keyCode = m.touch.actionIndex;
+			e.arraySize = m.touch.size;
+			return true;
+		case Event::TYPE_TOUCH_RELEASED:
+			e.event = ANDROID_TOUCH_UP;
+			e.xArr = m.touch.x;
+			e.yArr = m.touch.y;
+			e.keyCode = m.touch.actionIndex;
+			e.arraySize = m.touch.size;
+			return true;
 //		case Event::TYPE_JOYSTICK_PRESSED:
 //		case Event::TYPE_JOYSTICK_RELEASED:
 //			e.type = (m.type == Event::TYPE_JOYSTICK_PRESSED) ? SDL_JOYBUTTONDOWN : SDL_JOYBUTTONUP;

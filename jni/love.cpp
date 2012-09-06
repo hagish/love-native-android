@@ -48,6 +48,9 @@ extern "C" {
 	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_saveOpenGLState(JNIEnv * env, jobject obj);
 	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_restoreOpenGLState(JNIEnv * env, jobject obj);
 	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_muteAudio(JNIEnv * env, jobject obj, jboolean mute);
+	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchDown(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr);
+	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchUp(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr);
+	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchMove(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr);
 };
 
 JNIEnv *gEnv = NULL;
@@ -258,4 +261,91 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_restoreOpenGLSta
 	love::graphics::opengl::Graphics * instance = love::graphics::opengl::getGraphicsInstance();
 	if(instance)
 	  instance->restoreSettings();
+}
+
+JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchDown(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr)
+{
+  LOGI("onTouchDown");
+  jint *x = new jint[size];
+  jint *y = new jint[size];
+
+  env->GetIntArrayRegion(xArr, 0, size, x);
+  env->GetIntArrayRegion(yArr, 0, size, y);
+  AndroidEvent *ev = new AndroidEvent;
+  ev->event = ANDROID_TOUCH_DOWN;
+  ev->keyCode = eventId;
+  ev->xArr = new unsigned int[size];
+  ev->yArr = new unsigned int[size];
+  ev->arraySize = size;
+  for(int i = 0; i < size; ++i)
+  {
+	ev->xArr[i] = x[i];
+	ev->yArr[i] = y[i];
+  }
+  pthread_mutex_lock(&gEventMutex);
+  gAndroidEvents.push(ev);
+  pthread_mutex_unlock(&gEventMutex);
+  pthread_cond_signal(&gEventCond);
+
+  delete x;
+  delete y;
+  return true;
+}
+
+JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchUp(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr)
+{
+  LOGI("onTouchUp");
+  jint *x = new jint[size];
+  jint *y = new jint[size];
+
+  env->GetIntArrayRegion(xArr, 0, size, x);
+  env->GetIntArrayRegion(yArr, 0, size, y);
+  AndroidEvent *ev = new AndroidEvent;
+  ev->event = ANDROID_TOUCH_UP;
+  ev->keyCode = eventId;
+  ev->xArr = new unsigned int[size];
+  ev->yArr = new unsigned int[size];
+  ev->arraySize = size;
+  for(int i = 0; i < size; ++i)
+  {
+	ev->xArr[i] = x[i];
+	ev->yArr[i] = y[i];
+  }
+  pthread_mutex_lock(&gEventMutex);
+  gAndroidEvents.push(ev);
+  pthread_mutex_unlock(&gEventMutex);
+  pthread_cond_signal(&gEventCond);
+
+  delete x;
+  delete y;
+  return true;
+}
+
+JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchMove(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr)
+{
+  LOGI("onTouchMove");
+  jint *x = new jint[size];
+  jint *y = new jint[size];
+
+  env->GetIntArrayRegion(xArr, 0, size, x);
+  env->GetIntArrayRegion(yArr, 0, size, y);
+  AndroidEvent *ev = new AndroidEvent;
+  ev->event = ANDROID_TOUCH_MOVE;
+  ev->keyCode = eventId;
+  ev->xArr = new unsigned int[size];
+  ev->yArr = new unsigned int[size];
+  ev->arraySize = size;
+  for(int i = 0; i < size; ++i)
+  {
+	ev->xArr[i] = x[i];
+	ev->yArr[i] = y[i];
+  }
+  pthread_mutex_lock(&gEventMutex);
+  gAndroidEvents.push(ev);
+  pthread_mutex_unlock(&gEventMutex);
+  pthread_cond_signal(&gEventCond);
+
+  delete x;
+  delete y;
+  return true;
 }

@@ -25,6 +25,9 @@
 
 // sdlevent
 #include "Event.h"
+#include "../Event.h"
+
+#include "loveLog.h"
 
 extern void sendAndroidExitSignal(void);
 
@@ -113,6 +116,13 @@ namespace sdl
 			lua_pushinteger(L, msg.joystick.index);
 			lua_pushinteger(L, msg.joystick.button);
 			return 3;
+		case Event::TYPE_TOUCH_PRESSED:
+		case Event::TYPE_TOUCH_RELEASED:
+		case Event::TYPE_TOUCH_MOVED:
+			push_int_array(L, msg.touch.x, msg.touch.size);
+			push_int_array(L, msg.touch.y, msg.touch.size);
+			lua_pushinteger(L, msg.touch.actionIndex);
+			return 4;
 		case Event::TYPE_FOCUS:
 			lua_pushboolean(L, msg.focus.f);
 			return 2;
@@ -220,6 +230,18 @@ namespace sdl
 		w.types = 0;
 
 		return luax_register_module(L, w);
+	}
+	
+	void push_int_array(lua_State * L, unsigned int *array, int size)
+	{
+// 		lua_newtable(L);
+		lua_createtable(L, size, 0);
+		for(int i = 0; i < size; ++i)
+		{
+			lua_pushinteger(L, i + 1);
+			lua_pushinteger(L, array[i]);
+			lua_settable(L, -3);
+		}
 	}
 
 } // sdl
