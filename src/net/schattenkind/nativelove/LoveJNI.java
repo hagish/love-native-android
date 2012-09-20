@@ -43,6 +43,7 @@ public class LoveJNI {
      public static native boolean onTouchDown(int count, int eventId, int x[], int y[]);
      public static native boolean onTouchUp(int count, int eventId, int x[], int y[]);
      public static native boolean onTouchMove(int count, int eventId, int x[], int y[]);
+     public static native void onSensorChanged(String name, String type, float values[]);
 
      /**
       * @param volume 0 (mute) - 1f (max)
@@ -60,8 +61,18 @@ public class LoveJNI {
     		 mAndroidActivity.finish();
      }
 
-     private static Activity mAndroidActivity = null;
-     public static void setActivity(Activity activity) {
+     private static LoveNative mAndroidActivity = null;
+     public static void setActivity(LoveNative activity) {
     	 mAndroidActivity = activity;
+     }
+
+     public static void disableSensor(String name) {
+    	 if(mAndroidActivity != null)
+    		 mAndroidActivity.disableSensor(name);
+     }
+
+     public static void enableSensor(String name) {
+    	 if(mAndroidActivity != null)
+    		 mAndroidActivity.enableSensor(name);
      }
 }

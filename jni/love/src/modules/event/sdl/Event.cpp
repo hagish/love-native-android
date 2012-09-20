@@ -143,6 +143,13 @@ namespace sdl
 			m.touch.actionIndex = e.keyCode;
 			m.touch.size = e.arraySize;
 			return true;
+		case ANDROID_SENSOR:
+			m.type = Event::TYPE_SENSOR;
+			m.sensor.values = e.values;
+			m.sensor.size = e.arraySize;
+			m.sensor.name = e.sensorName;
+			m.sensor.senorType = e.sensorType;
+			return true;
 //		case SDL_JOYBUTTONDOWN:
 //		case SDL_JOYBUTTONUP:
 //			m.type = (e.type == SDL_JOYBUTTONDOWN) ? Event::TYPE_JOYSTICK_PRESSED : Event::TYPE_JOYSTICK_RELEASED;
@@ -200,6 +207,13 @@ namespace sdl
 			e.yArr = m.touch.y;
 			e.keyCode = m.touch.actionIndex;
 			e.arraySize = m.touch.size;
+			return true;
+		case Event::TYPE_SENSOR:
+			e.event = ANDROID_SENSOR;
+			e.values = m.sensor.values;
+			e.arraySize = m.sensor.size;
+			e.sensorName = m.sensor.name;
+			e.sensorType = m.sensor.senorType;
 			return true;
 //		case Event::TYPE_JOYSTICK_PRESSED:
 //		case Event::TYPE_JOYSTICK_RELEASED:

@@ -69,6 +69,7 @@ namespace event
 		{"tp", Event::TYPE_TOUCH_PRESSED},
 		{"tr", Event::TYPE_TOUCH_RELEASED},
 		{"tm", Event::TYPE_TOUCH_MOVED},
+		{"s", Event::TYPE_SENSOR},
 		{"f", Event::TYPE_FOCUS},
 		{"q", Event::TYPE_QUIT},
 	};

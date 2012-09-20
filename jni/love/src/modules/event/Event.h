@@ -48,6 +48,7 @@ namespace event
 		   TYPE_TOUCH_PRESSED,
 		   TYPE_TOUCH_RELEASED,
 		   TYPE_TOUCH_MOVED,
+		   TYPE_SENSOR,
 		   TYPE_FOCUS,
 		   TYPE_QUIT,
 		   TYPE_MAX_ENUM = 32
@@ -87,6 +88,15 @@ namespace event
 			  int size;
 			  int actionIndex;
 			} touch;
+			
+			struct
+			{
+				Type type;
+				float *values;
+				int size;
+				std::string *name;
+				std::string *senorType;
+			} sensor;
 
 			struct
 			{

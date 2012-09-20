@@ -181,6 +181,9 @@ function love.createhandlers()
 		tm = function (x,y,i)
 			if love.touchmove then love.touchmove(x,y,i) end
 		end,
+		s = function(n,t,v)
+			if love.sensorchanged then love.sensorchanged(n,t,v) end
+		end,
 		f = function (f)
 			if love.focus then love.focus(f) end
 		end,

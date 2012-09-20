@@ -51,6 +51,7 @@ extern "C" {
 	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchDown(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr);
 	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchUp(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr);
 	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchMove(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr);
+	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onSensorChanged(JNIEnv * env, jobject obj, jstring name, jstring type, jfloatArray values);
 };
 
 JNIEnv *gEnv = NULL;
@@ -58,19 +59,46 @@ jobject *gObj = NULL;
 
 void sendAndroidExitSignal(void)
 {
-  if(gEnv && gObj)
-  {
-	//jclass cls = gEnv->GetObjectClass(*gObj);
-	
-	jclass cls = gEnv->FindClass("net/schattenkind/nativelove/LoveJNI");
+	if(gEnv && gObj)
+	{
+		//jclass cls = gEnv->GetObjectClass(*gObj);
 
-	jmethodID mid = gEnv->GetStaticMethodID(cls, "exitLove", "()V");
-	if (mid == 0)
-		return;
-	gEnv->CallStaticVoidMethod(cls, mid);
-  }
+		jclass cls = gEnv->FindClass("net/schattenkind/nativelove/LoveJNI");
+
+		jmethodID mid = gEnv->GetStaticMethodID(cls, "exitLove", "()V");
+		if (mid == 0)
+			return;
+		gEnv->CallStaticVoidMethod(cls, mid);
+	}
 }
 
+void sendAndroidDisableSensor(const char *str)
+{
+	if(gEnv && gObj)
+	{
+		jclass cls = gEnv->FindClass("net/schattenkind/nativelove/LoveJNI");
+
+		jmethodID mid = gEnv->GetStaticMethodID(cls, "disableSensor", "(Ljava/lang/String;)V");
+		if (mid == 0)
+			return;
+		jstring string = gEnv->NewStringUTF(str);
+		gEnv->CallStaticVoidMethod(cls, mid, string);
+	}
+}
+
+void sendAndroidEnableSensor(const char *str)
+{
+	if(gEnv && gObj)
+	{
+		jclass cls = gEnv->FindClass("net/schattenkind/nativelove/LoveJNI");
+
+		jmethodID mid = gEnv->GetStaticMethodID(cls, "enableSensor", "(Ljava/lang/String;)V");
+		if (mid == 0)
+			return;
+		jstring string = gEnv->NewStringUTF(str);
+		gEnv->CallStaticVoidMethod(cls, mid, string);
+	}
+}
 
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height, jstring file)
 {
@@ -348,4 +376,23 @@ JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchMove(JNIE
   delete x;
   delete y;
   return true;
+}
+
+JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onSensorChanged(JNIEnv * env, jobject obj, 
+			jstring name, jstring type, jfloatArray values)
+{
+	jsize size = env->GetArrayLength(values);
+	
+	AndroidEvent *ev = new AndroidEvent;
+	ev->event = ANDROID_SENSOR;
+	ev->values = new jfloat[size];
+	env->GetFloatArrayRegion(values, 0, size, ev->values);
+	ev->sensorName = new std::string(env->GetStringUTFChars(name, NULL));
+	ev->sensorType = new std::string(env->GetStringUTFChars(type, NULL));
+	ev->arraySize = size;
+	
+	pthread_mutex_lock(&gEventMutex);
+	gAndroidEvents.push(ev);
+	pthread_mutex_unlock(&gEventMutex);
+	pthread_cond_signal(&gEventCond);
 }

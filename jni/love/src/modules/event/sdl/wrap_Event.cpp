@@ -123,6 +123,11 @@ namespace sdl
 			push_int_array(L, msg.touch.y, msg.touch.size);
 			lua_pushinteger(L, msg.touch.actionIndex);
 			return 4;
+		case Event::TYPE_SENSOR:
+			lua_pushstring(L, msg.sensor.name->c_str());
+			lua_pushstring(L, msg.sensor.senorType->c_str());
+			push_float_array(L, msg.sensor.values, msg.sensor.size);
+			return 4;
 		case Event::TYPE_FOCUS:
 			lua_pushboolean(L, msg.focus.f);
 			return 2;
@@ -143,6 +148,19 @@ namespace sdl
 		while(instance->poll(m))
 		{
 			int args = push_message(L, m);
+			if(m.type == Event::TYPE_TOUCH_PRESSED ||
+					m.type == Event::TYPE_TOUCH_RELEASED ||
+					m.type == Event::TYPE_TOUCH_MOVED)
+			{
+				delete[] m.touch.x;
+				delete[] m.touch.y;
+			}
+			else if(m.type == Event::TYPE_SENSOR)
+			{
+				delete[] m.sensor.values;
+				delete m.sensor.name;
+				delete m.sensor.senorType;
+			}
 			if(args > 0)
 				return args;
 		}
@@ -234,12 +252,22 @@ namespace sdl
 	
 	void push_int_array(lua_State * L, unsigned int *array, int size)
 	{
-// 		lua_newtable(L);
 		lua_createtable(L, size, 0);
 		for(int i = 0; i < size; ++i)
 		{
 			lua_pushinteger(L, i + 1);
 			lua_pushinteger(L, array[i]);
+			lua_settable(L, -3);
+		}
+	}
+	
+	void push_float_array(lua_State * L, float *array, int size)
+	{
+		lua_createtable(L, size, 0);
+		for(int i = 0; i < size; ++i)
+		{
+			lua_pushinteger(L, i + 1);
+			lua_pushnumber(L, array[i]);
 			lua_settable(L, -3);
 		}
 	}

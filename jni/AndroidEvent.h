@@ -1,6 +1,8 @@
 #ifndef ANDROID_EVENT_H
 #define ANDROID_EVENT_H
 
+#include <string>
+
 enum AndroidEventType
 {
 	ANDROID_MOUSE_DOWN,
@@ -48,6 +50,9 @@ struct AndroidEvent
 	unsigned int *xArr;
 	unsigned int *yArr;
 	unsigned int arraySize;
+	std::string *sensorName;
+	std::string *sensorType;
+	float *values;
 };
 
 #endif

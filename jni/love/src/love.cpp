@@ -63,6 +63,8 @@
 #include "scripts/android.lua.h"
 
 #include "loveLog.h"
+extern void sendAndroidDisableSensor(const char *str);
+extern void sendAndroidEnableSensor(const char *str);
 
 #endif // LOVE_BUILD_EXE
 
@@ -249,10 +251,52 @@ static int android_print (lua_State *L)
 	return 0;
 }
 
+static int android_sensor_enable (lua_State *L)
+{
+	int n = lua_gettop(L);
+	if(n < 1)
+	{
+		LOGE("Don't u wanna say which sensor?");
+		return 1;
+	}
+
+	// just ignore if it is not a string
+	if(lua_isstring(L, 1))
+	{
+		const char *str = luaL_checkstring(L, 1);
+		sendAndroidEnableSensor(str);
+	}
+	return 0;
+}
+
+static int android_sensor_disable (lua_State *L)
+{
+	int n = lua_gettop(L);
+	if(n < 1)
+	{
+		LOGE("Don't u wanna say which sensor?");
+		return 1;
+	}
+
+	// just ignore if it is not a string
+	if(lua_isstring(L, 1))
+	{
+		const char *str = luaL_checkstring(L, 1);
+		sendAndroidDisableSensor(str);
+	}
+	return 0;
+}
+
 void android_prepare(lua_State * L)
 {
 	lua_pushcfunction(L, android_print);
 	lua_setglobal(L, "print");
+	
+	lua_pushcfunction(L, android_sensor_enable);
+	lua_setglobal(L, "love_sensor_enable");
+	
+	lua_pushcfunction(L, android_sensor_disable);
+	lua_setglobal(L, "love_sensor_disable");
 
 	if (luaL_loadbuffer(L, (const char *)love::android_lua, sizeof(love::android_lua), "android.lua") == 0)
 				lua_call(L, 0, 0);
