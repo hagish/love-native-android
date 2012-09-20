@@ -301,7 +301,7 @@ JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchDown(JNIE
   env->GetIntArrayRegion(yArr, 0, size, y);
   AndroidEvent *ev = new AndroidEvent;
   ev->event = ANDROID_TOUCH_DOWN;
-  ev->keyCode = eventId;
+  ev->keyCode = eventId + 1;
   ev->xArr = new unsigned int[size];
   ev->yArr = new unsigned int[size];
   ev->arraySize = size;
@@ -330,7 +330,7 @@ JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchUp(JNIEnv
   env->GetIntArrayRegion(yArr, 0, size, y);
   AndroidEvent *ev = new AndroidEvent;
   ev->event = ANDROID_TOUCH_UP;
-  ev->keyCode = eventId;
+  ev->keyCode = eventId + 1;
   ev->xArr = new unsigned int[size];
   ev->yArr = new unsigned int[size];
   ev->arraySize = size;
@@ -359,7 +359,7 @@ JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchMove(JNIE
   env->GetIntArrayRegion(yArr, 0, size, y);
   AndroidEvent *ev = new AndroidEvent;
   ev->event = ANDROID_TOUCH_MOVE;
-  ev->keyCode = eventId;
+  ev->keyCode = eventId + 1;
   ev->xArr = new unsigned int[size];
   ev->yArr = new unsigned int[size];
   ev->arraySize = size;
