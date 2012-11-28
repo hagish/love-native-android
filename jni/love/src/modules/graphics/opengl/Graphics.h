@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2006-2011 LOVE Development Team
+* Copyright (c) 2006-2012 LOVE Development Team
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -25,28 +25,26 @@
 #include <iostream>
 #include <cmath>
 
-// SDL
-//#include <SDL.h>
-// #include "GLee.h"
-//#include <SDL_opengl.h>
-#include <GLES/gl.h>
-#define GL_GLEXT_PROTOTYPES
-#include <GLES/glext.h>
+// OpenGL
+#include "GLee.h"
 
 // LOVE
 #include <graphics/Graphics.h>
-
-#include <font/FontData.h>
+#include <graphics/Color.h>
 
 #include <image/Image.h>
 #include <image/ImageData.h>
 
+#include <window/Window.h>
+
+#include "OpenGL.h"
 #include "Font.h"
 #include "Image.h"
 #include "Quad.h"
 #include "SpriteBatch.h"
 #include "ParticleSystem.h"
-#include "Framebuffer.h"
+#include "Canvas.h"
+#include "PixelEffect.h"
 
 namespace love
 {
@@ -54,19 +52,6 @@ namespace graphics
 {
 namespace opengl
 {
-	struct Color
-	{
-		unsigned char r, g, b, a;
-	};
-
-	struct DisplayMode
-	{
-		int width, height; // The size of the screen.
-		int colorDepth; // The color depth of the display mode.
-		bool fullscreen; // Fullscreen (true), or windowed (false).
-		bool vsync; // Vsync enabled (true), or disabled (false).
-		int fsaa; // 0 for no FSAA, otherwise 1, 2 or 4.
-	};
 
 	// During display mode changing, certain
 	// variables about the OpenGL context are
@@ -82,11 +67,7 @@ namespace opengl
 		Graphics::ColorMode colorMode;
 
 		// Line.
-		float lineWidth;
 		Graphics::LineStyle lineStyle;
-		bool stipple;
-		GLint stippleRepeat;
-		GLint stipplePattern;
 
 		// Point.
 		float pointSize;
@@ -103,19 +84,14 @@ namespace opengl
 		// Default values.
 		DisplayState()
 		{
-			color.r = 255;
-			color.g = 255;
-			color.b = 255;
-			color.a = 255;
+			color.set(255,255,255,255);
 			backgroundColor.r = 0;
 			backgroundColor.g = 0;
 			backgroundColor.b = 0;
 			backgroundColor.a = 255;
 			blendMode = Graphics::BLEND_ALPHA;
 			colorMode = Graphics::COLOR_MODULATE;
-			lineWidth = 1.0f;
 			lineStyle = Graphics::LINE_SMOOTH;
-			stipple = false;
 			pointSize = 1.0f;
 			pointStyle = Graphics::POINT_SMOOTH;
 			scissor = false;
@@ -130,8 +106,15 @@ namespace opengl
 	private:
 
 		Font * currentFont;
-		DisplayMode currentMode;
-		DisplayState storedDisplayState;
+		Image::Filter currentImageFilter;
+		love::window::Window *currentWindow;
+
+		LineStyle lineStyle;
+		float lineWidth;
+		GLint matrixLimit;
+		GLint userMatrices;
+
+		int getRenderHeight();
 
 	public:
 
@@ -163,6 +146,16 @@ namespace opengl
 		* @param fsaa Number of full scene anti-aliasing buffer, or 0 for disabled.
 		**/
 		bool setMode(int width, int height, bool fullscreen, bool vsync, int fsaa);
+
+		/**
+		* Gets the current display mode.
+		* @param width Pointer to an integer for the window width.
+		* @param height Pointer to an integer for the window height.
+		* @param fullscreen Pointer to a boolean for the fullscreen status.
+		* @param vsync Pointer to a boolean for the vsync status.
+		* @param fsaa Pointer to an integer for the current number of full scene anti-aliasing buffers.
+		**/
+		void getMode(int & width, int & height, bool & fullscreen, bool & vsync, int & fsaa);
 
 		/**
 		* Toggles fullscreen. Note that this also needs to reload the
@@ -252,31 +245,52 @@ namespace opengl
 		int getScissor(lua_State * L);
 
 		/**
+		 * Enables the stencil buffer and set stencil function to fill it
+		 */
+		void defineStencil();
+
+		/**
+		 * Set stencil function to mask the following drawing calls using
+		 * the current stencil buffer
+		 * @param invert Invert the mask, i.e. draw everywhere expect where
+		 *               the mask is defined.
+		 */
+		void useStencil(bool invert = false);
+
+		/**
+		 * Disables the stencil buffer
+		 */
+		void discardStencil();
+
+		/**
 		* Creates an Image object with padding and/or optimization.
 		**/
 		Image * newImage(love::filesystem::File * file);
 		Image * newImage(love::image::ImageData * data);
 
 		/**
-		* Creates a Frame
+		* Creates a Quad object.
 		**/
-		Quad * newQuad(int x, int y, int w, int h, int sw, int sh);
+		Quad * newQuad(float x, float y, float w, float h, float sw, float sh);
 
 		/**
 		* Creates a Font object.
 		**/
-		Font * newFont(love::font::FontData * data, const Image::Filter& filter = Image::Filter());
+		Font * newFont(love::font::Rasterizer * data, const Image::Filter& filter = Image::Filter());
 
 		SpriteBatch * newSpriteBatch(Image * image, int size, int usage);
 
 		ParticleSystem * newParticleSystem(Image * image, int size);
 
-		Framebuffer * newFramebuffer(int width, int height);
+		Canvas * newCanvas(int width, int height);
+
+		PixelEffect * newPixelEffect(const std::string& code);
 
 		/**
 		* Sets the foreground color.
+		* @param c The new foreground color.
 		**/
-		void setColor(Color c);
+		void setColor(const Color& c);
 
 		/**
 		* Gets current color.
@@ -286,17 +300,16 @@ namespace opengl
 		/**
 		* Sets the background Color.
 		**/
-		void setBackgroundColor(Color c);
+		void setBackgroundColor(const Color& c);
 
 		/**
 		* Gets the current background color.
-		* @param c Array of size 3 (r,g,b).
 		**/
 		Color getBackgroundColor();
 
 		/**
 		* Sets the current font.
-		* @parm font A Font object.
+		* @param font A Font object.
 		**/
 		void setFont(Font * font);
 		/**
@@ -315,6 +328,11 @@ namespace opengl
 		void setColorMode (ColorMode mode);
 
 		/**
+		 * Sets the current image filter.
+		 **/
+		void setDefaultImageFilter(const Image::Filter& f);
+
+		/**
 		* Gets the current blend mode.
 		**/
 		BlendMode getBlendMode();
@@ -323,6 +341,11 @@ namespace opengl
 		* Gets the current color mode.
 		**/
 		ColorMode getColorMode();
+
+		/**
+		 * Gets the current image filter.
+		 **/
+		const Image::Filter& getDefaultImageFilter() const;
 
 		/**
 		* Sets the line width.
@@ -343,16 +366,6 @@ namespace opengl
 		void setLine(float width, LineStyle style);
 
 		/**
-		* Disables line stippling.
-		**/
-		void setLineStipple();
-
-		/**
-		* Sets a line stipple pattern.
-		**/
-		void setLineStipple(unsigned short pattern, int repeat = 1);
-
-		/**
 		* Gets the line width.
 		**/
 		float getLineWidth();
@@ -361,13 +374,6 @@ namespace opengl
 		* Gets the line style.
 		**/
 		LineStyle getLineStyle();
-
-		/**
-		* Gets the line stipple pattern and repeat factor.
-		* @return pattern The stipplie bit-pattern.
-		* @return repeat The reapeat factor.
-		**/
-		int getLineStipple(lua_State * L);
 
 		/**
 		* Sets the size of points.
@@ -409,8 +415,12 @@ namespace opengl
 		* @param angle The amount of rotation.
 		* @param sx The scale factor along the x-axis. (1 = normal).
 		* @param sy The scale factor along the y-axis. (1 = normal).
+		* @param ox The origin offset along the x-axis.
+		* @param oy The origin offset along the y-axis.
+		* @param kx Shear along the x-axis.
+		* @param ky Shear along the y-axis.
 		**/
-		void print(const char * str, float x, float y , float angle = 0.0f, float sx = 1.0f, float sy = 1.0f);
+		void print(const char * str, float x, float y , float angle, float sx, float sy, float ox, float oy, float kx, float ky);
 
 		/**
 		* Draw formatted text on screen at the specified coordinates.
@@ -431,19 +441,11 @@ namespace opengl
 		void point(float x, float y);
 
 		/**
-		* Draws a line from (x1,y1) to (x2,y2).
-		* @param x1 First x-coordinate.
-		* @param y1 First y-coordinate.
-		* @param x2 Second x-coordinate.
-		* @param y2 Second y-coordinate.
-		**/
-		void line(float x1, float y1, float x2, float y2);
-
-		/**
 		* Draws a series of lines connecting the given vertices.
-		* @param ... Vertex components (x1, y1, x2, y2, etc.)
+		* @param coords Vertex components (x1, y1, ..., xn, yn). If x1,y1 == xn,yn the line will be drawn closed.
+		* @param count Number of items in the array, i.e. count = 2 * n
 		**/
-		int polyline(lua_State * L);
+		void polyline(const float* coords, size_t count);
 
 		/**
 		* Draws a triangle using the three coordinates passed.
@@ -486,20 +488,33 @@ namespace opengl
 		* @param x X-coordinate.
 		* @param y Y-coordinate.
 		* @param radius Radius of the circle.
-		* @param points Amount of points to use to draw the circle.
+		* @param points Number of points to use to draw the circle.
 		**/
 		void circle(DrawMode mode, float x, float y, float radius, int points = 10);
 
 		/**
+		* Draws an arc using the specified arguments.
+		* @param mode The mode of drawing (line/filled).
+		* @param x X-coordinate.
+		* @param y Y-coordinate.
+		* @param radius Radius of the arc.
+		* @param angle1 The angle at which the arc begins.
+		* @param angle2 The angle at which the arc terminates.
+		* @param points Number of points to use to draw the arc.
+		**/
+		void arc(DrawMode mode, float x, float y, float radius, float angle1, float angle2, int points = 10);
+
+		/**
 		* Draws a polygon with an arbitrary number of vertices.
 		* @param type The type of drawing (line/filled).
-		* @param ... Vertex components (x1, y1, x2, y2, etc).
+		* @param coords Vertex components (x1, y1, x2, y2, etc.)
+		* @param count Coord array size
 		**/
-		int polygon(lua_State * L);
+		void polygon(DrawMode mode, const float* coords, size_t count);
 
 		/**
 		* Creates a screenshot of the view and saves it to the default folder.
-		* @param file The file to write the screenshot to.
+		* @param image The love.image module.
 		**/
 		love::image::ImageData * newScreenshot(love::image::Image * image);
 
@@ -508,20 +523,11 @@ namespace opengl
 		void rotate(float r);
 		void scale(float x, float y = 1.0f);
 		void translate(float x, float y);
+		void shear(float kx, float ky);
 
 		void drawTest(Image * image, float x, float y, float a, float sx, float sy, float ox, float oy);
 
 		bool hasFocus();
-		
-		/**
-		 * save current status settings
-		 **/
-		void saveSettings(void);
-		
-		/**
-		 * restore last status settings
-		 **/
-		void restoreSettings(void);
 
 	}; // Graphics
 

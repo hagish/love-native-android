@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2006-2011 LOVE Development Team
+* Copyright (c) 2006-2012 LOVE Development Team
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -38,6 +38,8 @@ namespace audio
 	int w_Source_getPitch(lua_State * L);
 	int w_Source_setVolume(lua_State * L);
 	int w_Source_getVolume(lua_State * L);
+	int w_Source_seek(lua_State * L);
+	int w_Source_tell(lua_State * L);
 	int w_Source_setPosition(lua_State * L);
 	int w_Source_getPosition(lua_State * L);
 	int w_Source_setVelocity(lua_State * L);
@@ -49,7 +51,13 @@ namespace audio
 	int w_Source_isStopped(lua_State * L);
 	int w_Source_isPaused(lua_State * L);
 	int w_Source_isStatic(lua_State * L);
-	int luaopen_source(lua_State * L);
+	int w_Source_setVolumeLimits(lua_State * L);
+	int w_Source_getVolumeLimits(lua_State * L);
+	int w_Source_setDistance(lua_State * L);
+	int w_Source_getDistance(lua_State * L);
+	int w_Source_setRolloff(lua_State * L);
+	int w_Source_getRolloff(lua_State * L);
+	extern "C" int luaopen_source(lua_State * L);
 
 } // audio
 } // love

@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2006-2011 LOVE Development Team
+* Copyright (c) 2006-2012 LOVE Development Team
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -36,57 +36,57 @@ namespace sdl
 
 	int w_getName(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
+		int index = luaL_checkint(L, 1)-1;
 		lua_pushstring(L, instance->getName(index));
 		return 1;
 	}
 
 	int w_open(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
+		int index = luaL_checkint(L, 1)-1;
 		luax_pushboolean(L, instance->open(index));
 		return 1;
 	}
 
 	int w_isOpen(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
+		int index = luaL_checkint(L, 1)-1;
 		luax_pushboolean(L, instance->isOpen(index));
 		return 1;
 	}
 
 	int w_getNumAxes(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
+		int index = luaL_checkint(L, 1)-1;
 		lua_pushinteger(L, instance->getNumAxes(index));
 		return 1;
 	}
 
 	int w_getNumBalls(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
+		int index = luaL_checkint(L, 1)-1;
 		lua_pushinteger(L, instance->getNumBalls(index));
 		return 1;
 	}
 
 	int w_getNumButtons(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
+		int index = luaL_checkint(L, 1)-1;
 		lua_pushinteger(L, instance->getNumButtons(index));
 		return 1;
 	}
 
 	int w_getNumHats(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
+		int index = luaL_checkint(L, 1)-1;
 		lua_pushinteger(L, instance->getNumHats(index));
 		return 1;
 	}
 
 	int w_getAxis(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
-		int axis = luaL_checkint(L, 2);
+		int index = luaL_checkint(L, 1)-1;
+		int axis = luaL_checkint(L, 2)-1;
 		lua_pushnumber(L, instance->getAxis(index, axis));
 		return 1;
 	}
@@ -103,17 +103,17 @@ namespace sdl
 
 	int w_isDown(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
+		int index = luaL_checkint(L, 1)-1;
 		unsigned int num = lua_gettop(L);
 		int * buttonlist = new int[num];
 		unsigned int counter = 0;
-		
+
 		for (unsigned int i = 1; i < num; i++)
 		{
-			buttonlist[counter++] = (int) luaL_checknumber(L, i+1);
+			buttonlist[counter++] = (int) luaL_checknumber(L, i+1)-1;
 		}
 		buttonlist[counter] = -1;
-		
+
 		luax_pushboolean(L, instance->isDown(index, buttonlist));
 		delete[] buttonlist;
 		return 1;
@@ -121,8 +121,8 @@ namespace sdl
 
 	int w_getHat(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
-		int hat = luaL_checkint(L, 2);
+		int index = luaL_checkint(L, 1)-1;
+		int hat = luaL_checkint(L, 2)-1;
 
 		Joystick::Hat h = instance->getHat(index, hat);
 
@@ -135,7 +135,7 @@ namespace sdl
 
 	int w_close(lua_State * L)
 	{
-		int index = luaL_checkint(L, 1);
+		int index = luaL_checkint(L, 1)-1;
 		instance->close(index);
 		return 0;
 	}
@@ -161,15 +161,15 @@ namespace sdl
 		{ 0, 0 }
 	};
 
-	int luaopen_love_joystick(lua_State * L)
+	extern "C" int luaopen_love_joystick(lua_State * L)
 	{
-		if(instance == 0)
+		if (instance == 0)
 		{
 			try
 			{
 				instance = new Joystick();
 			}
-			catch(Exception & e)
+			catch (Exception & e)
 			{
 				return luaL_error(L, e.what());
 			}

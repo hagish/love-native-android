@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2006-2011 LOVE Development Team
+* Copyright (c) 2006-2012 LOVE Development Team
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -40,6 +40,13 @@ namespace audio
 			TYPE_MAX_ENUM
 		}; // Type
 
+		enum Unit
+		{
+			UNIT_SECONDS = 1,
+			UNIT_SAMPLES,
+			UNIT_MAX_ENUM
+		};
+
 	protected:
 		Type type;
 	public:
@@ -57,13 +64,16 @@ namespace audio
 		virtual bool isStopped() const = 0;
 		virtual bool isPaused() const = 0;
 		virtual bool isFinished() const = 0;
-		virtual void update() = 0;
+		virtual bool update() = 0;
 
 		virtual void setPitch(float pitch) = 0;
 		virtual float getPitch() const = 0;
 
 		virtual void setVolume(float volume) = 0;
 		virtual float getVolume() const = 0;
+
+		virtual void seek(float offset, Unit unit) = 0;
+		virtual float tell(Unit unit) = 0;
 
 		// all float * v must be of size 3
 		virtual void setPosition(float * v) = 0;
@@ -76,14 +86,30 @@ namespace audio
 		virtual void setLooping(bool looping) = 0;
 		virtual bool isLooping() const = 0;
 		virtual bool isStatic() const = 0;
+		
+		virtual void setMinVolume(float volume) = 0;
+		virtual float getMinVolume() const = 0;
+		virtual void setMaxVolume(float volume) = 0;
+		virtual float getMaxVolume() const = 0;
+
+		virtual void setReferenceDistance(float distance) = 0;
+		virtual float getReferenceDistance() const = 0;
+		virtual void setRolloffFactor(float factor) = 0;
+		virtual float getRolloffFactor() const = 0;
+		virtual void setMaxDistance(float distance) = 0;
+		virtual float getMaxDistance() const = 0;
 
 		static bool getConstant(const char * in, Type & out);
 		static bool getConstant(Type in, const char *& out);
+		static bool getConstant(const char * in, Unit & out);
+		static bool getConstant(Unit in, const char *& out);
 
 	private:
 
 		static StringMap<Type, TYPE_MAX_ENUM>::Entry typeEntries[];
 		static StringMap<Type, TYPE_MAX_ENUM> types;
+		static StringMap<Unit, UNIT_MAX_ENUM>::Entry unitEntries[];
+		static StringMap<Unit, UNIT_MAX_ENUM> units;
 
 	}; // Source
 

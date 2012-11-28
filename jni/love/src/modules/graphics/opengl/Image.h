@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2006-2011 LOVE Development Team
+* Copyright (c) 2006-2012 LOVE Development Team
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -27,13 +27,11 @@
 #include <common/config.h>
 #include <image/ImageData.h>
 #include <graphics/Image.h>
-#include "Quad.h"
+
+#include "OpenGL.h"
 
 // OpenGL
-// #include "GLee.h"
-//#include <SDL/SDL_opengl.h>
-#include <GLES/gl.h>
-#include <GLES/glext.h>
+#include "GLee.h"
 
 namespace love
 {
@@ -41,7 +39,6 @@ namespace graphics
 {
 namespace opengl
 {
-
 	/**
 	* A drawable image based on OpenGL-textures. This class takes ImageData
 	* objects and create textures on the GPU for fast drawing.
@@ -70,6 +67,9 @@ namespace opengl
 			Image::Filter filter;
 			Image::Wrap wrap;
 		} settings;
+
+		bool loadVolatilePOT();
+		bool loadVolatileNPOT();
 
 	public:
 
@@ -110,22 +110,19 @@ namespace opengl
 		/**
 		* @copydoc Drawable::draw()
 		**/
-		void draw(float x, float y, float angle, float sx, float sy, float ox, float oy) const;
+		void draw(float x, float y, float angle, float sx, float sy, float ox, float oy, float kx, float ky) const;
 
 		/**
-		* This function draws a section of the image using a Quad object.
-		*
-		* @copydetails Image::draws()
-		* @param frame Represents the region of the Image to draw.
+		* @copydoc DrawQable::drawq()
 		**/
-		void drawq(Quad * quad, float x, float y, float angle, float sx, float sy, float ox, float oy) const;
+		void drawq(love::graphics::Quad * quad, float x, float y, float angle, float sx, float sy, float ox, float oy, float kx, float ky) const;
 
 		/**
 		* Sets the filter mode.
 		*
 		* @param mode The filter mode.
 		**/
-		void setFilter(Image::Filter f);
+		void setFilter(const Image::Filter& f);
 
 		Image::Filter getFilter() const;
 
@@ -142,9 +139,14 @@ namespace opengl
 		bool loadVolatile();
 		void unloadVolatile();
 
+		static bool hasNpot();
+
 	private:
 
 		void drawv(const Matrix & t, const vertex * v) const;
+
+		friend class PixelEffect;
+		GLuint getTextureName() const { return texture; }
 
 	}; // Image
 

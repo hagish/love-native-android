@@ -1,14 +1,14 @@
 /**
-* Copyright (c) 2006-2011 LOVE Development Team
-* 
+* Copyright (c) 2006-2012 LOVE Development Team
+*
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
 * arising from the use of this software.
-* 
+*
 * Permission is granted to anyone to use this software for any purpose,
 * including commercial applications, and to alter it and redistribute it
 * freely, subject to the following restrictions:
-* 
+*
 * 1. The origin of this software must not be misrepresented; you must not
 *    claim that you wrote the original software. If you use this software
 *    in a product, an acknowledgment in the product documentation would be
@@ -36,13 +36,13 @@ namespace freetype
 	{
 		data->retain();
 
-		if(FT_New_Memory_Face(	library,
+		if (FT_New_Memory_Face(	library,
 								(const FT_Byte *)data->getData(),	/* first byte in memory */
 								data->getSize(),					/* size in bytes        */
 								0,									/* face_index           */
 								&face))
 			throw love::Exception("TrueTypeFont Loading error: FT_New_Face failed (there is probably a problem with your font file)\n");
-		
+
 		FT_Set_Pixel_Sizes(face, size, size);
 
 		// Set global metrics
@@ -70,10 +70,10 @@ namespace freetype
 		FT_Glyph ftglyph;
 
 		// Initialize
-		if(FT_Load_Glyph(face, FT_Get_Char_Index(face, glyph), FT_LOAD_DEFAULT))
+		if (FT_Load_Glyph(face, FT_Get_Char_Index(face, glyph), FT_LOAD_DEFAULT))
 			throw love::Exception("TrueTypeFont Loading vm->error: FT_Load_Glyph failed\n");
-		
-		if( FT_Get_Glyph(face->glyph, &ftglyph) )
+
+		if ( FT_Get_Glyph(face->glyph, &ftglyph) )
 			throw love::Exception("TrueTypeFont Loading vm->error: FT_Get_Glyph failed\n");
 
 		FT_Glyph_To_Bitmap(&ftglyph, FT_RENDER_MODE_NORMAL, 0, 1);
@@ -87,33 +87,28 @@ namespace freetype
 		glyphMetrics.width = bitmap.width;
 		glyphMetrics.advance = face->glyph->metrics.horiAdvance >> 6;
 
-		GlyphData * glyphData = new GlyphData(glyph, glyphMetrics, GlyphData::FORMAT_RGBA);
+		GlyphData * glyphData = new GlyphData(glyph, glyphMetrics, GlyphData::FORMAT_LUMINANCE_ALPHA);
 
 		{
 			int size = bitmap.rows*bitmap.width;
 			unsigned char * dst = (unsigned char *)glyphData->getData();
 
-			// Note that bitmap.buffer contains only luminosity. We copy that single value to 
-			// our luminosity-alpha format. 
-			for(int i = 0; i<size; i++)
+			// Note that bitmap.buffer contains only luminosity. We copy that single value to
+			// our luminosity-alpha format.
+			for (int i = 0; i<size; i++)
 			{
-				dst[4*i+0] = bitmap.buffer[i];
-				dst[4*i+1] = bitmap.buffer[i];
-				dst[4*i+2] = bitmap.buffer[i];
-				dst[4*i+3] = bitmap.buffer[i];
+				dst[2*i] = 255;
+				dst[2*i+1] = bitmap.buffer[i];
 			}
 		}
-		
+
 		// Having copied the data over, we can destroy the glyph
 		FT_Done_Glyph(ftglyph);
-		
-		// Pad the GlyphData for graphics cards that don't support npo2 textures
-		glyphData->pad();
 
 		// Return data
 		return glyphData;
 	}
-	
+
 	int TrueTypeRasterizer::getNumGlyphs() const
 	{
 		return 256;

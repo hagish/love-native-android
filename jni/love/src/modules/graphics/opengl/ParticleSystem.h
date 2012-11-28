@@ -1,14 +1,14 @@
 /**
-* Copyright (c) 2006-2011 LOVE Development Team
-* 
+* Copyright (c) 2006-2012 LOVE Development Team
+*
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
 * arising from the use of this software.
-* 
+*
 * Permission is granted to anyone to use this software for any purpose,
 * including commercial applications, and to alter it and redistribute it
 * freely, subject to the following restrictions:
-* 
+*
 * 1. The origin of this software must not be misrepresented; you must not
 *    claim that you wrote the original software. If you use this software
 *    in a product, an acknowledgment in the product documentation would be
@@ -26,7 +26,9 @@
 #include <common/math.h>
 #include <common/Vector.h>
 #include <graphics/Drawable.h>
+#include <graphics/Color.h>
 #include "Image.h"
+#include <vector>
 
 namespace love
 {
@@ -44,20 +46,23 @@ namespace opengl
 		float position[2];
 		float direction;
 
+		// Particles gravitate towards this point.
+		love::Vector origin;
+
 		love::Vector speed;
 		float gravity;
 		float radialAcceleration;
 		float tangentialAcceleration;
 
 		float size;
-		float sizeStart;
-		float sizeEnd;
+		float sizeOffset;
+		float sizeIntervalSize;
 
 		float rotation;
 		float spinStart;
 		float spinEnd;
 
-		float color[4];
+		Colorf color;
 	};
 
 	/**
@@ -127,8 +132,7 @@ namespace opengl
 		float tangentialAccelerationMax;
 
 		// Size.
-		float sizeStart;
-		float sizeEnd;
+		std::vector<float> sizes;
 		float sizeVariation;
 
 		// Rotation
@@ -139,14 +143,13 @@ namespace opengl
 		float spinStart;
 		float spinEnd;
 		float spinVariation;
-		
+
 		// Offsets
 		float offsetX;
 		float offsetY;
 
 		// Color.
-		unsigned char colorStart[4];
-		unsigned char colorEnd[4];
+		std::vector<Colorf> colors;
 
 		void add();
 		void remove(particle * p);
@@ -279,19 +282,11 @@ namespace opengl
 		void setSize(float size);
 
 		/**
-		* Sets the size of the sprite upon creation and upon death (1.0 being the default size).
-		* @param start The size of the sprite upon creation
-		* @param end The size of the sprite upon death.
-		**/
-		void setSize(float start, float end);
-
-		/**
 		* Sets the size of the sprite upon creation and upon death (1.0 being the default size) and any variation.
-		* @param start The size of the sprite upon creation
-		* @param end The size of the sprite upon death.
+		* @param newSizes Array of sizes
 		* @param variation The amount of variation on the starting size (0 being no variation and 1.0 a random size between start and end).
 		**/
-		void setSize(float start, float end, float variation);
+		void setSize(const std::vector<float>& newSizes, float variation = 0.0f);
 
 		/**
 		* Sets the amount of variation to the sprite's beginning size (0 being no variation and 1.0 a random size between start and end).
@@ -343,21 +338,20 @@ namespace opengl
 		* Sets the color of the particles.
 		* @param color The color.
 		**/
-		void setColor(unsigned char * color);
-		
+		void setColor(const Color& color);
+
 		/**
 		* Sets the particles' offsets for rotation.
 		* @param x The x offset.
 		* @param y The y offset.
 		**/
 		void setOffset(float x, float y);
-		
+
 		/**
 		* Sets the color of the particles.
-		* @param start The color of the particle when created.
-		* @param end The color of the particle upon death.
+		* @param newColors Array of colors
 		**/
-		void setColor(unsigned char * start, unsigned char * end);
+		void setColor(const std::vector<Color>& newColors);
 
 		/**
 		* Returns the x-coordinate of the emitter's position.
@@ -370,6 +364,11 @@ namespace opengl
 		float getY() const;
 
 		/**
+		* Returns the position of the emitter.
+		**/
+		const love::Vector& getPosition() const;
+
+		/**
 		* Returns the direction of the emitter (in degrees).
 		**/
 		float getDirection() const;
@@ -378,17 +377,17 @@ namespace opengl
 		* Returns the directional spread of the emitter (in degrees).
 		**/
 		float getSpread() const;
-		
+
 		/**
 		* Returns the X offset of the particles.
 		**/
 		float getOffsetX() const;
-		
+
 		/**
 		* Returns the Y offset of the particles.
 		**/
 		float getOffsetY() const;
-		
+
 		/**
 		* Returns the amount of particles that are currently active in the system.
 		**/
@@ -434,7 +433,7 @@ namespace opengl
 		* @param x The x-coordinate.
 		* @param y The y-coordinate.
 		**/
-		virtual void draw(float x, float y, float angle, float sx, float sy, float ox, float oy) const;
+		virtual void draw(float x, float y, float angle, float sx, float sy, float ox, float oy, float kx, float ky) const;
 
 		/**
 		* Updates the particle system.

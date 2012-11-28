@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2006-2011 LOVE Development Team
+* Copyright (c) 2006-2012 LOVE Development Team
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -22,9 +22,9 @@
 
 #include <common/math.h>
 
+#include "GLee.h"
 #include <cmath>
 #include <cstdlib>
-#include <cstring>
 
 namespace love
 {
@@ -32,6 +32,13 @@ namespace graphics
 {
 namespace opengl
 {
+
+	namespace
+	{
+		Colorf colorToFloat(const Color& c) {
+			return Colorf( (GLfloat)c.r/255.0f, (GLfloat)c.g/255.0f, (GLfloat)c.b/255.0f, (GLfloat)c.a/255.0f );
+		}
+	}
 
 	float calculate_variation(float inner, float outer, float var)
 	{
@@ -47,35 +54,35 @@ namespace opengl
 															direction(0), spread(0), relative(false), speedMin(0), speedMax(0), gravityMin(0),
 															gravityMax(0), radialAccelerationMin(0), radialAccelerationMax(0),
 															tangentialAccelerationMin(0), tangentialAccelerationMax(0),
-															sizeStart(1), sizeEnd(1), sizeVariation(0), rotationMin(0), rotationMax(0),
+															sizeVariation(0), rotationMin(0), rotationMax(0),
 															spinStart(0), spinEnd(0), spinVariation(0), offsetX(sprite->getWidth()*0.5f),
 															offsetY(sprite->getHeight()*0.5f)
 	{
 		this->sprite = sprite;
 		sprite->retain();
-		memset(colorStart, 255, 4);
-		memset(colorEnd, 255, 4);
+		sizes.push_back(1.0f);
+		colors.push_back( Colorf(1.0f, 1.0f, 1.0f, 1.0f) );
 		setBufferSize(buffer);
 	}
 
 	ParticleSystem::~ParticleSystem()
 	{
-		if(this->sprite != 0)
+		if (this->sprite != 0)
 			this->sprite->release();
 
-		if(pStart != 0)
+		if (pStart != 0)
 			delete [] pStart;
 	}
 
 	void ParticleSystem::add()
 	{
-		if(isFull()) return;
+		if (isFull()) return;
 
 		float min,max;
 
 		min = particleLifeMin;
 		max = particleLifeMax;
-		if(min == max)
+		if (min == max)
 			pLast->life = min;
 		else
 			pLast->life = (rand() / (float(RAND_MAX)+1)) * (max - min) + min;
@@ -87,6 +94,8 @@ namespace opengl
 		min = direction - spread/2.0f;
 		max = direction + spread/2.0f;
 		pLast->direction = (rand() / (float(RAND_MAX)+1)) * (max - min) + min;
+
+		pLast->origin = position;
 
 		min = speedMin;
 		max = speedMax;
@@ -106,9 +115,9 @@ namespace opengl
 		max = tangentialAccelerationMax;
 		pLast->tangentialAcceleration = (rand() / (float(RAND_MAX)+1)) * (max - min) + min;
 
-		pLast->sizeStart = calculate_variation(sizeStart, sizeEnd, sizeVariation);
-		pLast->sizeEnd = calculate_variation(sizeEnd, sizeStart, sizeVariation);
-		pLast->size = pLast->sizeStart;
+		pLast->sizeOffset       = (rand() / (float(RAND_MAX)+1)) * sizeVariation; // time offset for size change
+		pLast->sizeIntervalSize = (1.0f - (rand() / (float(RAND_MAX)+1)) * sizeVariation) - pLast->sizeOffset;
+		pLast->size = sizes[(size_t)(pLast->sizeOffset - .5f) * (sizes.size() - 1)];
 
 		min = rotationMin;
 		max = rotationMax;
@@ -116,17 +125,14 @@ namespace opengl
 		pLast->spinEnd = calculate_variation(spinEnd, spinStart, spinVariation);
 		pLast->rotation = (rand() / (float(RAND_MAX)+1)) * (max - min) + min;;
 
-		pLast->color[0] = (float)colorStart[0] / 255;
-		pLast->color[1] = (float)colorStart[1] / 255;
-		pLast->color[2] = (float)colorStart[2] / 255;
-		pLast->color[3] = (float)colorStart[3] / 255;
+		pLast->color = colors[0];
 
 		pLast++;
 	}
 
 	void ParticleSystem::remove(particle * p)
 	{
-		if(!isEmpty())
+		if (!isEmpty())
 		{
 			*p = *(--pLast);
 		}
@@ -134,7 +140,7 @@ namespace opengl
 
 	void ParticleSystem::setSprite(Image * image)
 	{
-		if(sprite != 0)
+		if (sprite != 0)
 			sprite->release();
 
 		sprite = image;
@@ -164,7 +170,7 @@ namespace opengl
 	void ParticleSystem::setParticleLife(float min, float max)
 	{
 		particleLifeMin = min;
-		if(max == 0)
+		if (max == 0)
 			particleLifeMax = min;
 		else
 			particleLifeMax = max;
@@ -236,20 +242,13 @@ namespace opengl
 
 	void ParticleSystem::setSize(float size)
 	{
-		sizeStart = size;
-		sizeEnd = size;
+		sizes.resize(1);
+		sizes[0] = size;
 	}
 
-	void ParticleSystem::setSize(float start, float end)
+	void ParticleSystem::setSize(const std::vector<float>& newSizes, float variation)
 	{
-		sizeStart = start;
-		sizeEnd = end;
-	}
-
-	void ParticleSystem::setSize(float start, float end, float variation)
-	{
-		sizeStart = start;
-		sizeEnd = end;
+		sizes = newSizes;
 		sizeVariation = variation;
 	}
 
@@ -293,16 +292,17 @@ namespace opengl
 		spinVariation = variation;
 	}
 
-	void ParticleSystem::setColor(unsigned char * color)
+	void ParticleSystem::setColor(const Color& color)
 	{
-		memcpy(colorStart, color, 4);
-		memcpy(colorEnd, color, 4);
+		colors.resize(1);
+		colors[0] = colorToFloat(color);
 	}
 
-	void ParticleSystem::setColor(unsigned char * start, unsigned char * end)
+	void ParticleSystem::setColor(const std::vector<Color>& newColors)
 	{
-		memcpy(colorStart, start, 4);
-		memcpy(colorEnd, end, 4);
+		colors.resize( newColors.size() );
+		for (size_t i = 0; i < newColors.size(); ++i)
+			colors[i] = colorToFloat( newColors[i] );
 	}
 
 	void ParticleSystem::setOffset(float x, float y)
@@ -319,6 +319,11 @@ namespace opengl
 	float ParticleSystem::getY() const
 	{
 		return position.getY();
+	}
+	
+	const love::Vector& ParticleSystem::getPosition() const
+	{
+		return position;
 	}
 
 	float ParticleSystem::getDirection() const
@@ -385,35 +390,30 @@ namespace opengl
 		return pLast == pEnd;
 	}
 
-	void ParticleSystem::draw(float x, float y, float angle, float sx, float sy, float ox, float oy) const
+	void ParticleSystem::draw(float x, float y, float angle, float sx, float sy, float ox, float oy, float kx, float ky) const
 	{
-		if(sprite == 0) return; // just in case of failure
+		if (sprite == 0) return; // just in case of failure
 
 		glPushMatrix();
-//		glPushAttrib(GL_CURRENT_BIT);
+		glPushAttrib(GL_CURRENT_BIT);
 
-		glTranslatef(x, y, 0);
-		glRotatef(LOVE_TODEG(angle), 0, 0, 1.0f);
-		glScalef(sx, sy, 1.0f);
-		glTranslatef( ox, oy, 0);
+		Matrix t;
+		t.setTransformation(x, y, angle, sx, sy, ox, oy, kx, ky);
+		glMultMatrixf((const GLfloat*)t.getElements());
 
 		particle * p = pStart;
-		while(p != pLast)
+		while (p != pLast)
 		{
 			glPushMatrix();
 
-			glColor4f(p->color[0],p->color[1],p->color[2],p->color[3]);
-			glTranslatef(p->position[0],p->position[1],0.0f);
-			glRotatef(LOVE_TODEG(p->rotation), 0.0f, 0.0f, 1.0f); // rad * (180 / pi)
-			glScalef(p->size,p->size,1.0f);
-			glTranslatef(-offsetX,-offsetY,0.0f);
-			sprite->draw(0,0, 0, 1, 1, 0, 0);
+			glColor4f(p->color.r, p->color.g, p->color.b, p->color.a);
+			sprite->draw(p->position[0], p->position[1], p->rotation, p->size, p->size, offsetX, offsetY, 0.0f, 0.0f);
 
 			glPopMatrix();
 			p++;
 		}
 
-//		glPopAttrib();
+		glPopAttrib();
 		glPopMatrix();
 	}
 
@@ -423,30 +423,30 @@ namespace opengl
 		particle * p = pStart;
 
 		// Make some more particles.
-		if(active)
+		if (active)
 		{
 			float rate = 1.0f / emissionRate; // the amount of time between each particle emit
 			emitCounter += dt;
-			while(emitCounter > rate)
+			while (emitCounter > rate)
 			{
 				add();
 				emitCounter -= rate;
 			}
 			/*int particles = (int)(emissionRate * dt);
-			for(int i = 0; i != particles; i++)
+			for (int i = 0; i != particles; i++)
 				add();*/
 
 			life -= dt;
-			if(lifetime != -1 && life < 0)
+			if (lifetime != -1 && life < 0)
 				stop();
 		}
 
-		while(p != pLast)
+		while (p != pLast)
 		{
 			// Decrease lifespan.
 			p->life -= dt;
 
-			if(p->life > 0)
+			if (p->life > 0)
 			{
 
 				// Temp variables.
@@ -454,7 +454,7 @@ namespace opengl
 				love::Vector ppos(p->position[0], p->position[1]);
 
 				// Get vector from particle center to particle.
-				radial = ppos - position;
+				radial = ppos - p->origin;
 				radial.normalize();
 				tangential = radial;
 
@@ -480,19 +480,32 @@ namespace opengl
 				p->position[0] = ppos.getX();
 				p->position[1] = ppos.getY();
 
-				const float t = p->life / p->lifetime;
-
-				// Change size.
-				p->size = p->sizeEnd - ((p->sizeEnd - p->sizeStart) * t);
+				const float t = 1.0f - p->life / p->lifetime;
 
 				// Rotate.
-				p->rotation += (p->spinStart*(1-t) + p->spinEnd*t)*dt;
+				p->rotation += (p->spinStart * (1.0f - t) + p->spinEnd * t)*dt;
 
-				// Update color.
-				p->color[0] = (float)(colorEnd[0]*(1.0f-t) + colorStart[0] * t)/255.0f;
-				p->color[1] = (float)(colorEnd[1]*(1.0f-t) + colorStart[1] * t)/255.0f;
-				p->color[2] = (float)(colorEnd[2]*(1.0f-t) + colorStart[2] * t)/255.0f;
-				p->color[3] = (float)(colorEnd[3]*(1.0f-t) + colorStart[3] * t)/255.0f;
+				// Change size according to given intervals:
+				// i = 0       1       2      3          n-1
+				//     |-------|-------|------|--- ... ---|
+				// t = 0    1/(n-1)        3/(n-1)        1
+				//
+				// `s' is the interpolation variable scaled to the current
+				// interval width, e.g. if n = 5 and t = 0.3, then the current
+				// indices are 1,2 and s = 0.3 - 0.25 = 0.05
+				float s = p->sizeOffset + t * p->sizeIntervalSize; // size variation
+				s *= (float)(sizes.size() - 1); // 0 <= s < sizes.size()
+				size_t i = (size_t)s;
+				size_t k = (i == sizes.size() - 1) ? i : i + 1; // boundary check (prevents failing on t = 1.0f)
+				s -= (float)i; // transpose s to be in interval [0:1]: i <= s < i + 1 ~> 0 <= s < 1
+				p->size = sizes[i] * (1.0f - s) + sizes[k] * s;
+
+				// Update color according to given intervals (as above)
+				s = t * (float)(colors.size() - 1);
+				i = (size_t)s;
+				k = (i == colors.size() - 1) ? i : i + 1;
+				s -= (float)i;                            // 0 <= s <= 1
+				p->color = colors[i] * (1.0f - s) + colors[k] * s;
 
 				// Next particle.
 				p++;
@@ -501,7 +514,7 @@ namespace opengl
 			{
 				remove(p);
 
-				if(p >= pLast)
+				if (p >= pLast)
 					return;
 			} // else
 		} // while

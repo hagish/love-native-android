@@ -1,14 +1,14 @@
 /**
-* Copyright (c) 2006-2011 LOVE Development Team
-* 
+* Copyright (c) 2006-2012 LOVE Development Team
+*
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
 * arising from the use of this software.
-* 
+*
 * Permission is granted to anyone to use this software for any purpose,
 * including commercial applications, and to alter it and redistribute it
 * freely, subject to the following restrictions:
-* 
+*
 * 1. The origin of this software must not be misrepresented; you must not
 *    claim that you wrote the original software. If you use this software
 *    in a product, an acknowledgment in the product documentation would be
@@ -42,8 +42,12 @@ namespace lullaby
 		// fill with modplug defaults (modplug _memsets_, so we could get
 		// garbage settings when the struct is only partially initialized)
 		// This does not exist yet on Windows.
+
+		// Some settings not supported by some older versions
+#ifndef LOVE_OLD_MODPLUG
 		settings.mStereoSeparation = 128;
 		settings.mMaxMixChannels = 32;
+#endif
 		settings.mReverbDepth = 0;
 		settings.mReverbDelay = 0;
 		settings.mBassAmount = 0;
@@ -56,8 +60,8 @@ namespace lullaby
 
 		// Load the module.
 		plug = ModPlug_Load(data->getData(), data->getSize());
-		
-		if(plug == 0)
+
+		if (plug == 0)
 			throw love::Exception("Could not load file with ModPlug.");
 
 		// set master volume for delicate ears
@@ -66,7 +70,7 @@ namespace lullaby
 
 	ModPlugDecoder::~ModPlugDecoder()
 	{
-		if(plug != 0)
+		if (plug != 0)
 			ModPlug_Unload(plug);
 	}
 
@@ -80,9 +84,9 @@ namespace lullaby
 			"xm", ""
 		};
 
-		for(int i = 0; !(supported[i].empty()); i++)
+		for (int i = 0; !(supported[i].empty()); i++)
 		{
-			if(supported[i].compare(ext) == 0)
+			if (supported[i].compare(ext) == 0)
 				return true;
 		}
 
@@ -98,7 +102,7 @@ namespace lullaby
 	{
 		int r =  ModPlug_Read(plug, buffer, bufferSize);
 
-		if(r == 0)
+		if (r == 0)
 			eof = true;
 
 		return r;
