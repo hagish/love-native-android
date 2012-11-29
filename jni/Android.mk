@@ -888,7 +888,7 @@ LOCAL_SRC_FILES := love.cpp \
    	${LOVE_SRC_PATH}src/modules/timer/sdl/wrap_Timer.cpp \
 	${LOVE_SRC_PATH}src/modules/timer/sdl/Timer.cpp \
 	${LOVE_SRC_PATH}src/modules/thread/sdl/wrap_Thread.cpp \
-	${LOVE_SRC_PATH}src/modules/thread/sdl/Thread.cpp \
+	${LOVE_SRC_PATH}src/modules/thread/pthread/threads.cpp \
 	${LOVE_SRC_PATH}src/modules/filesystem/physfs/wrap_Filesystem.cpp \
 	${LOVE_SRC_PATH}src/modules/filesystem/physfs/wrap_FileData.cpp \
 	${LOVE_SRC_PATH}src/modules/filesystem/physfs/wrap_File.cpp \
