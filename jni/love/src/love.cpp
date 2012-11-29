@@ -37,13 +37,18 @@
 #ifdef LOVE_BUILD_EXE
 
 // SDL
-#include <SDL.h>
+// #include <SDL.h>
 
 // Libraries.
 #include "libraries/luasocket/luasocket.h"
 
 // Scripts
 #include "scripts/boot.lua.h"
+#include "scripts/android.lua.h"
+
+#include "loveLog.h"
+extern void sendAndroidDisableSensor(const char *str);
+extern void sendAndroidEnableSensor(const char *str);
 
 #endif // LOVE_BUILD_EXE
 
@@ -76,7 +81,7 @@ static const luaL_Reg modules[] = {
 	{ "love.font", luaopen_love_font },
 	{ "love.graphics", luaopen_love_graphics },
 	{ "love.image", luaopen_love_image },
-	{ "love.joystick", luaopen_love_joystick },
+// 	{ "love.joystick", luaopen_love_joystick },
 	{ "love.keyboard", luaopen_love_keyboard },
 	{ "love.mouse", luaopen_love_mouse },
 	{ "love.physics", luaopen_love_physics },
@@ -150,43 +155,6 @@ extern "C" LOVE_EXPORT int luaopen_love(lua_State * L)
 
 	return 1;
 }
-
-#ifdef LOVE_LEGENDARY_UTF8_ARGV_HACK
-
-void get_utf8_arguments(int & argc, char **& argv)
-{
-	LPWSTR cmd = GetCommandLineW();
-
-	if (!cmd)
-		return;
-
-	LPWSTR * argv_w = CommandLineToArgvW(cmd, &argc);
-
-	argv = new char*[argc];
-
-	for (int i = 0; i<argc; ++i)
-	{
-		// Size of wide char buffer (plus one for trailing '\0').
-		size_t wide_len = wcslen(argv_w[i])+1;
-
-		// Get size in UTF-8.
-		int utf8_size = WideCharToMultiByte(CP_UTF8, 0, argv_w[i], wide_len, argv[i], 0, 0, 0);
-
-		argv[i] = new char[utf8_size];
-
-		// Convert to UTF-8.
-		int ok = WideCharToMultiByte(CP_UTF8, 0, argv_w[i], wide_len, argv[i], utf8_size, 0, 0);
-
-		int len = strlen(argv[i]);
-
-		if (!ok)
-			printf("Warning: could not convert to UTF8.\n");
-	}
-
-	LocalFree(argv_w);
-}
-
-#endif // LOVE_LEGENDARY_UTF8_ARGV_HACK
 
 #ifdef LOVE_LEGENDARY_CONSOLE_IO_HACK
 
@@ -284,18 +252,118 @@ _GLIBCXX_END_NAMESPACE
 
 #endif // LOVE_LEGENDARY_LIBSTDCXX_HACK
 
+#include <sstream>
+
+template<class T> std::string toString(T t)
+	std::string s;
+	std::stringstream out;
+	out << t;
+	s = out.str();
+	return s;
+}
+
+
+static int android_print (lua_State *L)
+{
+	std::string s("lua print: ");
+
+	int n = lua_gettop(L);
+
+	for (int i = 1; i <= n; i++)
+	{
+		if (i > 1)
+		{
+			s.append(", ");
+		}
+
+		if (lua_isstring(L, i))
+		{
+			s.append(luaL_checkstring(L, i));
+		}
+		else if (lua_isnumber(L, i))
+		{
+			s.append(toString(luaL_checknumber(L, i)));
+		}
+		else if (lua_isnil(L, i))
+		{
+			s.append("NIL");
+		}
+		else if (lua_istable(L, i))
+		{
+			s.append("{...}");
+		}
+		else if (lua_isboolean(L, i))
+		{
+			s.append(toString(lua_toboolean(L, i) ? "true" : "false"));
+		}
+		else
+		{
+			s.append("?");
+		}
+	}
+
+	LOGI(s.c_str());
+
+	return 0;
+}
+
+static int android_sensor_enable (lua_State *L)
+{
+	int n = lua_gettop(L);
+	if(n < 1)
+	{
+		LOGE("Don't u wanna say which sensor?");
+		return 1;
+	}
+ 
+	// just ignore if it is not a string
+	if(lua_isstring(L, 1))
+	{
+		const char *str = luaL_checkstring(L, 1);
+		sendAndroidEnableSensor(str);
+	}
+	return 0;
+}
+
+static int android_sensor_disable (lua_State *L)
+{
+	int n = lua_gettop(L);
+	if(n < 1)
+	{
+		LOGE("Don't u wanna say which sensor?");
+		return 1;
+	}
+
+	// just ignore if it is not a string
+	if(lua_isstring(L, 1))
+	{
+		const char *str = luaL_checkstring(L, 1);
+		sendAndroidDisableSensor(str);
+	}
+	return 0;
+}
+
+void android_prepare(lua_State * L)
+{
+	lua_pushcfunction(L, android_print);
+	lua_setglobal(L, "print");
+	
+	lua_pushcfunction(L, android_sensor_enable);
+	lua_setglobal(L, "love_sensor_enable");
+	
+	lua_pushcfunction(L, android_sensor_disable);
+	lua_setglobal(L, "love_sensor_disable");
+
+	if (luaL_loadbuffer(L, (const char *)love::android_lua, sizeof(love::android_lua), "android.lua") == 0)
+				lua_call(L, 0, 0);
+}
+
 #ifdef LOVE_BUILD_EXE
 
-int main(int argc, char ** argv)
-{
-#ifdef LOVE_LEGENDARY_UTF8_ARGV_HACK
-	int hack_argc = 0;
-	char ** hack_argv = 0;
-	get_utf8_arguments(hack_argc, hack_argv);
-	argc = hack_argc;
-	argv = hack_argv;
-#endif // LOVE_LEGENDARY_UTF8_ARGV_HACK
+lua_State * L = 0;
 
+int main_prepare(int argc, char ** argv)
+{
 	// Oh, you just want the version? Okay!
 	if (argc > 1 && strcmp(argv[1],"--version") == 0)
 	{
@@ -304,7 +372,7 @@ int main(int argc, char ** argv)
 	}
 
 	// Create the virtual machine.
-	lua_State * L = lua_open();
+	L = lua_open();
 	luaL_openlibs(L);
 
 	love::luax_preload(L, luaopen_love, "love");
@@ -344,20 +412,65 @@ int main(int argc, char ** argv)
 		lua_pop(L, 1);
 	}
 
+	// Setup android specific stuff
+	android_prepare(L);
+
 	// Boot
 	if (luaL_loadbuffer(L, (const char *)love::boot_lua, sizeof(love::boot_lua), "boot.lua") == 0)
-		lua_call(L, 0, 0);
+	{
+		int result = lua_pcall(L, 0, 0, 0);
+		if (result != 0)
+		{
+			LOGE(lua_tostring(L, -1));
+			lua_pop(L, 1);
+		}
+	}
+	
+	return 0;
+}
+
+lua_State *main_getLuaState()
+{
+	return L;
+}
+
+int main_step()
+{
+	if (L == 0)
+	  return 0;
+	
+	{
+		// call _love_update()
+		lua_getfield(L, LUA_GLOBALSINDEX, "_love_update");
+		int result = lua_pcall(L, 0, 0, 0);
+		if (result != 0)
+		{
+			LOGE(lua_tostring(L, -1));
+			lua_pop(L, 1);
+		}
+	}
+
+	{
+		// call _love_draw()
+		lua_getfield(L, LUA_GLOBALSINDEX, "_love_draw");
+		int result = lua_pcall(L, 0, 0, 0);
+		if (result != 0)
+		{
+			LOGE(lua_tostring(L, -1));
+			lua_pop(L, 1);
+		}
+	}
+
+	return 0;
+}
+
+int main_shutdown()
+{
+	if (L == 0)return 0;
 
 	lua_close(L);
+	L = 0;
 
-#ifdef LOVE_LEGENDARY_UTF8_ARGV_HACK
-	if (hack_argv)
-	{
-		for (int i = 0; i<hack_argc; ++i)
-			delete [] hack_argv[i];
-		delete [] hack_argv;
-	}
-#endif // LOVE_LEGENDARY_UTF8_ARGV_HACK
 	return 0;
 }
 

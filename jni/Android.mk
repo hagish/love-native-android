@@ -922,37 +922,37 @@ LOCAL_SRC_FILES := love.cpp \
 	${LOVE_SRC_PATH}src/modules/physics/box2d/wrap_Body.cpp \
 	${LOVE_SRC_PATH}src/modules/physics/box2d/graham/GrahamScanConvexHull.cpp \
 	${LOVE_SRC_PATH}src/modules/physics/box2d/World.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/b2WorldCallbacks.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/b2World.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/b2Island.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/b2ContactManager.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/b2Body.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Joints/b2RevoluteJoint.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Joints/b2PulleyJoint.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Joints/b2PrismaticJoint.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Joints/b2MouseJoint.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Joints/b2Joint.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Joints/b2GearJoint.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Joints/b2DistanceJoint.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Contacts/b2PolyContact.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Contacts/b2PolyAndCircleContact.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Contacts/b2ContactSolver.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Contacts/b2Contact.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Dynamics/Contacts/b2CircleContact.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Common/b2StackAllocator.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Common/b2Settings.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Common/b2Math.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Common/b2BlockAllocator.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Collision/b2TimeOfImpact.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Collision/b2PairManager.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Collision/b2Distance.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Collision/b2Collision.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Collision/b2CollidePoly.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Collision/b2CollideCircle.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Collision/b2BroadPhase.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Collision/Shapes/b2Shape.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Collision/Shapes/b2PolygonShape.cpp \
-	${LOVE_SRC_PATH}src/modules/physics/box2d/Source/Collision/Shapes/b2CircleShape.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/b2WorldCallbacks.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/b2World.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/b2Island.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/b2ContactManager.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/b2Body.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Joints/b2RevoluteJoint.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Joints/b2PulleyJoint.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Joints/b2PrismaticJoint.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Joints/b2MouseJoint.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Joints/b2Joint.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Joints/b2GearJoint.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Joints/b2DistanceJoint.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Contacts/b2PolyContact.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Contacts/b2PolyAndCircleContact.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Contacts/b2ContactSolver.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Contacts/b2Contact.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Dynamics/Contacts/b2CircleContact.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Common/b2StackAllocator.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Common/b2Settings.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Common/b2Math.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Common/b2BlockAllocator.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Collision/b2TimeOfImpact.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Collision/b2PairManager.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Collision/b2Distance.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Collision/b2Collision.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Collision/b2CollidePoly.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Collision/b2CollideCircle.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Collision/b2BroadPhase.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Collision/Shapes/b2Shape.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Collision/Shapes/b2PolygonShape.cpp \
+	${LOVE_SRC_PATH}src/libraries/Box2D/Collision/Shapes/b2CircleShape.cpp \
 	${LOVE_SRC_PATH}src/modules/physics/box2d/Shape.cpp \
 	${LOVE_SRC_PATH}src/modules/physics/box2d/RevoluteJoint.cpp \
 	${LOVE_SRC_PATH}src/modules/physics/box2d/PulleyJoint.cpp \
@@ -984,19 +984,22 @@ LOCAL_SRC_FILES := love.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_SpriteBatch.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Quad.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_ParticleSystem.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_PixelEffect.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Image.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Graphics.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Glyph.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Framebuffer.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Canvas.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Font.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/SpriteBatch.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/Quad.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/ParticleSystem.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengl/PixelEffect.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/Image.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/Graphics.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/Glyph.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/Framebuffer.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengl/Canvas.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengl/VertexBuffer.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/opengl/Font.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengl/OpenGL.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/Volatile.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/Image.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/Graphics.cpp \
@@ -1024,6 +1027,8 @@ LOCAL_SRC_FILES := love.cpp \
 	${LOVE_SRC_PATH}src/common/Reference.cpp \
 	${LOVE_SRC_PATH}src/common/Object.cpp \
 	${LOVE_SRC_PATH}src/common/MemoryData.cpp \
+	${LOVE_SRC_PATH}src/common/Memoizer.cpp \
+	${LOVE_SRC_PATH}src/common/Variant.cpp \
 	${LOVE_SRC_PATH}src/common/Matrix.cpp \
 	${LOVE_SRC_PATH}src/common/Exception.cpp
 #	${LOVE_SRC_PATH}src/modules/joystick/sdl/wrap_Joystick.cpp \
@@ -1034,7 +1039,7 @@ LOCAL_SRC_FILES := love.cpp \
 #	${JASPER_SRC_PATH}src/libjasper/jpg/jpg_dummy.c \
 
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := \
     libmpg123 \

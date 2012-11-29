@@ -46,6 +46,15 @@ namespace openal
 				}
 			}
 
+			// update device volume modifier
+			float dVolume = currentDeviceAudioVolume - requestedDeviceAudioVolume;
+			float absDVolume = (dVolume < 0 ? -dVolume : dVolume);
+			if (absDVolume > 0.001f)
+			{
+				currentDeviceAudioVolume = requestedDeviceAudioVolume;
+				instance->setVolume(instance->getVolume());
+			}
+
 			pool->update();
 			delay(5);
 		}
@@ -57,7 +66,8 @@ namespace openal
 		finish = true;
 	}
 
-
+	float requestedDeviceAudioVolume = 1;
+	float currentDeviceAudioVolume = 1;
 	Audio::Audio() : distanceModel(DISTANCE_INVERSE_CLAMPED)
 	{
 		// Passing zero for default device.
@@ -95,6 +105,12 @@ namespace openal
 			// We're not going to prevent LOVE from running without a microphone, but we should warn, at least
 			std::cerr << "Warning, couldn't open capture device! No audio input!" << std::endl;
 		}*/
+
+		// set initial listener volume
+		{
+			ALfloat volume;
+			alGetListenerf(AL_GAIN, &listenerVolume);
+		}
 
 		// pool must be allocated after AL context.
 		pool = new Pool();
@@ -190,14 +206,13 @@ namespace openal
 
 	void Audio::setVolume(float volume)
 	{
-		alListenerf(AL_GAIN, volume);
+		listenerVolume = volume;
+		alListenerf(AL_GAIN, listenerVolume * currentDeviceAudioVolume);
 	}
 
 	float Audio::getVolume() const
 	{
-		ALfloat volume;
-		alGetListenerf(AL_GAIN, &volume);
-		return volume;
+		return listenerVolume;;
 	}
 
 	void Audio::getPosition(float * v) const

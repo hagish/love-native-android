@@ -90,6 +90,9 @@ namespace openal
 		PoolThread* poolThread;
 
 		DistanceModel distanceModel;
+		
+		// this is without device output volume
+		float listenerVolume;
 
 	public:
 
