@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.LinkedList;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -36,8 +37,8 @@ public class LoveNative extends Activity implements SensorEventListener {
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mSensorList = new LinkedList<Sensor>();
 
-        String filePath = "/mnt/sdcard/love/iyfct";
-
+        String filePath = "";
+        
         Uri data = getIntent().getData();
         if (data != null) {
         	String path = data.getEncodedPath();
@@ -49,10 +50,13 @@ public class LoveNative extends Activity implements SensorEventListener {
         		RecentHelper.addRecent(this, path);
         	}
         }
+        
+        Log.i("liblove", "apk file/directory: " + getApplicationInfo().sourceDir);
+        Log.i("liblove", "game file/directory: " + filePath);
 
         //setContentView(R.layout.main);
         LoveJNI.setActivity(this);
-        mGLView = new LoveRenderView(this, filePath);
+        mGLView = new LoveRenderView(this, filePath, getApplicationInfo().sourceDir);
         setContentView(mGLView);
         //LoveJNI.step();
     }

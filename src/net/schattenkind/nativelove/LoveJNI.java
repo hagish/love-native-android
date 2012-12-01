@@ -44,6 +44,7 @@ public class LoveJNI {
      public static native boolean onTouchUp(int count, int eventId, int x[], int y[]);
      public static native boolean onTouchMove(int count, int eventId, int x[], int y[]);
      public static native void onSensorChanged(String name, String type, float values[]);
+     public static native void setPackageFile(String apkFile);
 
      /**
       * @param volume 0 (mute) - 1f (max)

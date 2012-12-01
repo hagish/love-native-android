@@ -9,14 +9,17 @@ import android.opengl.GLSurfaceView;
 class LoveRenderView extends GLSurfaceView
 {
 	private final String loveFile;
+	private final String apkPackageFile;
+	
 	private boolean loveCreated = false;
 	private boolean mSkipRendering = false;
 
-	public LoveRenderView(Context context, String filePath)
+	public LoveRenderView(Context context, String filePath, String apkFile)
     {
 	    super(context);
 
 	    loveFile = filePath;
+	    apkPackageFile = apkFile;
 
 	    setRenderer(new Renderer() {
 			@Override
@@ -53,6 +56,7 @@ class LoveRenderView extends GLSurfaceView
 				if (loveCreated == false)
 				{
 					System.out.println("java: init");
+					LoveJNI.setPackageFile(apkPackageFile);
 		            LoveJNI.init(width, height, loveFile);	     
 		            loveCreated = true;
 				}

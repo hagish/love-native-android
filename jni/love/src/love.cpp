@@ -62,6 +62,7 @@
 #include "scripts/boot.lua.h"
 #include "scripts/android.lua.h"
 
+// Android specific stuff
 #include "loveLog.h"
 extern void sendAndroidDisableSensor(const char *str);
 extern void sendAndroidEnableSensor(const char *str);

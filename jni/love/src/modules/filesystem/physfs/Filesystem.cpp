@@ -27,6 +27,11 @@
 
 #include "Filesystem.h"
 
+// android specific stuff
+extern std::string apkPackageFile;
+#include "loveLog.h"
+
+
 namespace love
 {
 namespace filesystem
@@ -98,6 +103,14 @@ namespace physfs
 		// Add the directory.
 		if(!PHYSFS_addToSearchPath(source, 1))
 			return false;
+
+		// android specific stuff
+		// Add the apk to the search paths that it is possible to start a game from
+		// the apk's assets folder
+		if(!PHYSFS_addToSearchPath(apkPackageFile.c_str(), 1))
+		{
+			LOGE("could not add apk to search paths, assets/ will not be available");
+		}
 
 		// Save the game source.
 		game_source = std::string(source);
