@@ -23,7 +23,11 @@
 // LOVE
 #include "wrap_Timer.h"
 
+#ifdef LOVE_ANDROID
+#include "android/Timer.h"
+#else
 #include "sdl/Timer.h"
+#endif
 
 namespace love
 {
@@ -85,8 +89,11 @@ namespace timer
 		{
 			try
 			{
+#ifdef LOVE_ANDROID
+				instance = new love::timer::android::Timer();
+#else
 				instance = new love::timer::sdl::Timer();
-
+#endif
 			}
 			catch (Exception & e)
 			{

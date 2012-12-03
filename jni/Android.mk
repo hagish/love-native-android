@@ -885,8 +885,8 @@ LOCAL_SRC_FILES := love.cpp \
 	${LOVE_SRC_PATH}src/modules/audio/null/Source.cpp \
 	${LOVE_SRC_PATH}src/modules/audio/null/Audio.cpp \
 	${LOVE_SRC_PATH}src/modules/audio/Source.cpp \
-   	${LOVE_SRC_PATH}src/modules/timer/sdl/wrap_Timer.cpp \
-	${LOVE_SRC_PATH}src/modules/timer/sdl/Timer.cpp \
+   	${LOVE_SRC_PATH}src/modules/timer/wrap_Timer.cpp \
+	${LOVE_SRC_PATH}src/modules/timer/android/Timer.cpp \
 	${LOVE_SRC_PATH}src/modules/thread/sdl/wrap_Thread.cpp \
 	${LOVE_SRC_PATH}src/modules/thread/pthread/threads.cpp \
 	${LOVE_SRC_PATH}src/modules/filesystem/physfs/wrap_Filesystem.cpp \

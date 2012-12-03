@@ -35,6 +35,9 @@
 #	define LOVE_MACOS 1
 #endif
 
+// we will need some awesome check for this...
+#define LOVE_ANDROID 1
+
 // Endianness.
 #if defined(__i386__) || defined(__i386)
 #	define LOVE_LITTLE_ENDIAN 1

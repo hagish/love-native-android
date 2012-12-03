@@ -81,8 +81,7 @@ namespace thread
 
 	void ThreadBase::kill()
 	{
-		// TODO: Unix thread kill....
-		SDL_KillThread(thread);
+		pthread_kill(thread, SIGTERM);
 		running = false;
 	}
 
