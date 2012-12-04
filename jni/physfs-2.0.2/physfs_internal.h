@@ -103,6 +103,7 @@ void __PHYSFS_smallFree(void *ptr);
  #define HOG_ARCHIVE_DESCRIPTION  "Descent I/II HOG file format"
  #define MVL_ARCHIVE_DESCRIPTION  "Descent II Movielib format"
  #define QPAK_ARCHIVE_DESCRIPTION "Quake I/II format"
+ #define APK_ARCHIVE_DESCRIPTION  "APK compatible"
  #define ZIP_ARCHIVE_DESCRIPTION  "PkZip/WinZip/Info-Zip compatible"
  #define WAD_ARCHIVE_DESCRIPTION  "DOOM engine format"
  #define LZMA_ARCHIVE_DESCRIPTION "LZMA (7zip) format"
@@ -202,6 +203,7 @@ void __PHYSFS_smallFree(void *ptr);
  #define HOG_ARCHIVE_DESCRIPTION  "Descent I/II HOG file format"
  #define MVL_ARCHIVE_DESCRIPTION  "Descent II Movielib format"
  #define QPAK_ARCHIVE_DESCRIPTION "Quake I/II format"
+ #define APK_ARCHIVE_DESCRIPTION  "APK kompatibel"
  #define ZIP_ARCHIVE_DESCRIPTION  "PkZip/WinZip/Info-Zip kompatibel"
  #define WAD_ARCHIVE_DESCRIPTION  "DOOM engine format" /* !!! FIXME: translate this line if needed */
  #define LZMA_ARCHIVE_DESCRIPTION "LZMA (7zip) format" /* !!! FIXME: translate this line if needed */
@@ -300,6 +302,7 @@ void __PHYSFS_smallFree(void *ptr);
  #define GRP_ARCHIVE_DESCRIPTION  "Формат группового файла Build engine"
  #define HOG_ARCHIVE_DESCRIPTION  "Descent I/II HOG file format"
  #define MVL_ARCHIVE_DESCRIPTION  "Descent II Movielib format"
+ #define APK_ARCHIVE_DESCRIPTION  "APK совместимый"
  #define ZIP_ARCHIVE_DESCRIPTION  "PkZip/WinZip/Info-Zip совместимый"
  #define WAD_ARCHIVE_DESCRIPTION  "DOOM engine format" /* !!! FIXME: translate this line if needed */
  #define LZMA_ARCHIVE_DESCRIPTION "LZMA (7zip) format" /* !!! FIXME: translate this line if needed */
@@ -400,6 +403,7 @@ void __PHYSFS_smallFree(void *ptr);
  #define HOG_ARCHIVE_DESCRIPTION  "Descent I/II HOG file format"
  #define MVL_ARCHIVE_DESCRIPTION  "Descent II Movielib format"
  #define QPAK_ARCHIVE_DESCRIPTION "Quake I/II format"
+ #define APK_ARCHIVE_DESCRIPTION  "Compatible APK"
  #define ZIP_ARCHIVE_DESCRIPTION  "Compatible PkZip/WinZip/Info-Zip"
  #define WAD_ARCHIVE_DESCRIPTION  "Format WAD du moteur DOOM"
  #define LZMA_ARCHIVE_DESCRIPTION "LZMA (7zip) format" /* !!! FIXME: translate this line if needed */
@@ -499,6 +503,7 @@ void __PHYSFS_smallFree(void *ptr);
  #define HOG_ARCHIVE_DESCRIPTION  "Formato Descent I/II HOG file"
  #define MVL_ARCHIVE_DESCRIPTION  "Formato Descent II Movielib"
  #define QPAK_ARCHIVE_DESCRIPTION "Formato Quake I/II"
+ #define APK_ARCHIVE_DESCRIPTION  "Formato compatível APK"
  #define ZIP_ARCHIVE_DESCRIPTION  "Formato compatível PkZip/WinZip/Info-Zip"
  #define WAD_ARCHIVE_DESCRIPTION  "Formato WAD do engine DOOM"
  #define WAD_ARCHIVE_DESCRIPTION  "DOOM engine format" /* !!! FIXME: translate this line if needed */
@@ -599,6 +604,7 @@ void __PHYSFS_smallFree(void *ptr);
  #define HOG_ARCHIVE_DESCRIPTION  "Formato Descent I/II HOG file"
  #define MVL_ARCHIVE_DESCRIPTION  "Formato Descent II Movielib"
  #define QPAK_ARCHIVE_DESCRIPTION "Formato Quake I/II"
+ #define APK_ARCHIVE_DESCRIPTION  "Compatible con APK"
  #define ZIP_ARCHIVE_DESCRIPTION  "Compatible con PkZip/WinZip/Info-Zip"
  #define WAD_ARCHIVE_DESCRIPTION  "DOOM engine format" /* !!! FIXME: translate this line if needed */
  #define LZMA_ARCHIVE_DESCRIPTION "LZMA (7zip) format" /* !!! FIXME: translate this line if needed */
