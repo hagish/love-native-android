@@ -3,13 +3,13 @@ Löve2d native port to android
 
 ### About
 
-forum - https://love2d.org/forums/viewforum.php?f=11
-original source - http://love2d.org
+* forum - https://love2d.org/forums/viewforum.php?f=11
+* original source - http://love2d.org
 
 ### State
 
-0.7 - beta
-0.8 - ?
+* 0.7 - beta
+* 0.8 - ?
 
 ### Pay attention to ...
 
