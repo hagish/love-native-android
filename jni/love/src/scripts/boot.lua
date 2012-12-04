@@ -25,9 +25,6 @@ if not love then love = {} end
 love.path = {}
 love.arg = {}
 
-local loveMainFile = "assets/main.lua"
-local loveConfFile = "assets/conf.lua"
-
 -- Unparsed arguments:
 argv = {}
 
@@ -229,7 +226,7 @@ function love.boot()
 		print("can_has_game", can_has_game)
 	end
 
-	if can_has_game and not (love.filesystem.exists(loveMainFile) or love.filesystem.exists(loveConfFile)) then
+	if can_has_game and not (love.filesystem.exists("main.lua") or love.filesystem.exists("conf.lua")) then
 		no_game_code = true
 	end
 
@@ -273,8 +270,8 @@ function love.init()
 	}
 
 	-- If config file exists, load it and allow it to update config table.
-	if not love.conf and love.filesystem and love.filesystem.exists(loveConfFile) then
-		require(loveConfFile)
+	if not love.conf and love.filesystem and love.filesystem.exists("conf.lua") then
+		require("conf.lua")
 	end
 
 	-- Yes, conf.lua might not exist, but there are other ways of making
@@ -312,10 +309,10 @@ function love.init()
 		end
 		love.graphics.setCaption(c.title)
 	end
-	
+
 	if love.filesystem and c.identity then love.filesystem.setIdentity(c.identity) end
 
-	if love.filesystem and love.filesystem.exists(loveMainFile) then require(loveMainFile) end
+	if love.filesystem and love.filesystem.exists("main.lua") then require("main.lua") end
 
 	if no_game_code then
 		error("No code to run\nYour game might be packaged incorrectly\nMake sure main.lua is at the top level of the zip")

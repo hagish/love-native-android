@@ -109,7 +109,7 @@ namespace physfs
 		// the apk's assets folder
 		if(!PHYSFS_addToSearchPath(apkPackageFile.c_str(), 1))
 		{
-			LOGE("could not add apk to search paths, assets/ will not be available");
+			LOGE("could not add apk to search paths, content from assets/ will not be available");
 		}
 
 		// Save the game source.
