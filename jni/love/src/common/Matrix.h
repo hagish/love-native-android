@@ -158,7 +158,19 @@ namespace love
 		* @param size The number of vertices.
 		**/
 		void transform(vertex * dst, const vertex * src, int size) const;
-
+		
+		/**
+		* Multiplies this Matrix with an orthographic matrix
+		* @param left Specify the coordinates for the left vertical clipping planes.
+		* @param right Specify the coordinates for the right vertical clipping planes.
+		* @param bottom Specify the coordinates for the bottom horizontal clipping planes.
+		* @param top Specify the coordinates for the top horizontal clipping planes.
+		* @param nearVal Specify the distances to the nearer depth clipping planes.
+                    This value is negative if the plane is to be behind the viewer.
+		* @param farVal Specify the distances to the farther depth clipping planes.
+                    This values is negative if the plane is to be behind the viewer.
+		**/
+		void ortho(float left, float right, float bottom, float top, float nearVal, float farVal);
 	}; // Matrix
 
 } //love

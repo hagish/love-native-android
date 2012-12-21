@@ -981,25 +981,25 @@ LOCAL_SRC_FILES := love.cpp \
 	${LOVE_SRC_PATH}src/modules/image/devil/Image.cpp \
 	${LOVE_SRC_PATH}src/modules/image/ImageData.cpp \
 	${LOVE_SRC_PATH}src/modules/image/EncodedImageData.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_SpriteBatch.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Quad.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_ParticleSystem.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_PixelEffect.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Image.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Graphics.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Canvas.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/wrap_Font.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/SpriteBatch.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/Quad.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/ParticleSystem.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/PixelEffect.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/Image.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/Graphics.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/Glyph.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/Canvas.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/VertexBuffer.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/Font.cpp \
-	${LOVE_SRC_PATH}src/modules/graphics/opengl/OpenGL.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/wrap_SpriteBatch.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/wrap_Quad.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/wrap_ParticleSystem.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/wrap_PixelEffect.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/wrap_Image.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/wrap_Graphics.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/wrap_Canvas.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/wrap_Font.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/SpriteBatch.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/Quad.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/ParticleSystem.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/PixelEffect.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/Image.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/Graphics.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/Glyph.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/Canvas.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/VertexBuffer.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/Font.cpp \
+	${LOVE_SRC_PATH}src/modules/graphics/opengles/OpenGL.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/Volatile.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/Image.cpp \
 	${LOVE_SRC_PATH}src/modules/graphics/Graphics.cpp \

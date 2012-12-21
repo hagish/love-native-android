@@ -191,6 +191,18 @@ namespace love
 			dst[i].y = y;
 		}
 	}
-
+	
+	void ortho(float left, float right, float bottom, float top, float nearVal, float farVal)
+	{
+		Matrix m;
+		m.e[0] = 2.f/(right - left);
+		m.e[5] = 2.f/(top - bottom);
+		m.e[10] = -2.f/(farVal - nearVal);
+		m.e[12] = (right + left) / (right - left);
+		m.e[13] = (top + bottom) / (top - bottom);
+		m.e[14] = (farVal + nearVal) / (farVal - nearVal);
+		
+		*this *= m;
+	}
 
 } // love
