@@ -19,6 +19,7 @@
 **/
 
 #include "Image.h"
+#include "PixelEffect.h"
 
 // STD
 #include <cstring> // For memcpy
@@ -32,8 +33,11 @@ namespace graphics
 {
 namespace opengles
 {
-	Image::Image(love::image::ImageData * data)
-		: width((float)(data->getWidth())), height((float)(data->getHeight())), texture(0)
+	Image::Image(love::image::ImageData * data, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect)
+		: width((float)(data->getWidth())), height((float)(data->getHeight())), texture(0), projMatrix(projMatrix)
+		, modelViewMatrix(modelViewMatrix)
+		, curColor(curColor)
+		, primitivesEffect(primitivesEffect)
 	{
 		data->retain();
 		this->data = data;
@@ -308,7 +312,7 @@ namespace opengles
 
 		glTexImage2D(GL_TEXTURE_2D,
 			0,
-			GL_RGBA8,
+			GL_RGBA8_OES,
 			(GLsizei)p2width,
 			(GLsizei)p2height,
 			0,
@@ -344,7 +348,7 @@ namespace opengles
 
 		glTexImage2D(GL_TEXTURE_2D,
 			0,
-			GL_RGBA8,
+			GL_RGBA8_OES,
 			(GLsizei)width,
 			(GLsizei)height,
 			0,
@@ -374,19 +378,40 @@ namespace opengles
 	{
 		bind();
 
-		glPushMatrix();
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+		*modelViewMatrix.front() *= t;
 
-		glMultMatrixf((const GLfloat*)t.getElements());
+		bool useStdShader = false;
+		if(PixelEffect::current == NULL)
+		{
+			useStdShader = true;
+			primitivesEffect->attach();
+		}
 
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glVertexPointer(2, GL_FLOAT, sizeof(vertex), (GLvoid*)&v[0].x);
-		glTexCoordPointer(2, GL_FLOAT, sizeof(vertex), (GLvoid*)&v[0].s);
-		glDrawArrays(GL_QUADS, 0, 4);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid*)&v[0].x);
+		glVertexAttrib4fv(1, curColor);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid*)&v[0].s);
 
-		glPopMatrix();
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(2);
+
+		PixelEffect::current->bindAttribLocation("position", 0);
+		PixelEffect::current->bindAttribLocation("colour", 1);
+		PixelEffect::current->bindAttribLocation("texCoord", 2);
+		
+		Matrix mvp = *modelViewMatrix.front() * *projMatrix.front();
+		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
+
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(2);
+
+		if(useStdShader == true)
+		  primitivesEffect->detach();
+
+		delete modelViewMatrix.front();
+		modelViewMatrix.pop();
 	}
 
 	bool Image::hasNpot()

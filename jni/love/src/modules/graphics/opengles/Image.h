@@ -35,12 +35,15 @@
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2platform.h>
 
+#include <queue>
+
 namespace love
 {
 namespace graphics
 {
 namespace opengles
 {
+	class PixelEffect;
 	/**
 	* A drawable image based on OpenGL-textures. This class takes ImageData
 	* objects and create textures on the GPU for fast drawing.
@@ -73,6 +76,11 @@ namespace opengles
 		bool loadVolatilePOT();
 		bool loadVolatileNPOT();
 
+		std::queue<love::Matrix*> &projMatrix;
+		std::queue<love::Matrix*> &modelViewMatrix;
+		float *curColor;
+		PixelEffect *primitivesEffect;
+
 	public:
 
 		/**
@@ -81,7 +89,7 @@ namespace opengles
 		*
 		* @param file The file from which to load the image.
 		**/
-		Image(love::image::ImageData * data);
+		Image(love::image::ImageData * data, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
 
 		/**
 		* Destructor. Deletes the hardware texture and other resources.

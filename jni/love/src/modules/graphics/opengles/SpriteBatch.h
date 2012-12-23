@@ -38,6 +38,8 @@
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2platform.h>
 
+#include <queue>
+
 namespace love
 {
 namespace graphics
@@ -48,6 +50,7 @@ namespace opengles
 	class Image;
 	class Quad;
 	class VertexBuffer;
+	class PixelEffect;
 
 	class SpriteBatch : public Drawable
 	{
@@ -70,6 +73,11 @@ namespace opengles
 		VertexBuffer *array_buf;
 		VertexBuffer *element_buf;
 
+		std::queue<love::Matrix*> &projMatrix;
+		std::queue<love::Matrix*> &modelViewMatrix;
+		float *curColor;
+		PixelEffect *primitivesEffect;
+
 	public:
 
 		enum UsageHint
@@ -80,7 +88,7 @@ namespace opengles
 			USAGE_MAX_ENUM
 		};
 
-		SpriteBatch(Image * image, int size, int usage);
+		SpriteBatch(Image * image, int size, int usage, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
 		virtual ~SpriteBatch();
 
 		int add(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky, int index = -1);

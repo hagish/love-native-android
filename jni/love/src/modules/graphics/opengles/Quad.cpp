@@ -47,7 +47,7 @@ namespace opengles
 
 	void Quad::refresh(const Viewport & v, float sw, float sh)
 	{
-		if (!GLEE_ARB_texture_non_power_of_two)
+		if (!GL_OES_texture_npot)
 		{
 			sw = next_p2(sw);
 			sh = next_p2(sh);

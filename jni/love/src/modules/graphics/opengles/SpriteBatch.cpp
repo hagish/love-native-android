@@ -27,6 +27,7 @@
 #include "Image.h"
 #include "Quad.h"
 #include "VertexBuffer.h"
+#include "PixelEffect.h"
 
 namespace love
 {
@@ -34,13 +35,17 @@ namespace graphics
 {
 namespace opengles
 {
-	SpriteBatch::SpriteBatch(Image * image, int size, int usage)
+	SpriteBatch::SpriteBatch(Image * image, int size, int usage, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float curColor, PixelEffect *primitivesEffect)
 		: image(image)
 		, size(size)
 		, next(0)
 		, color(0)
 		, array_buf(0)
 		, element_buf(0)
+		, projMatrix(projMatrix)
+		, modelViewMatrix(modelViewMatrix)
+		, curColor(curColor)
+		, primitivesEffect(primitivesEffect)
 	{
 		image->retain();
 
@@ -202,36 +207,56 @@ namespace opengles
 
 		static Matrix t;
 
-		glPushMatrix();
-
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
 		t.setTransformation(x, y, angle, sx, sy, ox, oy, kx, ky);
-		glMultMatrixf((const GLfloat*)t.getElements());
+		*modelViewMatrix.front() *= t;
 
 		image->bind();
 
 		VertexBuffer::Bind array_bind(*array_buf);
 		VertexBuffer::Bind element_bind(*element_buf);
 
-		// Apply per-sprite color, if a color is set.
-		if (color)
+		bool useStdShader = false;
+		if(PixelEffect::current == NULL)
 		{
-			glEnableClientState(GL_COLOR_ARRAY);
-			glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(vertex), array_buf->getPointer(color_offset));
+			useStdShader = true;
+			primitivesEffect->attach();
 		}
 
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(2, GL_FLOAT, sizeof(vertex), array_buf->getPointer(vertex_offset));
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), array_buf->getPointer(vertex_offset));
+		if(color)
+		{
+			glVertexAttribPointer(0, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(vertex), array_buf->getPointer(color_offset));
+			glEnableVertexAttribArray(1);
+		}
+		else
+		{
+			glVertexAttrib4fv(1, curColor);
+		}
+		
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), array_buf->getPointer(texel_offset));
 
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2, GL_FLOAT, sizeof(vertex), array_buf->getPointer(texel_offset));
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(2);
+
+		PixelEffect::current->bindAttribLocation("position", 0);
+		PixelEffect::current->bindAttribLocation("colour", 1);
+		PixelEffect::current->bindAttribLocation("texCoord", 2);
+		
+		Matrix mvp = *modelViewMatrix.front() * *projMatrix.front();
+		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
 
 		glDrawElements(GL_TRIANGLES, next*6, GL_UNSIGNED_SHORT, element_buf->getPointer(0));
 
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_COLOR_ARRAY);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 
-		glPopMatrix();
+		if(useStdShader == true)
+		  primitivesEffect->detach();
+
+		delete modelViewMatrix.front();
+		modelViewMatrix.pop();
 	}
 
 	void SpriteBatch::addv(const vertex * v, int index)

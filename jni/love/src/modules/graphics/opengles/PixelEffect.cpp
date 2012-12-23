@@ -338,6 +338,29 @@ namespace opengles
 		return location;
 	}
 
+	GLint PixelEffect::getAttribLocation(const std::string& name)
+	{
+		std::map<std::string, GLint>::const_iterator it = _attribs.find(name);
+		if (it != _attribs.end())
+			return it->second;
+
+		GLint location = glGetAttribLocation(_program, name.c_str());
+		if (location == -1)
+		{
+			throw love::Exception(
+					"Cannot get location of shader variable `%s'.\n"
+					"A common error is to define but not use the variable.", name.c_str());
+		}
+
+		_attribs[name] = location;
+		return location;
+	}
+	
+	void PixelEffect::bindAttribLocation(const std::string& name, GLuint id)
+	{
+		glBindAttribLocation(_program, id, name.c_str());
+	}
+
 	void PixelEffect::checkSetUniformError()
 	{
 		GLenum error_code = glGetError();

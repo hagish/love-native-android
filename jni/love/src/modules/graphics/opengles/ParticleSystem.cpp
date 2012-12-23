@@ -52,14 +52,17 @@ namespace opengles
 	}
 
 
-	ParticleSystem::ParticleSystem(Image * sprite, unsigned int buffer) : pStart(0), pLast(0), pEnd(0), active(true), emissionRate(0),
+	ParticleSystem::ParticleSystem(Image * sprite, unsigned int buffer, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect) : pStart(0), pLast(0), pEnd(0), active(true), emissionRate(0),
 															emitCounter(0), lifetime(-1), life(0), particleLifeMin(0), particleLifeMax(0),
 															direction(0), spread(0), relative(false), speedMin(0), speedMax(0), gravityMin(0),
 															gravityMax(0), radialAccelerationMin(0), radialAccelerationMax(0),
 															tangentialAccelerationMin(0), tangentialAccelerationMax(0),
 															sizeVariation(0), rotationMin(0), rotationMax(0),
 															spinStart(0), spinEnd(0), spinVariation(0), offsetX(sprite->getWidth()*0.5f),
-															offsetY(sprite->getHeight()*0.5f)
+															offsetY(sprite->getHeight()*0.5f), projMatrix(projMatrix)
+															, modelViewMatrix(modelViewMatrix)
+															, curColor(curColor)
+															, primitivesEffect(primitivesEffect)
 	{
 		this->sprite = sprite;
 		sprite->retain();
@@ -397,27 +400,33 @@ namespace opengles
 	{
 		if (sprite == 0) return; // just in case of failure
 
-		glPushMatrix();
-		glPushAttrib(GL_CURRENT_BIT);
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+		float saveColour[4];
+		memcpy(saveColour, curColor, 4 * sizeof(float));
 
 		Matrix t;
 		t.setTransformation(x, y, angle, sx, sy, ox, oy, kx, ky);
-		glMultMatrixf((const GLfloat*)t.getElements());
+		*modelViewMatrix.front() *= t;
 
 		particle * p = pStart;
 		while (p != pLast)
 		{
-			glPushMatrix();
+			modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
 
-			glColor4f(p->color.r, p->color.g, p->color.b, p->color.a);
+			curColor[0] = p->color.r;
+			curColor[1] = p->color.g;
+			curColor[2] = p->color.b;
+			curColor[3] = p->color.a;
 			sprite->draw(p->position[0], p->position[1], p->rotation, p->size, p->size, offsetX, offsetY, 0.0f, 0.0f);
 
-			glPopMatrix();
+			delete modelViewMatrix.front();
+			modelViewMatrix.pop();
 			p++;
 		}
 
-		glPopAttrib();
-		glPopMatrix();
+		memcpy(curColor, saveColour, 4 * sizeof(float));
+		delete modelViewMatrix.front();
+		modelViewMatrix.pop();
 	}
 
 	void ParticleSystem::update(float dt)

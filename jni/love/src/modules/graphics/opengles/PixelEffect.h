@@ -49,7 +49,7 @@ namespace opengles
 		static void detach();
 		static std::string getGLSLVersion();
 		static bool isSupported();
-		
+
 		static PixelEffect * current;
 
 		void sendFloat(const std::string& name, int size, const GLfloat* vec, int count);
@@ -57,14 +57,18 @@ namespace opengles
 		void sendImage(const std::string& name, const Image& image);
 		void sendCanvas(const std::string& name, const Canvas& canvas);
 
+		GLint getAttribLocation(const std::string& name);
+		void bindAttribLocation(const std::string& name, GLuint id);
+
 	private:
 		GLint getUniformLocation(const std::string& name);
 		void checkSetUniformError();
 		GLuint _program;
 		std::string _vertex, _fragment; // volatile and stuff
 
-		// uniform location buffer
+		// uniform and attrib location buffer
 		std::map<std::string, GLint> _uniforms;
+		std::map<std::string, GLint> _attribs;
 
 		// texture unit pool for setting images
 		static std::map<std::string, GLint> _texture_unit_pool;

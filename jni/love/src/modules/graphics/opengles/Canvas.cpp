@@ -133,8 +133,11 @@ namespace opengles
 		}
 	}
 
-	Canvas::Canvas(int width, int height) :
-		width(width), height(height)
+	Canvas::Canvas(int width, int height, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect)
+		: width(width), height(height), projMatrix(projMatrix)
+		, modelViewMatrix(modelViewMatrix)
+		, curColor(curColor)
+		, primitivesEffect(primitivesEffect)
 	{
 		float w = static_cast<float>(width);
 		float h = static_cast<float>(height);
@@ -188,20 +191,14 @@ namespace opengles
 			current->stopGrab();
 
 		// bind buffer and clear screen
-		glPushAttrib(GL_VIEWPORT_BIT | GL_TRANSFORM_BIT);
 		strategy->bindFBO(fbo);
 		glViewport(0, 0, width, height);
 
 		// Reset the projection matrix
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
+		projMatrix.push(new love::Matrix());
 
 		// Set up orthographic view (no depth)
-		glOrtho(0.0, width, height, 0.0, -1.0, 1.0);
-
-		// Switch back to modelview matrix
-		glMatrixMode(GL_MODELVIEW);
+		projMatrix.front().ortho(0.0, width, height, 0.0, -1.0, 1.0);
 
 		// indicate we are using this fbo
 		current = this;
@@ -215,9 +212,8 @@ namespace opengles
 
 		// bind default
 		strategy->bindFBO( 0 );
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glPopAttrib();
+		delete projMatrix.front();
+		projMatrix.pop();
 		current = NULL;
 	}
 
@@ -229,10 +225,12 @@ namespace opengles
 			previous = current->fbo;
 
 		strategy->bindFBO(fbo);
-		glPushAttrib(GL_COLOR_BUFFER_BIT);
+		float oldColor[4];
+		glGetFloatv(GL_COLOR_CLEAR_VALUE, oldColor);
+		
 		glClearColor((float)c.r/255.0f, (float)c.g/255.0f, (float)c.b/255.0f, (float)c.a/255.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		glPopAttrib();
+		glClearColor(oldColor[0], oldColor[1], oldColor[2], oldColor[3]);
 
 		strategy->bindFBO(previous);
 	}
@@ -335,7 +333,7 @@ namespace opengles
 
 	bool Canvas::loadVolatile()
 	{
-		status = strategy->createFBO(fbo, depth_stencil, img, width, height);
+		status = strategy->createFBO(fbo, depth, stencil, img, width, height);
 		if (status != GL_FRAMEBUFFER_COMPLETE)
 			return false;
 
@@ -351,7 +349,7 @@ namespace opengles
 	{
 		settings.filter = getFilter();
 		settings.wrap   = getWrap();
-		strategy->deleteFBO(fbo, depth_stencil, img);
+		strategy->deleteFBO(fbo, depth, stencil, img);
 	}
 
 	int Canvas::getWidth()
@@ -366,21 +364,42 @@ namespace opengles
 
 	void Canvas::drawv(const Matrix & t, const vertex * v) const
 	{
-		glPushMatrix();
-
-		glMultMatrixf((const GLfloat*)t.getElements());
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+		*modelViewMatrix.front() *= t;
 
 		bindTexture(img);
 
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glVertexPointer(2, GL_FLOAT, sizeof(vertex), (GLvoid*)&v[0].x);
-		glTexCoordPointer(2, GL_FLOAT, sizeof(vertex), (GLvoid*)&v[0].s);
-		glDrawArrays(GL_QUADS, 0, 4);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
+		bool useStdShader = false;
+		if(PixelEffect::current == NULL)
+		{
+			useStdShader = true;
+			primitivesEffect->attach();
+		}
 
-		glPopMatrix();
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid*)&v[0].x);
+		glVertexAttrib4fv(1, curColor);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid*)&v[0].s);
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(2);
+
+		PixelEffect::current->bindAttribLocation("position", 0);
+		PixelEffect::current->bindAttribLocation("colour", 1);
+		PixelEffect::current->bindAttribLocation("texCoord", 2);
+		
+		Matrix mvp = *modelViewMatrix.front() * *projMatrix.front();
+		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
+
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(2);
+
+		if(useStdShader == true)
+		  primitivesEffect->detach();
+
+		delete modelViewMatrix.front();
+		modelViewMatrix.pop();
 	}
 
 } // opengl

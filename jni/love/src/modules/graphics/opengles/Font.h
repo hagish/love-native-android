@@ -37,6 +37,10 @@
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2platform.h>
 
+#include <queue>
+#include "PixelEffect.h"
+#include <common/Matrix.h>
+
 namespace love
 {
 namespace graphics
@@ -56,9 +60,11 @@ namespace opengles
 
 		struct Glyph
 		{
-			GLuint list;
 			GLuint texture;
 			int spacing;
+			float data[16];
+			float translate[2];
+			
 		};
 
 		love::font::Rasterizer * rasterizer;
@@ -81,6 +87,11 @@ namespace opengles
 		void createTexture();
 		Glyph * addGlyph(int glyph);
 
+		std::queue<love::Matrix*> &projMatrix;
+		std::queue<love::Matrix*> &modelViewMatrix;
+		float *curColor;
+		PixelEffect *primitivesEffect;
+
 	public:
 
 		/**
@@ -88,7 +99,7 @@ namespace opengles
 		*
 		* @param data The font data to construct from.
 		**/
-		Font(love::font::Rasterizer * r, const Image::Filter& filter = Image::Filter());
+		Font(love::font::Rasterizer * r, const Image::Filter& filter = Image::Filter(), std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
 
 		virtual ~Font();
 

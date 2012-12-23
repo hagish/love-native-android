@@ -51,6 +51,11 @@ namespace love
 		Matrix();
 
 		/**
+		* Creates a new identity matrix.
+		**/
+		Matrix(const Matrix &m);
+
+		/**
 		* Destructor.
 		**/
 		~Matrix();

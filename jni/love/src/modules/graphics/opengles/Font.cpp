@@ -39,8 +39,11 @@ namespace graphics
 namespace opengles
 {
 
-	Font::Font(love::font::Rasterizer * r, const Image::Filter& filter)
-	: rasterizer(r), height(r->getHeight()), lineHeight(1), mSpacing(1), filter(filter)
+	Font::Font(love::font::Rasterizer * r, const Image::Filter& filter, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect)
+	: rasterizer(r), height(r->getHeight()), lineHeight(1), mSpacing(1), filter(filter), projMatrix(projMatrix)
+		, modelViewMatrix(modelViewMatrix)
+		, curColor(curColor)
+		, primitivesEffect(primitivesEffect)
 	{
 		r->retain();
 		love::font::GlyphData * gd = r->getGlyphData(32);
@@ -96,12 +99,7 @@ namespace opengles
 	Font::Glyph * Font::addGlyph(int glyph)
 	{
 		Glyph * g = new Glyph;
-		g->list = glGenLists(1);
-		if (g->list == 0)
-		{ // opengl failed to generate the list
-			delete g;
-			return NULL;
-		}
+
 		love::font::GlyphData *gd = rasterizer->getGlyphData(glyph);
 		g->spacing = gd->getAdvance();
 		int w = gd->getWidth();
@@ -129,21 +127,17 @@ namespace opengles
 		v.h = (float) h;
 		Quad * q = new Quad(v, (const float) TEXTURE_WIDTH, (const float) TEXTURE_HEIGHT);
 		const vertex * verts = q->getVertices();
+		
+		for(int i = 0; i < 4; ++i)
+		{
+			g->data[4 * i + 0] = verts[i].x;
+			g->data[4 * i + 1] = verts[i].y;
+			g->data[4 * i + 2] = verts[i].s;
+			g->data[4 * i + 3] = verts[i].t;
+		}
 
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glVertexPointer(2, GL_FLOAT, sizeof(vertex), (GLvoid *)&verts[0].x);
-		glTexCoordPointer(2, GL_FLOAT, sizeof(vertex), (GLvoid *)&verts[0].s);
-
-		glNewList(g->list, GL_COMPILE);
-		glPushMatrix();
-		glTranslatef(static_cast<float>(gd->getBearingX()), static_cast<float>(-gd->getBearingY()), 0.0f);
-		glDrawArrays(GL_QUADS, 0, 4);
-		glPopMatrix();
-		glEndList();
-
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
+		g->translate[0] = static_cast<float>(gd->getBearingX());
+		g->translate[1] = static_cast<float>(gd->getBearingY());
 
 		delete q;
 		delete gd;
@@ -163,11 +157,11 @@ namespace opengles
 	void Font::print(std::string text, float x, float y, float angle, float sx, float sy, float ox, float oy, float kx, float ky)
 	{
 		float dx = 0.0f; // spacing counter for newline handling
-		glPushMatrix();
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
 
 		Matrix t;
 		t.setTransformation(ceil(x), ceil(y), angle, sx, sy, ox, oy, kx, ky);
-		glMultMatrixf((const GLfloat*)t.getElements());
+		*modelViewMatrix.front() *= t;
 		try
 		{
 			utf8::iterator<std::string::iterator> i (text.begin(), text.begin(), text.end());
@@ -177,39 +171,115 @@ namespace opengles
 				int g = *i++;
 				if (g == '\n')
 				{ // wrap newline, but do not print it
-					glTranslatef(-dx, floor(getHeight() * getLineHeight() + 0.5f), 0);
+					modelViewMatrix.front()->translate(-dx, floor(getHeight() * getLineHeight() + 0.5f));
 					dx = 0.0f;
 					continue;
 				}
 				Glyph * glyph = glyphs[g];
-				if (!glyph) glyph = addGlyph(g);
-				glPushMatrix();
+				if (!glyph) 
+					glyph = addGlyph(g);
+				modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
 				// 1.25 is magic line height for true type fonts
-				if (type == FONT_TRUETYPE) glTranslatef(0, floor(getHeight() / 1.25f + 0.5f), 0);
+				if (type == FONT_TRUETYPE) 
+					modelViewMatrix.front()->translate(0, floor(getHeight() / 1.25f + 0.5f));
 				bindTexture(glyph->texture);
-				glCallList(glyph->list);
-				glPopMatrix();
-				glTranslatef(static_cast<GLfloat>(glyph->spacing), 0, 0);
+
+				bool useStdShader = false;
+				if(PixelEffect::current == NULL)
+				{
+					useStdShader = true;
+					primitivesEffect->attach();
+				}
+
+				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), glyph->data);
+				glVertexAttrib4fv(1, curColor);
+				glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), glyph->data + 2 * sizeof(float));
+
+				glEnableVertexAttribArray(0);
+				glEnableVertexAttribArray(2);
+
+				PixelEffect::current->bindAttribLocation("position", 0);
+				PixelEffect::current->bindAttribLocation("colour", 1);
+				PixelEffect::current->bindAttribLocation("texCoord", 2);
+
+				modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+				modelViewMatrix.front()->translate(glyph->translate[0], glyph->translate[1]);
+
+				Matrix mvp = *modelViewMatrix.front() * *projMatrix.front();
+				PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
+
+				glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+				delete modelViewMatrix.front();
+				modelViewMatrix.pop();
+
+				glDisableVertexAttribArray(0);
+				glDisableVertexAttribArray(2);
+
+				if(useStdShader == true)
+				  primitivesEffect->detach();
+
+				delete modelViewMatrix.front();
+				modelViewMatrix.pop();
+				modelViewMatrix.front()->translate(static_cast<GLfloat>(glyph->spacing), 0);
 				dx += glyph->spacing;
 			}
 		}
 		catch (utf8::exception & e)
 		{
-			glPopMatrix();
+			delete modelViewMatrix.front();
+			modelViewMatrix.pop();
 			throw love::Exception("%s", e.what());
 		}
-		glPopMatrix();
+		delete modelViewMatrix.front();
+		modelViewMatrix.pop();
 	}
 
 	void Font::print(char character, float x, float y)
 	{
 		Glyph * glyph = glyphs[character];
 		if (!glyph) glyph = addGlyph(character);
-		glPushMatrix();
-		glTranslatef(x, floor(y+getHeight() + 0.5f), 0.0f);
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+		modelViewMatrix.front()->translate(x, floor(y+getHeight() + 0.5f));
 		bindTexture(glyph->texture);
-		glCallList(glyph->list);
-		glPopMatrix();
+		
+		bool useStdShader = false;
+		if(PixelEffect::current == NULL)
+		{
+			useStdShader = true;
+			primitivesEffect->attach();
+		}
+
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), glyph->data);
+		glVertexAttrib4fv(1, curColor);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), glyph->data + 2 * sizeof(float));
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(2);
+
+		PixelEffect::current->bindAttribLocation("position", 0);
+		PixelEffect::current->bindAttribLocation("colour", 1);
+		PixelEffect::current->bindAttribLocation("texCoord", 2);
+
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+		modelViewMatrix.front()->translate(glyph->translate[0], glyph->translate[1]);
+
+		Matrix mvp = *modelViewMatrix.front() * *projMatrix.front();
+		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
+
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+		delete modelViewMatrix.front();
+		modelViewMatrix.pop();
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(2);
+
+		if(useStdShader == true)
+		  primitivesEffect->detach();
+		
+		delete modelViewMatrix.front();
+		modelViewMatrix.pop();
 	}
 
 	int Font::getWidth(const std::string & line)
@@ -345,7 +415,6 @@ namespace opengles
 		while (it != glyphs.end())
 		{
 			g = it->second;
-			glDeleteLists(g->list, 1);
 			delete g;
 			glyphs.erase(it++);
 		}

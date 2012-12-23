@@ -37,6 +37,11 @@ namespace love
 		setIdentity();
 	}
 
+	Matrix::Matrix(const Matrix &m)
+	{
+		memcpy(e, m.e, 16 * sizeof(float));
+	}
+
 	Matrix::~Matrix()
 	{
 	}

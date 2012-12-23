@@ -346,7 +346,7 @@ namespace opengles
 	Image * Graphics::newImage(love::image::ImageData * data)
 	{
 		// Create the image.
-		Image * image = new Image(data);
+		Image * image = new Image(data, projectionMatrix, modelViewMatrix, currentColour, primitivesEffect);
 		bool success;
 		try
 		{
@@ -380,7 +380,7 @@ namespace opengles
 
 	Font * Graphics::newFont(love::font::Rasterizer * r, const Image::Filter& filter)
 	{
-		Font * font = new Font(r, filter);
+		Font * font = new Font(r, filter, projectionMatrix, modelViewMatrix, currentColour, primitivesEffect);
 
 		// Load it and check for errors.
 		if (!font)
@@ -397,7 +397,7 @@ namespace opengles
 		SpriteBatch * t = NULL;
 		try
 		{
-			t = new SpriteBatch(image, size, usage);
+			t = new SpriteBatch(image, size, usage, projectionMatrix, modelViewMatrix, currentColour, primitivesEffect);
 		}
 		catch (love::Exception& e)
 		{
@@ -409,12 +409,12 @@ namespace opengles
 
 	ParticleSystem * Graphics::newParticleSystem(Image * image, int size)
 	{
-		return new ParticleSystem(image, size);
+		return new ParticleSystem(image, size, projectionMatrix, modelViewMatrix, currentColour, primitivesEffect);
 	}
 
 	Canvas * Graphics::newCanvas(int width, int height)
 	{
-		Canvas * canvas = new Canvas(width, height);
+		Canvas * canvas = new Canvas(width, height, projectionMatrix, modelViewMatrix, currentColour, primitivesEffect);
 		GLenum err = canvas->getStatus();
 
 		// everything ok, reaturn canvas (early out)
@@ -475,7 +475,7 @@ namespace opengles
 				"	vPosition = mvp * vec4(position, 0.0, 1.0)\n"
 				"	gl_Position = vPosition;\n"
 				"}\n";
-			effect = new PixelEffect(vertex, code);
+			effect = new PixelEffect(vertex, code, projectionMatrix, modelViewMatrix, currentColour, primitivesEffect);
 		}
 		catch (love::Exception& e)
 		{
@@ -705,16 +705,39 @@ namespace opengles
 
 	void Graphics::point( float x, float y )
 	{
+		bool useStdShader = false;
 		if(PixelEffect::current == NULL)
+		{
+			useStdShader = true;
 			primitivesEffect->attach();
-		float pos[2] = {x, y};
-		// TODO: change to vertex attrib pointer
-		glDisable(GL_TEXTURE_2D);
-		glBegin(GL_POINTS);
-			glVertex2f(x, y);
-		glEnd();
-		glEnable(GL_TEXTURE_2D);
-		if(PixelEffect::current == NULL)
+		}
+		float data[8] = {
+			x, y, // position
+			currentColour[0], currentColour[1], currentColour[2], currentColour[3], // colour
+			0, 0, // tex coord
+		};
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), data);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), data + 2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), data + 6);
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+
+		PixelEffect::current->bindAttribLocation("position", 0);
+		PixelEffect::current->bindAttribLocation("colour", 1);
+		PixelEffect::current->bindAttribLocation("texCoord", 2);
+		
+		Matrix mvp = *modelViewMatrix.front() * *projectionMatrix.front();
+		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
+
+		glDrawArrays(GL_POINTS, 0, 1);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+		
+		if(useStdShader == true)
 			primitivesEffect->detach();
 	}
 
@@ -798,7 +821,7 @@ namespace opengles
 
 	// precondition:
 	// glEnableClientState(GL_VERTEX_ARRAY);
-	static void draw_overdraw(Vector* overdraw, size_t count, bool looping)
+	static void draw_overdraw(Vector* overdraw, size_t count, bool looping, float *c)
 	{
 		// if not looping, the outer overdraw vertices need to be displaced
 		// to cover the line endings, i.e.:
@@ -828,9 +851,6 @@ namespace opengles
 		// prepare colors:
 		// even indices in overdraw* point to inner vertices => alpha = current-alpha,
 		// odd indices point to outer vertices => alpha = 0.
-		GLfloat c[4];
-		glGetFloatv(GL_CURRENT_COLOR, c);
-
 		Color *colors = new Color[2*count+2];
 		for (size_t i = 0; i < 2*count+2; ++i)
 		{
@@ -841,15 +861,21 @@ namespace opengles
 					GLubyte(c[3] * 255.f) * GLubyte(i%2 == 0));
 		}
 
-		// draw faded out line halos
-		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(4, GL_UNSIGNED_BYTE, 0, colors);
-		glVertexPointer(2, GL_FLOAT, 0, (const GLvoid*)overdraw);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, overdraw);
+		glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, colors);
+		glVertexAttrib2f(2, 0.f, 0.f);
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+
+		PixelEffect::current->bindAttribLocation("position", 0);
+		PixelEffect::current->bindAttribLocation("colour", 1);
+		PixelEffect::current->bindAttribLocation("texCoord", 2);
+
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 2*count + 2 * int(!looping));
-		glDisableClientState(GL_COLOR_ARRAY);
-		// "if GL_COLOR_ARRAY is enabled, the value of the current color is
-		// undefined after glDrawArrays executes"
-		glColor4fv(c);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
 
 		delete[] colors;
 	}
@@ -897,17 +923,36 @@ namespace opengles
 		// end get line vertex boundaries
 
 		// draw the core line
-		glDisable(GL_TEXTURE_2D);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(2, GL_FLOAT, 0, (const GLvoid*)vertices);
+		bool useStdShader = false;
+		if(PixelEffect::current == NULL)
+		{
+			useStdShader = true;
+			primitivesEffect->attach();
+		}
+		
+		Matrix mvp = *modelViewMatrix.front() * *projectionMatrix.front();
+		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
+
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+		glVertexAttrib4fv(1, currentColour);
+		glVertexAttrib2f(2, 0.f, 0.f);
+
+		glEnableVertexAttribArray(0);
+
+		PixelEffect::current->bindAttribLocation("position", 0);
+		PixelEffect::current->bindAttribLocation("colour", 1);
+		PixelEffect::current->bindAttribLocation("texCoord", 2);
+
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
+
+		glDisableVertexAttribArray(0);
 
 		// draw the line halo (antialiasing)
 		if (lineStyle == LINE_SMOOTH)
-			draw_overdraw(overdraw, count, looping);
+			draw_overdraw(overdraw, count, looping, currentColour);
 
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glEnable(GL_TEXTURE_2D);
+		if(useStdShader == true)
+			primitivesEffect->detach();
 
 		// cleanup
 		delete[] vertices;
@@ -991,12 +1036,32 @@ namespace opengles
 		}
 		else
 		{
-			glDisable(GL_TEXTURE_2D);
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(2, GL_FLOAT, 0, (const GLvoid *) coords);
+			bool useStdShader = false;
+			if(PixelEffect::current == NULL)
+			{
+				useStdShader = true;
+				primitivesEffect->attach();
+			}
+
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, coords);
+			glVertexAttrib4fv(1, currentColour);
+			glVertexAttrib2f(2, 0.f, 0.f);
+
+			glEnableVertexAttribArray(0);
+
+			PixelEffect::current->bindAttribLocation("position", 0);
+			PixelEffect::current->bindAttribLocation("colour", 1);
+			PixelEffect::current->bindAttribLocation("texCoord", 2);
+			
+			Matrix mvp = *modelViewMatrix.front() * *projectionMatrix.front();
+			PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
+
 			glDrawArrays(GL_TRIANGLE_FAN, 0, points + 2);
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glEnable(GL_TEXTURE_2D);
+
+			glDisableVertexAttribArray(0);
+
+			if(useStdShader == true)
+			  primitivesEffect->detach();
 		}
 
 		delete[] coords;
@@ -1015,12 +1080,32 @@ namespace opengles
 		}
 		else
 		{
-			glDisable(GL_TEXTURE_2D);
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(2, GL_FLOAT, 0, (const GLvoid*)coords);
-			glDrawArrays(GL_POLYGON, 0, count/2-1); // opengl will close the polygon for us
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glEnable(GL_TEXTURE_2D);
+			bool useStdShader = false;
+			if(PixelEffect::current == NULL)
+			{
+				useStdShader = true;
+				primitivesEffect->attach();
+			}
+
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, coords);
+			glVertexAttrib4fv(1, currentColour);
+			glVertexAttrib2f(2, 0.f, 0.f);
+
+			glEnableVertexAttribArray(0);
+
+			PixelEffect::current->bindAttribLocation("position", 0);
+			PixelEffect::current->bindAttribLocation("colour", 1);
+			PixelEffect::current->bindAttribLocation("texCoord", 2);
+			
+			Matrix mvp = *modelViewMatrix.front() * *projectionMatrix.front();
+			PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
+
+			glDrawArrays(GL_TRIANGLE_FAN, 0, count/2);
+
+			glDisableVertexAttribArray(0);
+
+			if(useStdShader == true)
+			  primitivesEffect->detach();
 		}
 	}
 
@@ -1059,7 +1144,8 @@ namespace opengles
 	{
 		if (userMatrices == matrixLimit)
 			throw Exception("Maximum stack depth reached.");
-		glPushMatrix();
+		// currently, only model view matrix stack is manipulated
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
 		++userMatrices;
 	}
 
@@ -1067,30 +1153,30 @@ namespace opengles
 	{
 		if (userMatrices < 1)
 			throw Exception("Minimum stack depth reached. (More pops than pushes?)");
-		glPopMatrix();
+		// currently, only model view matrix stack is manipulated
+		delete modelViewMatrix.front();
+		modelViewMatrix.pop();
 		--userMatrices;
 	}
 
 	void Graphics::rotate(float r)
 	{
-		glRotatef(LOVE_TODEG(r), 0, 0, 1);
+		modelViewMatrix.front()->rotate(r);
 	}
 
 	void Graphics::scale(float x, float y)
 	{
-		glScalef(x, y, 1);
+		modelViewMatrix.front()->scale(x, y);
 	}
 
 	void Graphics::translate(float x, float y)
 	{
-		glTranslatef(x, y, 0);
+		modelViewMatrix.front()->translate(x, y);
 	}
 
 	void Graphics::shear(float kx, float ky)
 	{
-		Matrix t;
-		t.setShear(kx, ky);
-		glMultMatrixf((const GLfloat*)t.getElements());
+		modelViewMatrix.front()->shear(kx, ky);
 	}
 
 	void Graphics::drawTest(Image * image, float x, float y, float a, float sx, float sy, float ox, float oy)
@@ -1109,13 +1195,34 @@ namespace opengles
 
 		const vertex * vertices = image->getVertices();
 
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glVertexPointer(2, GL_FLOAT, sizeof(vertex), (GLvoid*)&buf[0].x);
-		glTexCoordPointer(2, GL_FLOAT, sizeof(vertex), (GLvoid*)&vertices[0].s);
-		glDrawArrays(GL_QUADS, 0, 4);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
+		bool useStdShader = false;
+		if(PixelEffect::current == NULL)
+		{
+			useStdShader = true;
+			primitivesEffect->attach();
+		}
+
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, &buf[0].x);
+		glVertexAttrib4fv(1, currentColour);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, &vertices[0].s);
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(2);
+
+		PixelEffect::current->bindAttribLocation("position", 0);
+		PixelEffect::current->bindAttribLocation("colour", 1);
+		PixelEffect::current->bindAttribLocation("texCoord", 2);
+		
+		Matrix mvp = *modelViewMatrix.front() * *projectionMatrix.front();
+		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
+
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(2);
+
+		if(useStdShader == true)
+		  primitivesEffect->detach();
 	}
 
 	bool Graphics::hasFocus()
