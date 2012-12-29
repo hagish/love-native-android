@@ -33,7 +33,7 @@ namespace graphics
 {
 namespace opengles
 {
-	Image::Image(love::image::ImageData * data, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect)
+	Image::Image(love::image::ImageData * data, std::stack<love::Matrix*> &projMatrix, std::stack<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect)
 		: width((float)(data->getWidth())), height((float)(data->getHeight())), texture(0), projMatrix(projMatrix)
 		, modelViewMatrix(modelViewMatrix)
 		, curColor(curColor)
@@ -378,8 +378,8 @@ namespace opengles
 	{
 		bind();
 
-		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
-		*modelViewMatrix.front() *= t;
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.top()));
+		*modelViewMatrix.top() *= t;
 
 		bool useStdShader = false;
 		if(PixelEffect::current == NULL)
@@ -399,7 +399,7 @@ namespace opengles
 		PixelEffect::current->bindAttribLocation("colour", 1);
 		PixelEffect::current->bindAttribLocation("texCoord", 2);
 		
-		Matrix mvp = *modelViewMatrix.front() * *projMatrix.front();
+		Matrix mvp = *modelViewMatrix.top() * *projMatrix.top();
 		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
 
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -410,7 +410,7 @@ namespace opengles
 		if(useStdShader == true)
 		  primitivesEffect->detach();
 
-		delete modelViewMatrix.front();
+		delete modelViewMatrix.top();
 		modelViewMatrix.pop();
 	}
 

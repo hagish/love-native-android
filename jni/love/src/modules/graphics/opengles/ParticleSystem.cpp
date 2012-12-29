@@ -52,7 +52,7 @@ namespace opengles
 	}
 
 
-	ParticleSystem::ParticleSystem(Image * sprite, unsigned int buffer, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect) : pStart(0), pLast(0), pEnd(0), active(true), emissionRate(0),
+	ParticleSystem::ParticleSystem(Image * sprite, unsigned int buffer, std::stack<love::Matrix*> &projMatrix, std::stack<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect) : pStart(0), pLast(0), pEnd(0), active(true), emissionRate(0),
 															emitCounter(0), lifetime(-1), life(0), particleLifeMin(0), particleLifeMax(0),
 															direction(0), spread(0), relative(false), speedMin(0), speedMax(0), gravityMin(0),
 															gravityMax(0), radialAccelerationMin(0), radialAccelerationMax(0),
@@ -400,18 +400,18 @@ namespace opengles
 	{
 		if (sprite == 0) return; // just in case of failure
 
-		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.top()));
 		float saveColour[4];
 		memcpy(saveColour, curColor, 4 * sizeof(float));
 
 		Matrix t;
 		t.setTransformation(x, y, angle, sx, sy, ox, oy, kx, ky);
-		*modelViewMatrix.front() *= t;
+		*modelViewMatrix.top() *= t;
 
 		particle * p = pStart;
 		while (p != pLast)
 		{
-			modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+			modelViewMatrix.push(new love::Matrix(*modelViewMatrix.top()));
 
 			curColor[0] = p->color.r;
 			curColor[1] = p->color.g;
@@ -419,13 +419,13 @@ namespace opengles
 			curColor[3] = p->color.a;
 			sprite->draw(p->position[0], p->position[1], p->rotation, p->size, p->size, offsetX, offsetY, 0.0f, 0.0f);
 
-			delete modelViewMatrix.front();
+			delete modelViewMatrix.top();
 			modelViewMatrix.pop();
 			p++;
 		}
 
 		memcpy(curColor, saveColour, 4 * sizeof(float));
-		delete modelViewMatrix.front();
+		delete modelViewMatrix.top();
 		modelViewMatrix.pop();
 	}
 

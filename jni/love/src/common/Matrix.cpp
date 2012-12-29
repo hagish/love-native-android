@@ -197,7 +197,7 @@ namespace love
 		}
 	}
 	
-	void ortho(float left, float right, float bottom, float top, float nearVal, float farVal)
+	void Matrix::ortho(float left, float right, float bottom, float top, float nearVal, float farVal)
 	{
 		Matrix m;
 		m.e[0] = 2.f/(right - left);

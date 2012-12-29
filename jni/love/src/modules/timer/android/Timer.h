@@ -57,7 +57,7 @@ namespace android
 		double getMicroTime() const;
 
 	private:
-		double diff(timeval &val1, timeval &val2);
+		double diff(const timeval &val1, const timeval &val2) const;
 
 		// Timing vars for benchmarking.
 		timeval time_init;

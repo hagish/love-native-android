@@ -53,7 +53,7 @@ namespace thread
 		ThreadBase(ThreadBase&/* thread*/) {}
 		bool running;
 
-		static int thread_runner(void* param);
+		static void* thread_runner(void* param);
 
 	protected:
 

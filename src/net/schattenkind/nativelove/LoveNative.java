@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -80,7 +81,10 @@ public class LoveNative extends Activity implements SensorEventListener {
     		return super.onKeyDown(keyCode, event);
     	}
 
-        if(LoveJNI.onKeyDown(keyCode))
+    	if(event.getSource() == InputDevice.SOURCE_CLASS_JOYSTICK &&
+    			LoveJNI.onJoystickDown(event.getDeviceId(), keyCode))
+    		return true;
+    	else if(LoveJNI.onKeyDown(keyCode))
         	return true;
         return super.onKeyDown(keyCode, event);
     }
@@ -94,7 +98,10 @@ public class LoveNative extends Activity implements SensorEventListener {
     		return super.onKeyUp(keyCode, event);
     	}
 
-    	if(LoveJNI.onKeyUp(keyCode))
+    	if(event.getSource() == InputDevice.SOURCE_CLASS_JOYSTICK &&
+    			LoveJNI.onJoystickDown(event.getDeviceId(), keyCode))
+    		return true;
+    	else if(LoveJNI.onKeyUp(keyCode))
         	return true;
         return super.onKeyUp(keyCode, event);
     }
@@ -185,6 +192,7 @@ public class LoveNative extends Activity implements SensorEventListener {
     	mGLView.stopRendering();
     	mOldVolume = LoveJNI.getDeviceAudioVolume();
     	LoveJNI.setDeviceAudioVolume(0.f);
+    	LoveJNI.activeEvent(false);
     	mSensorManager.unregisterListener(this);
     	super.onPause();
     }
@@ -194,6 +202,7 @@ public class LoveNative extends Activity implements SensorEventListener {
         super.onResume();
         mGLView.continueRendering();
         LoveJNI.setDeviceAudioVolume(mOldVolume);
+        LoveJNI.activeEvent(true);
         for(int i = 0; i < mSensorList.size(); ++i)
         	mSensorManager.registerListener(this, mSensorList.get(i), SensorManager.SENSOR_DELAY_GAME);
         //mGLView.onResume(); // TODO: FIX OpenGL cleanup

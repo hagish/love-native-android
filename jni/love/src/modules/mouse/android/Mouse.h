@@ -18,48 +18,38 @@
 * 3. This notice may not be removed or altered from any source distribution.
 **/
 
-#ifndef LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
-#define LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
+#ifndef LOVE_MOUSE_ANDROID_MOUSE_H
+#define LOVE_MOUSE_ANDROID_MOUSE_H
 
 // LOVE
-#include <common/Data.h>
-#include "Decoder.h"
-
-// SDL_sound
-#include <modplug.h>
+#include <mouse/Mouse.h>
 
 namespace love
 {
-namespace sound
+namespace mouse
 {
-namespace lullaby
+namespace android
 {
-	class ModPlugDecoder : public Decoder
+	class Mouse : public love::mouse::Mouse
 	{
-	private:
-
-		ModPlugFile * plug;
-		ModPlug_Settings settings;
-
 	public:
 
-		ModPlugDecoder(Data * data, const std::string & ext, int bufferSize);
-		virtual ~ModPlugDecoder();
+		// Implements Module.
+		const char * getName() const;
 
-		static bool accepts(const std::string & ext);
+		int getX() const;
+		int getY() const;
+		void getPosition(int & x, int & y) const;
+		void setPosition(int x, int y);
+		void setVisible(bool visible);
+		bool isDown(Button * buttonlist) const;
+		bool isVisible() const;
+		void setGrab(bool grab);
+		bool isGrabbed() const;
+	}; // Mouse
 
-		love::sound::Decoder * clone();
-		int decode();
-		bool seek(float s);
-		bool rewind();
-		bool isSeekable();
-		int getChannels() const;
-		int getBits() const;
-
-	}; // Decoder
-
-} // lullaby
-} // sound
+} // android
+} // mouse
 } // love
 
-#endif // LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
+#endif // LOVE_MOUSE_ANDROID_MOUSE_H

@@ -23,13 +23,17 @@
 
 #include <common/config.h>
 
-#define LOVE_THREADS_SDL	0
-#define LOVE_THREADS_WIN32	1
-#define LOVE_THREADS_POSIX	2
+#define LOVE_THREADS_SDL		0
+#define LOVE_THREADS_WIN32		1
+#define LOVE_THREADS_POSIX		2
+#define LOVE_THREADS_ANDROID	3
 
 // Choose correct threads API.
 // Headless love uses either windows threads or posix threads.
 // Headed (standard) love uses SDL threads.
+#ifdef LOVE_ANDROID
+#  define LOVE_THREADS	LOVE_THREADS_ANDROID
+#else
 #ifdef LOVE_HEADLESS
 #  ifdef WIN32
 #    define LOVE_THREADS	LOVE_THREADS_WIN32
@@ -38,6 +42,7 @@
 #  endif
 #else
 #  define LOVE_THREADS	LOVE_THREADS_SDL
+#endif
 #endif
 
 
@@ -48,6 +53,8 @@
 #  include "win32/threads.h"
 #elif LOVE_THREADS == LOVE_THREADS_SDL
 #  include "sdl/threads.h"
+#elif LOVE_THREADS == LOVE_THREADS_ANDROID
+#  include "pthread/threads.h"
 #endif
 
 

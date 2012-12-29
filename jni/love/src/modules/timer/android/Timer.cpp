@@ -32,8 +32,7 @@ namespace timer
 namespace android
 {
 	Timer::Timer()
-		: currTime(0), prevFpsUpdate(0), fps(0), fpsUpdateFrequency(1),
-		frames(0), dt(0)
+		: fps(0), fpsUpdateFrequency(1), frames(0), dt(0)
 	{
 		gettimeofday(&currTime, NULL);
 		gettimeofday(&time_init, NULL);
@@ -49,7 +48,7 @@ namespace android
 		return "love.timer.android";
 	}
 
-	double Timer::diff(timeval &val1, timeval &val2)
+	double Timer::diff(const timeval &val1, const timeval &val2) const
 	{
 		double res;
 		res  = val1.tv_sec + val1.tv_usec/1000000.0;

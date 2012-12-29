@@ -81,7 +81,7 @@ static const luaL_Reg modules[] = {
 	{ "love.font", luaopen_love_font },
 	{ "love.graphics", luaopen_love_graphics },
 	{ "love.image", luaopen_love_image },
-// 	{ "love.joystick", luaopen_love_joystick },
+	{ "love.joystick", luaopen_love_joystick },
 	{ "love.keyboard", luaopen_love_keyboard },
 	{ "love.mouse", luaopen_love_mouse },
 	{ "love.physics", luaopen_love_physics },
@@ -255,6 +255,7 @@ _GLIBCXX_END_NAMESPACE
 #include <sstream>
 
 template<class T> std::string toString(T t)
+{
 	std::string s;
 	std::stringstream out;
 	out << t;

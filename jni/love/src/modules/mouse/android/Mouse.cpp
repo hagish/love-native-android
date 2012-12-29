@@ -18,48 +18,72 @@
 * 3. This notice may not be removed or altered from any source distribution.
 **/
 
-#ifndef LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
-#define LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
+#include "Mouse.h"
 
-// LOVE
-#include <common/Data.h>
-#include "Decoder.h"
-
-// SDL_sound
-#include <modplug.h>
+#include "AndroidEvent.h"
+extern CurrentMouseState gMouseState;
 
 namespace love
 {
-namespace sound
+namespace mouse
 {
-namespace lullaby
+namespace android
 {
-	class ModPlugDecoder : public Decoder
+	const char * Mouse::getName() const
 	{
-	private:
+		return "love.mouse.android";
+	}
 
-		ModPlugFile * plug;
-		ModPlug_Settings settings;
+	int Mouse::getX() const
+	{
+		return gMouseState.x;
+	}
 
-	public:
+	int Mouse::getY() const
+	{
+		return gMouseState.y;
+	}
 
-		ModPlugDecoder(Data * data, const std::string & ext, int bufferSize);
-		virtual ~ModPlugDecoder();
+	void Mouse::getPosition(int & x, int & y) const
+	{
+		x = gMouseState.x;
+		y = gMouseState.y;
+	}
 
-		static bool accepts(const std::string & ext);
+	void Mouse::setPosition(int x, int y)
+	{
+		gMouseState.x = x;
+		gMouseState.y = y;
+	}
 
-		love::sound::Decoder * clone();
-		int decode();
-		bool seek(float s);
-		bool rewind();
-		bool isSeekable();
-		int getChannels() const;
-		int getBits() const;
+	void Mouse::setVisible(bool visible)
+	{
+	}
 
-	}; // Decoder
+	bool Mouse::isDown(Button * buttonlist) const
+	{
+		for (Button button = *buttonlist; button != BUTTON_MAX_ENUM; button = *(++buttonlist))
+		{
+			if (button == gMouseState.keyCode)
+				return true;
+		}
+		return false;
+	}
 
-} // lullaby
-} // sound
+	bool Mouse::isVisible() const
+	{
+		return false;
+	}
+
+	void Mouse::setGrab(bool grab)
+	{
+	}
+
+	bool Mouse::isGrabbed() const
+	{
+		return true;
+	}
+
+} // android
+} // mouse
 } // love
-
-#endif // LOVE_SOUND_LULLABY_MODPLUG_DECODER_H

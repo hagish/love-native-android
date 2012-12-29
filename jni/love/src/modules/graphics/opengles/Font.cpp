@@ -39,7 +39,7 @@ namespace graphics
 namespace opengles
 {
 
-	Font::Font(love::font::Rasterizer * r, const Image::Filter& filter, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect)
+	Font::Font(love::font::Rasterizer * r, std::stack<love::Matrix*> &projMatrix, std::stack<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect, const Image::Filter& filter)
 	: rasterizer(r), height(r->getHeight()), lineHeight(1), mSpacing(1), filter(filter), projMatrix(projMatrix)
 		, modelViewMatrix(modelViewMatrix)
 		, curColor(curColor)
@@ -157,11 +157,11 @@ namespace opengles
 	void Font::print(std::string text, float x, float y, float angle, float sx, float sy, float ox, float oy, float kx, float ky)
 	{
 		float dx = 0.0f; // spacing counter for newline handling
-		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.top()));
 
 		Matrix t;
 		t.setTransformation(ceil(x), ceil(y), angle, sx, sy, ox, oy, kx, ky);
-		*modelViewMatrix.front() *= t;
+		*modelViewMatrix.top() *= t;
 		try
 		{
 			utf8::iterator<std::string::iterator> i (text.begin(), text.begin(), text.end());
@@ -171,17 +171,17 @@ namespace opengles
 				int g = *i++;
 				if (g == '\n')
 				{ // wrap newline, but do not print it
-					modelViewMatrix.front()->translate(-dx, floor(getHeight() * getLineHeight() + 0.5f));
+					modelViewMatrix.top()->translate(-dx, floor(getHeight() * getLineHeight() + 0.5f));
 					dx = 0.0f;
 					continue;
 				}
 				Glyph * glyph = glyphs[g];
 				if (!glyph) 
 					glyph = addGlyph(g);
-				modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+				modelViewMatrix.push(new love::Matrix(*modelViewMatrix.top()));
 				// 1.25 is magic line height for true type fonts
 				if (type == FONT_TRUETYPE) 
-					modelViewMatrix.front()->translate(0, floor(getHeight() / 1.25f + 0.5f));
+					modelViewMatrix.top()->translate(0, floor(getHeight() / 1.25f + 0.5f));
 				bindTexture(glyph->texture);
 
 				bool useStdShader = false;
@@ -202,15 +202,15 @@ namespace opengles
 				PixelEffect::current->bindAttribLocation("colour", 1);
 				PixelEffect::current->bindAttribLocation("texCoord", 2);
 
-				modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
-				modelViewMatrix.front()->translate(glyph->translate[0], glyph->translate[1]);
+				modelViewMatrix.push(new love::Matrix(*modelViewMatrix.top()));
+				modelViewMatrix.top()->translate(glyph->translate[0], glyph->translate[1]);
 
-				Matrix mvp = *modelViewMatrix.front() * *projMatrix.front();
+				Matrix mvp = *modelViewMatrix.top() * *projMatrix.top();
 				PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
 
 				glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-				delete modelViewMatrix.front();
+				delete modelViewMatrix.top();
 				modelViewMatrix.pop();
 
 				glDisableVertexAttribArray(0);
@@ -219,19 +219,19 @@ namespace opengles
 				if(useStdShader == true)
 				  primitivesEffect->detach();
 
-				delete modelViewMatrix.front();
+				delete modelViewMatrix.top();
 				modelViewMatrix.pop();
-				modelViewMatrix.front()->translate(static_cast<GLfloat>(glyph->spacing), 0);
+				modelViewMatrix.top()->translate(static_cast<GLfloat>(glyph->spacing), 0);
 				dx += glyph->spacing;
 			}
 		}
 		catch (utf8::exception & e)
 		{
-			delete modelViewMatrix.front();
+			delete modelViewMatrix.top();
 			modelViewMatrix.pop();
 			throw love::Exception("%s", e.what());
 		}
-		delete modelViewMatrix.front();
+		delete modelViewMatrix.top();
 		modelViewMatrix.pop();
 	}
 
@@ -239,8 +239,8 @@ namespace opengles
 	{
 		Glyph * glyph = glyphs[character];
 		if (!glyph) glyph = addGlyph(character);
-		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
-		modelViewMatrix.front()->translate(x, floor(y+getHeight() + 0.5f));
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.top()));
+		modelViewMatrix.top()->translate(x, floor(y+getHeight() + 0.5f));
 		bindTexture(glyph->texture);
 		
 		bool useStdShader = false;
@@ -261,15 +261,15 @@ namespace opengles
 		PixelEffect::current->bindAttribLocation("colour", 1);
 		PixelEffect::current->bindAttribLocation("texCoord", 2);
 
-		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
-		modelViewMatrix.front()->translate(glyph->translate[0], glyph->translate[1]);
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.top()));
+		modelViewMatrix.top()->translate(glyph->translate[0], glyph->translate[1]);
 
-		Matrix mvp = *modelViewMatrix.front() * *projMatrix.front();
+		Matrix mvp = *modelViewMatrix.top() * *projMatrix.top();
 		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
 
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-		delete modelViewMatrix.front();
+		delete modelViewMatrix.top();
 		modelViewMatrix.pop();
 
 		glDisableVertexAttribArray(0);
@@ -278,7 +278,7 @@ namespace opengles
 		if(useStdShader == true)
 		  primitivesEffect->detach();
 		
-		delete modelViewMatrix.front();
+		delete modelViewMatrix.top();
 		modelViewMatrix.pop();
 	}
 

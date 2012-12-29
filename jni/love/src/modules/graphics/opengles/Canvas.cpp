@@ -133,7 +133,7 @@ namespace opengles
 		}
 	}
 
-	Canvas::Canvas(int width, int height, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect)
+	Canvas::Canvas(int width, int height, std::stack<love::Matrix*> &projMatrix, std::stack<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect)
 		: width(width), height(height), projMatrix(projMatrix)
 		, modelViewMatrix(modelViewMatrix)
 		, curColor(curColor)
@@ -198,7 +198,7 @@ namespace opengles
 		projMatrix.push(new love::Matrix());
 
 		// Set up orthographic view (no depth)
-		projMatrix.front().ortho(0.0, width, height, 0.0, -1.0, 1.0);
+		projMatrix.top()->ortho(0.0, width, height, 0.0, -1.0, 1.0);
 
 		// indicate we are using this fbo
 		current = this;
@@ -212,7 +212,7 @@ namespace opengles
 
 		// bind default
 		strategy->bindFBO( 0 );
-		delete projMatrix.front();
+		delete projMatrix.top();
 		projMatrix.pop();
 		current = NULL;
 	}
@@ -364,8 +364,8 @@ namespace opengles
 
 	void Canvas::drawv(const Matrix & t, const vertex * v) const
 	{
-		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
-		*modelViewMatrix.front() *= t;
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.top()));
+		*modelViewMatrix.top() *= t;
 
 		bindTexture(img);
 
@@ -387,7 +387,7 @@ namespace opengles
 		PixelEffect::current->bindAttribLocation("colour", 1);
 		PixelEffect::current->bindAttribLocation("texCoord", 2);
 		
-		Matrix mvp = *modelViewMatrix.front() * *projMatrix.front();
+		Matrix mvp = *modelViewMatrix.top() * *projMatrix.top();
 		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
 
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -398,7 +398,7 @@ namespace opengles
 		if(useStdShader == true)
 		  primitivesEffect->detach();
 
-		delete modelViewMatrix.front();
+		delete modelViewMatrix.top();
 		modelViewMatrix.pop();
 	}
 

@@ -18,48 +18,30 @@
 * 3. This notice may not be removed or altered from any source distribution.
 **/
 
-#ifndef LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
-#define LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
+#ifndef LOVE_EVENT_ANDROID_WRAP_EVENT_H
+#define LOVE_EVENT_ANDROID_WRAP_EVENT_H
 
 // LOVE
-#include <common/Data.h>
-#include "Decoder.h"
-
-// SDL_sound
-#include <modplug.h>
+#include <common/config.h>
+#include "Event.h"
 
 namespace love
 {
-namespace sound
+namespace event
 {
-namespace lullaby
+namespace android
 {
-	class ModPlugDecoder : public Decoder
-	{
-	private:
+	int w_pump(lua_State * L);
+	int w_poll(lua_State * L);
+	int w_wait(lua_State * L);
+	int w_push(lua_State * L);
+	int w_clear(lua_State * L);
+	int w_quit(lua_State * L);
 
-		ModPlugFile * plug;
-		ModPlug_Settings settings;
+	extern "C" LOVE_EXPORT int luaopen_love_event(lua_State * L);
 
-	public:
-
-		ModPlugDecoder(Data * data, const std::string & ext, int bufferSize);
-		virtual ~ModPlugDecoder();
-
-		static bool accepts(const std::string & ext);
-
-		love::sound::Decoder * clone();
-		int decode();
-		bool seek(float s);
-		bool rewind();
-		bool isSeekable();
-		int getChannels() const;
-		int getBits() const;
-
-	}; // Decoder
-
-} // lullaby
-} // sound
+} // android
+} // event
 } // love
 
-#endif // LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
+#endif // LOVE_EVENT_SDL_WRAP_EVENT_H

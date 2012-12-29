@@ -48,7 +48,7 @@
 #include "Canvas.h"
 #include "PixelEffect.h"
 
-#include <queue>
+#include <stack>
 #include <common/Matrix.h>
 
 namespace love
@@ -119,8 +119,8 @@ namespace opengles
 		GLint matrixLimit;
 		GLint userMatrices;
 		
-		std::queue<love::Matrix*> projectionMatrix;
-		std::queue<love::Matrix*> modelViewMatrix;
+		std::stack<love::Matrix*> projectionMatrix;
+		std::stack<love::Matrix*> modelViewMatrix;
 		float currentColour[4];
 		Graphics::BlendMode currentBlendMode;
 		Graphics::ColorMode currentColourMode;
@@ -128,6 +128,8 @@ namespace opengles
 		PixelEffect *primitivesEffect;
 		
 		int getRenderHeight();
+		
+		DisplayState storedDisplayState;
 
 	public:
 
@@ -541,6 +543,16 @@ namespace opengles
 		void drawTest(Image * image, float x, float y, float a, float sx, float sy, float ox, float oy);
 
 		bool hasFocus();
+
+		/**
+		 * save current status settings
+		 **/
+		void saveSettings(void);
+		
+		/**
+		 * restore last status settings
+		 **/
+		void restoreSettings(void);
 
 	}; // Graphics
 

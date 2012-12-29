@@ -44,6 +44,9 @@ public class LoveJNI {
      public static native boolean onTouchUp(int count, int eventId, int x[], int y[]);
      public static native boolean onTouchMove(int count, int eventId, int x[], int y[]);
      public static native void onSensorChanged(String name, String type, float values[]);
+     public static native void activeEvent(boolean getFocus);
+     public static native boolean onJoystickDown(int id, int button);
+     public static native boolean onJoystickUp(int id, int button);
 
      /**
       * @param volume 0 (mute) - 1f (max)

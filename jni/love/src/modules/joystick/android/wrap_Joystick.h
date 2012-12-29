@@ -18,48 +18,37 @@
 * 3. This notice may not be removed or altered from any source distribution.
 **/
 
-#ifndef LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
-#define LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
+#ifndef LOVE_JOYSTICK_ANDROID_WRAP_JOYSTICK_H
+#define LOVE_JOYSTICK_ANDROID_WRAP_JOYSTICK_H
 
 // LOVE
-#include <common/Data.h>
-#include "Decoder.h"
-
-// SDL_sound
-#include <modplug.h>
+#include <common/config.h>
+#include "Joystick.h"
 
 namespace love
 {
-namespace sound
+namespace joystick
 {
-namespace lullaby
+namespace android
 {
-	class ModPlugDecoder : public Decoder
-	{
-	private:
+	int w_getNumJoysticks(lua_State * L);
+	int w_getName(lua_State * L);
+	int w_open(lua_State * L);
+	int w_isOpen(lua_State * L);
+	int w_getNumAxes(lua_State * L);
+	int w_getNumBalls(lua_State * L);
+	int w_getNumButtons(lua_State * L);
+	int w_getNumHats(lua_State * L);
+	int w_getAxis(lua_State * L);
+	int w_getAxes(lua_State * L);
+	int w_getBall(lua_State * L);
+	int w_isDown(lua_State * L);
+	int w_getHat(lua_State * L);
+	int w_close(lua_State * L);
+	extern "C" LOVE_EXPORT int luaopen_love_joystick(lua_State * L);
 
-		ModPlugFile * plug;
-		ModPlug_Settings settings;
-
-	public:
-
-		ModPlugDecoder(Data * data, const std::string & ext, int bufferSize);
-		virtual ~ModPlugDecoder();
-
-		static bool accepts(const std::string & ext);
-
-		love::sound::Decoder * clone();
-		int decode();
-		bool seek(float s);
-		bool rewind();
-		bool isSeekable();
-		int getChannels() const;
-		int getBits() const;
-
-	}; // Decoder
-
-} // lullaby
-} // sound
+} // sdl
+} // joystick
 } // love
 
-#endif // LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
+#endif // LOVE_JOYSTICK_SDL_WRAP_JOYSTICK_H

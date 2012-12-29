@@ -18,48 +18,39 @@
 * 3. This notice may not be removed or altered from any source distribution.
 **/
 
-#ifndef LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
-#define LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
+#ifndef LOVE_KEYBOARD_ANDROID_KEYBOARD_H
+#define LOVE_KEYBOARD_ANDROID_KEYBOARD_H
 
 // LOVE
-#include <common/Data.h>
-#include "Decoder.h"
-
-// SDL_sound
-#include <modplug.h>
+#include <keyboard/Keyboard.h>
+#include <common/EnumMap.h>
 
 namespace love
 {
-namespace sound
+namespace keyboard
 {
-namespace lullaby
+namespace android
 {
-	class ModPlugDecoder : public Decoder
+	class Keyboard : public love::keyboard::Keyboard
 	{
-	private:
-
-		ModPlugFile * plug;
-		ModPlug_Settings settings;
-
 	public:
 
-		ModPlugDecoder(Data * data, const std::string & ext, int bufferSize);
-		virtual ~ModPlugDecoder();
+		// Implements Module.
+		const char * getName() const;
+		bool isDown(Key * keylist) const;
+		void setKeyRepeat(int delay, int interval) const;
+		int getKeyRepeatDelay() const;
+		int getKeyRepeatInterval() const;
 
-		static bool accepts(const std::string & ext);
+	private:
 
-		love::sound::Decoder * clone();
-		int decode();
-		bool seek(float s);
-		bool rewind();
-		bool isSeekable();
-		int getChannels() const;
-		int getBits() const;
+		static EnumMap<Key, int, Keyboard::KEY_MAX_ENUM>::Entry keyEntries[];
+		static EnumMap<Key, int, Keyboard::KEY_MAX_ENUM> keys;
 
-	}; // Decoder
+	}; // Keyboard
 
-} // lullaby
-} // sound
+} // android
+} // keyboard
 } // love
 
-#endif // LOVE_SOUND_LULLABY_MODPLUG_DECODER_H
+#endif // LOVE_KEYBOARD_ANDROID_KEYBOARD_H

@@ -35,7 +35,7 @@
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2platform.h>
 
-#include <queue>
+#include <stack>
 
 namespace love
 {
@@ -76,8 +76,8 @@ namespace opengles
 		bool loadVolatilePOT();
 		bool loadVolatileNPOT();
 
-		std::queue<love::Matrix*> &projMatrix;
-		std::queue<love::Matrix*> &modelViewMatrix;
+		std::stack<love::Matrix*> &projMatrix;
+		std::stack<love::Matrix*> &modelViewMatrix;
 		float *curColor;
 		PixelEffect *primitivesEffect;
 
@@ -89,7 +89,7 @@ namespace opengles
 		*
 		* @param file The file from which to load the image.
 		**/
-		Image(love::image::ImageData * data, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
+		Image(love::image::ImageData * data, std::stack<love::Matrix*> &projMatrix, std::stack<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
 
 		/**
 		* Destructor. Deletes the hardware texture and other resources.

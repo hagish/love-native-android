@@ -26,6 +26,8 @@
 #  include "win32/threads.cpp"
 #elif LOVE_THREADS == LOVE_THREADS_SDL
 #  include "sdl/threads.cpp"
+#elif LOVE_THREADS == LOVE_THREADS_ANDROID
+#  include "pthread/threads.cpp"
 #endif
 
 namespace love
@@ -40,6 +42,8 @@ namespace thread
 		return "win32";
 #elif LOVE_THREADS == LOVE_THREADS_SDL
 		return "sdl";
+#elif LOVE_THREADS == LOVE_THREADS_ANDROID
+		return "android";
 #endif
 	}
 } // thread

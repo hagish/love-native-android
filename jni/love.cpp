@@ -18,7 +18,7 @@ extern "C" {
 #include <map>
 
 #include "AndroidEvent.h"
-#include "love/src/modules/graphics/opengl/Graphics.h"
+#include "love/src/modules/graphics/opengles/Graphics.h"
 
 std::queue<AndroidEvent*> gAndroidEvents;
 pthread_mutex_t gEventMutex;
@@ -31,7 +31,7 @@ bool gDeinitDone = false;
 bool gInitDone = false;
 
 namespace love { namespace audio { namespace openal { extern float requestedDeviceAudioVolume; } } }
-namespace love { namespace graphics { namespace opengl { Graphics* getGraphicsInstance(void); } } }
+namespace love { namespace graphics { namespace opengles { Graphics* getGraphicsInstance(void); } } }
 
 extern "C" {
     JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * env, jobject obj,  jint width, jint height, jstring file);
@@ -52,6 +52,9 @@ extern "C" {
 	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchUp(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr);
 	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchMove(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr);
 	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onSensorChanged(JNIEnv * env, jobject obj, jstring name, jstring type, jfloatArray values);
+	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_activeEvent(JNIEnv * env, jobject obj, jboolean getFocus);
+	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onJoystickDown(JNIEnv * env, jobject obj, int id, int button);
+    JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onJoystickUp(JNIEnv * env, jobject obj, int id, int button);
 };
 
 JNIEnv *gEnv = NULL;
@@ -279,14 +282,14 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_setDeviceAudioVo
 
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_saveOpenGLState(JNIEnv * env, jobject obj)
 {
-	love::graphics::opengl::Graphics * instance = love::graphics::opengl::getGraphicsInstance();
+	love::graphics::opengles::Graphics * instance = love::graphics::opengles::getGraphicsInstance();
 	if(instance)
 	  instance->saveSettings();
 }
 
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_restoreOpenGLState(JNIEnv * env, jobject obj)
 {
-	love::graphics::opengl::Graphics * instance = love::graphics::opengl::getGraphicsInstance();
+	love::graphics::opengles::Graphics * instance = love::graphics::opengles::getGraphicsInstance();
 	if(instance)
 	  instance->restoreSettings();
 }
@@ -395,4 +398,46 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onSensorChanged(
 	gAndroidEvents.push(ev);
 	pthread_mutex_unlock(&gEventMutex);
 	pthread_cond_signal(&gEventCond);
+}
+
+JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_activeEvent(JNIEnv * env, jobject obj, jboolean getFocus)
+{
+	AndroidEvent *ev = new AndroidEvent;
+	ev->event = ANDROID_ACTIVE_EVENT;
+	ev->keyCode = getFocus ? 1 : 0;
+	
+	pthread_mutex_lock(&gEventMutex);
+	gAndroidEvents.push(ev);
+	pthread_mutex_unlock(&gEventMutex);
+	pthread_cond_signal(&gEventCond);
+}
+
+JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onJoystickDown(JNIEnv * env, jobject obj, int id, int button)
+{
+	LOGI("onJoystickDown");
+	AndroidEvent *ev = new AndroidEvent;
+	ev->event = ANDROID_JOYSTICK_DOWN;
+	ev->keyCode = button;
+	ev->devId = id;
+	pthread_mutex_lock(&gEventMutex);
+	gAndroidEvents.push(ev);
+	pthread_mutex_unlock(&gEventMutex);
+	pthread_cond_signal(&gEventCond);
+
+	return true;
+}
+
+JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onJoystickUp(JNIEnv * env, jobject obj, int id, int button)
+{
+	  LOGI("onJoystickUp");
+	AndroidEvent *ev = new AndroidEvent;
+	ev->event = ANDROID_JOYSTICK_UP;
+	ev->keyCode = button;
+	ev->devId = id;
+	pthread_mutex_lock(&gEventMutex);
+	gAndroidEvents.push(ev);
+	pthread_mutex_unlock(&gEventMutex);
+	pthread_cond_signal(&gEventCond);
+
+	return true;
 }

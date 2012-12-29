@@ -29,8 +29,11 @@ namespace audio
 {
 namespace openal
 {
-	Audio::PoolThread::PoolThread(Pool* pool)
-	: pool(pool), finish(false)
+	float currentDeviceAudioVolume = 1;
+	float requestedDeviceAudioVolume = 1;
+	
+	Audio::PoolThread::PoolThread(Pool* pool, Audio *instance)
+	: pool(pool), finish(false), instance(instance)
 	{
 	}
 
@@ -52,6 +55,7 @@ namespace openal
 			if (absDVolume > 0.001f)
 			{
 				currentDeviceAudioVolume = requestedDeviceAudioVolume;
+				
 				instance->setVolume(instance->getVolume());
 			}
 
@@ -66,8 +70,6 @@ namespace openal
 		finish = true;
 	}
 
-	float requestedDeviceAudioVolume = 1;
-	float currentDeviceAudioVolume = 1;
 	Audio::Audio() : distanceModel(DISTANCE_INVERSE_CLAMPED)
 	{
 		// Passing zero for default device.
@@ -115,7 +117,7 @@ namespace openal
 		// pool must be allocated after AL context.
 		pool = new Pool();
 
-		poolThread = new PoolThread(pool);
+		poolThread = new PoolThread(pool, this);
 		poolThread->start();
 	}
 
@@ -212,7 +214,7 @@ namespace openal
 
 	float Audio::getVolume() const
 	{
-		return listenerVolume;;
+		return listenerVolume;
 	}
 
 	void Audio::getPosition(float * v) const

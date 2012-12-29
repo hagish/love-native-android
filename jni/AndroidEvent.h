@@ -13,7 +13,10 @@ enum AndroidEventType
 	ANDROID_TOUCH_DOWN,
 	ANDROID_TOUCH_UP,
 	ANDROID_TOUCH_MOVE,
+	ANDROID_JOYSTICK_DOWN,
+	ANDROID_JOYSTICK_UP,
 	ANDROID_SENSOR,
+	ANDROID_ACTIVE_EVENT,
 	ANDROID_QUIT
 };
 
@@ -45,6 +48,7 @@ struct AndroidEvent
 {
 	AndroidEventType event;
 	int keyCode;
+	int devId;
 	unsigned int x;
 	unsigned int y;
 	unsigned int *xArr;

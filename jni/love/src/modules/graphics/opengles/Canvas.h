@@ -35,7 +35,7 @@
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2platform.h>
 
-#include <queue>
+#include <stack>
 
 namespace love
 {
@@ -48,7 +48,7 @@ namespace opengles
 	class Canvas : public DrawQable, public Volatile
 	{
 	public:
-		Canvas(int width, int height, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
+		Canvas(int width, int height, std::stack<love::Matrix*> &projMatrix, std::stack<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
 		virtual ~Canvas();
 
 		static bool isSupported();
@@ -94,8 +94,8 @@ namespace opengles
 		GLuint depth, stencil;
 		GLuint img;
 
-		std::queue<love::Matrix*> &projMatrix;
-		std::queue<love::Matrix*> &modelViewMatrix;
+		std::stack<love::Matrix*> &projMatrix;
+		std::stack<love::Matrix*> &modelViewMatrix;
 		float *curColor;
 		PixelEffect *primitivesEffect;
 

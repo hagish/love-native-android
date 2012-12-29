@@ -20,6 +20,7 @@
 
 // LOVE
 #include "wrap_Filesystem.h"
+#include <dlfcn.h>
 
 namespace love
 {
@@ -339,9 +340,9 @@ namespace physfs
 
 		tokenized_name += library_extension();
 
-		void * handle = SDL_LoadObject((std::string(instance->getAppdataDirectory()) + LOVE_PATH_SEPARATOR LOVE_APPDATA_FOLDER LOVE_PATH_SEPARATOR + tokenized_name).c_str());
+		void * handle = dlopen((std::string(instance->getAppdataDirectory()) + LOVE_PATH_SEPARATOR LOVE_APPDATA_FOLDER LOVE_PATH_SEPARATOR + tokenized_name).c_str(), RTLD_NOW);
 		if (!handle && instance->isRelease())
-			handle = SDL_LoadObject((std::string(instance->getSaveDirectory()) + LOVE_PATH_SEPARATOR + tokenized_name).c_str());
+			handle = dlopen((std::string(instance->getSaveDirectory()) + LOVE_PATH_SEPARATOR + tokenized_name).c_str(), RTLD_NOW);
 
 		if (!handle)
 		{
@@ -349,13 +350,18 @@ namespace physfs
 			return 1;
 		}
 
-		void * func = SDL_LoadFunction(handle, ("loveopen_" + tokenized_function).c_str());
+		void * func = dlsym(handle, ("loveopen_" + tokenized_function).c_str());
 		if (!func)
-			func = SDL_LoadFunction(handle, ("luaopen_" + tokenized_function).c_str());
+			func = dlsym(handle, ("luaopen_" + tokenized_function).c_str());
+		if (!func)
+			func = dlsym(handle, ("_loveopen_" + tokenized_function).c_str());
+		if (!func)
+			func = dlsym(handle, ("_luaopen_" + tokenized_function).c_str());
 
 		if (!func)
 		{
-			SDL_UnloadObject(handle);
+			if(handle)
+			  dlclose(handle);
 			lua_pushfstring(L, "\n\textension \"%s\" is incompatible.\n", filename);
 			return 1;
 		}

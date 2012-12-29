@@ -20,7 +20,11 @@
 
 #include <common/config.h>
 
+#ifdef LOVE_ANDROID
+#include "android/Mouse.h"
+#else
 #include "sdl/Mouse.h"
+#endif
 
 #include "wrap_Mouse.h"
 
@@ -124,7 +128,11 @@ namespace mouse
 		{
 			try
 			{
+#ifdef LOVE_ANDROID
+				instance = new love::mouse::android::Mouse();
+#else
 				instance = new love::mouse::sdl::Mouse();
+#endif
 			}
 			catch (Exception & e)
 			{

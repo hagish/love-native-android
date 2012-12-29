@@ -71,6 +71,7 @@ namespace openal
 		class PoolThread: public thread::ThreadBase {
 		protected:
 			Pool* pool;
+			Audio *instance;
 
 			// Set this to true when the thread should finish.
 			// Main thread will write to this value, and PoolThread
@@ -83,7 +84,7 @@ namespace openal
 			virtual void main();
 
 		public:
-			PoolThread(Pool* pool);
+			PoolThread(Pool* pool, Audio *instance);
 			void setFinish();
 		};
 

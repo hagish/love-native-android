@@ -30,6 +30,9 @@
 #include <algorithm>
 #include <iterator>
 
+extern int gScreenWidth;
+extern int gScreenHeight;
+
 namespace love
 {
 namespace graphics
@@ -63,13 +66,13 @@ namespace opengles
 
 		while(!modelViewMatrix.empty())
 		{
-			delete modelViewMatrix.front();
+			delete modelViewMatrix.top();
 			modelViewMatrix.pop();
 		}
 
 		while(!projectionMatrix.empty())
 		{
-			delete projectionMatrix.front();
+			delete projectionMatrix.top();
 			projectionMatrix.pop();
 		}
 
@@ -145,7 +148,7 @@ namespace opengles
 
 		// "Normal" blending
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		currentBlendMode = Graphics::BlendMode::BLEND_ALPHA;
+		currentBlendMode = Graphics::BLEND_ALPHA;
 
 		// Enable line/point smoothing.
 		// not supported, but we want to be compatible to normal GL
@@ -158,13 +161,13 @@ namespace opengles
 		glViewport(0,0, width, height);
 
 		// Reset the projection matrix
-		projectionMatrix.front()->setIdentity();
+		projectionMatrix.top()->setIdentity();
 
 		// Set up orthographic view (no depth)
-		projectionMatrix.front()->ortho(0.0, width, height,0.0, -1.0, 1.0);
+		projectionMatrix.top()->ortho(0.0, width, height,0.0, -1.0, 1.0);
 
 		// Reset modelview matrix
-		modelViewMatrix.front()()->setIdentity();
+		modelViewMatrix.top()->setIdentity();
 
 		// Set pixel row alignment
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
@@ -184,6 +187,57 @@ namespace opengles
 		return true;
 	}
 
+	void Graphics::saveSettings(void)
+	{
+		// This operation destroys the OpenGL context, so
+		// we must save the state.
+		if (isCreated())
+			storedDisplayState = saveState();
+
+		// Unlad all volatile objects. These must be reloaded after
+		// the display mode change.
+		Volatile::unloadAll();
+	}
+
+	void Graphics::restoreSettings(void)
+	{
+		// Enable blending
+		glEnable(GL_BLEND);
+
+		// "Normal" blending
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		currentBlendMode = Graphics::BLEND_ALPHA;
+
+		// Enable line/point smoothing.
+		// not supported, but we want to be compatible to normal GL
+		setLineStyle(LINE_SMOOTH);
+
+		// Enable textures
+		glEnable(GL_TEXTURE_2D);
+
+		// Set the viewport to top-left corner
+		glViewport(0,0, gScreenWidth, gScreenHeight);
+
+		// Reset the projection matrix
+		projectionMatrix.top()->setIdentity();
+
+		// Set up orthographic view (no depth)
+		projectionMatrix.top()->ortho(0.0, gScreenWidth, gScreenHeight,0.0, -1.0, 1.0);
+
+		// Reset modelview matrix
+		modelViewMatrix.top()->setIdentity();
+
+		// Set pixel row alignment
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+
+		// Reload all volatile objects.
+		if (!Volatile::loadAll())
+			std::cerr << "Could not reload all volatile objects." << std::endl;
+
+		// Restore the display state.
+		restoreState(storedDisplayState);
+	}
+	
 	void Graphics::getMode(int &width, int &height, bool &fullscreen, bool &vsync, int &fsaa)
 	{
 		currentWindow->getWindow(width, height, fullscreen, vsync, fsaa);
@@ -210,7 +264,7 @@ namespace opengles
 	void Graphics::clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
-		modelViewMatrix.front()()->setIdentity();
+		modelViewMatrix.top()->setIdentity();
 	}
 
 	void Graphics::present()
@@ -380,7 +434,7 @@ namespace opengles
 
 	Font * Graphics::newFont(love::font::Rasterizer * r, const Image::Filter& filter)
 	{
-		Font * font = new Font(r, filter, projectionMatrix, modelViewMatrix, currentColour, primitivesEffect);
+		Font * font = new Font(r, projectionMatrix, modelViewMatrix, currentColour, primitivesEffect, filter);
 
 		// Load it and check for errors.
 		if (!font)
@@ -475,7 +529,7 @@ namespace opengles
 				"	vPosition = mvp * vec4(position, 0.0, 1.0)\n"
 				"	gl_Position = vPosition;\n"
 				"}\n";
-			effect = new PixelEffect(vertex, code, projectionMatrix, modelViewMatrix, currentColour, primitivesEffect);
+			effect = new PixelEffect(vertex, code);
 		}
 		catch (love::Exception& e)
 		{
@@ -728,7 +782,7 @@ namespace opengles
 		PixelEffect::current->bindAttribLocation("colour", 1);
 		PixelEffect::current->bindAttribLocation("texCoord", 2);
 		
-		Matrix mvp = *modelViewMatrix.front() * *projectionMatrix.front();
+		Matrix mvp = *modelViewMatrix.top() * *projectionMatrix.top();
 		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
 
 		glDrawArrays(GL_POINTS, 0, 1);
@@ -930,7 +984,7 @@ namespace opengles
 			primitivesEffect->attach();
 		}
 		
-		Matrix mvp = *modelViewMatrix.front() * *projectionMatrix.front();
+		Matrix mvp = *modelViewMatrix.top() * *projectionMatrix.top();
 		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
 
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
@@ -1053,7 +1107,7 @@ namespace opengles
 			PixelEffect::current->bindAttribLocation("colour", 1);
 			PixelEffect::current->bindAttribLocation("texCoord", 2);
 			
-			Matrix mvp = *modelViewMatrix.front() * *projectionMatrix.front();
+			Matrix mvp = *modelViewMatrix.top() * *projectionMatrix.top();
 			PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
 
 			glDrawArrays(GL_TRIANGLE_FAN, 0, points + 2);
@@ -1097,7 +1151,7 @@ namespace opengles
 			PixelEffect::current->bindAttribLocation("colour", 1);
 			PixelEffect::current->bindAttribLocation("texCoord", 2);
 			
-			Matrix mvp = *modelViewMatrix.front() * *projectionMatrix.front();
+			Matrix mvp = *modelViewMatrix.top() * *projectionMatrix.top();
 			PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
 
 			glDrawArrays(GL_TRIANGLE_FAN, 0, count/2);
@@ -1145,7 +1199,7 @@ namespace opengles
 		if (userMatrices == matrixLimit)
 			throw Exception("Maximum stack depth reached.");
 		// currently, only model view matrix stack is manipulated
-		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.front()));
+		modelViewMatrix.push(new love::Matrix(*modelViewMatrix.top()));
 		++userMatrices;
 	}
 
@@ -1154,29 +1208,29 @@ namespace opengles
 		if (userMatrices < 1)
 			throw Exception("Minimum stack depth reached. (More pops than pushes?)");
 		// currently, only model view matrix stack is manipulated
-		delete modelViewMatrix.front();
+		delete modelViewMatrix.top();
 		modelViewMatrix.pop();
 		--userMatrices;
 	}
 
 	void Graphics::rotate(float r)
 	{
-		modelViewMatrix.front()->rotate(r);
+		modelViewMatrix.top()->rotate(r);
 	}
 
 	void Graphics::scale(float x, float y)
 	{
-		modelViewMatrix.front()->scale(x, y);
+		modelViewMatrix.top()->scale(x, y);
 	}
 
 	void Graphics::translate(float x, float y)
 	{
-		modelViewMatrix.front()->translate(x, y);
+		modelViewMatrix.top()->translate(x, y);
 	}
 
 	void Graphics::shear(float kx, float ky)
 	{
-		modelViewMatrix.front()->shear(kx, ky);
+		modelViewMatrix.top()->shear(kx, ky);
 	}
 
 	void Graphics::drawTest(Image * image, float x, float y, float a, float sx, float sy, float ox, float oy)
@@ -1213,7 +1267,7 @@ namespace opengles
 		PixelEffect::current->bindAttribLocation("colour", 1);
 		PixelEffect::current->bindAttribLocation("texCoord", 2);
 		
-		Matrix mvp = *modelViewMatrix.front() * *projectionMatrix.front();
+		Matrix mvp = *modelViewMatrix.top() * *projectionMatrix.top();
 		PixelEffect::current->sendMatrix("mvp", 4, mvp.getElements(), 1);
 
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);

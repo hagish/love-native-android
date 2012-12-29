@@ -22,7 +22,11 @@
 
 #include "wrap_Keyboard.h"
 
+#ifdef LOVE_ANDROID
+#include "android/Keyboard.h"
+#else
 #include "sdl/Keyboard.h"
+#endif
 
 namespace love
 {
@@ -85,7 +89,11 @@ namespace keyboard
 		{
 			try
 			{
+#ifdef LOVE_ANDROID
+				instance = new love::keyboard::android::Keyboard();
+#else
 				instance = new love::keyboard::sdl::Keyboard();
+#endif
 			}
 			catch (Exception & e)
 			{

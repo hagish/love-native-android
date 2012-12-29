@@ -30,13 +30,13 @@ namespace
 	// reattaches the originally active program when destroyed
 	struct TemporaryAttacher
 	{
-		TemporaryAttacher(love::graphics::opengl::PixelEffect* sp) : s(sp)
+		TemporaryAttacher(love::graphics::opengles::PixelEffect* sp) : s(sp)
 		{
 			glGetIntegerv(GL_CURRENT_PROGRAM, &activeProgram);
 			s->attach();
 		}
 		~TemporaryAttacher() { glUseProgram(activeProgram); }
-		love::graphics::opengl::PixelEffect* s;
+		love::graphics::opengles::PixelEffect* s;
 		GLint activeProgram;
 	};
 } // anonymous namespace

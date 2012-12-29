@@ -30,7 +30,7 @@
 #include <graphics/Color.h>
 #include "Image.h"
 #include <vector>
-#include <queue>
+#include <stack>
 
 namespace love
 {
@@ -156,8 +156,8 @@ namespace opengles
 		void add();
 		void remove(particle * p);
 
-		std::queue<love::Matrix*> &projMatrix;
-		std::queue<love::Matrix*> &modelViewMatrix;
+		std::stack<love::Matrix*> &projMatrix;
+		std::stack<love::Matrix*> &modelViewMatrix;
 		float *curColor;
 		PixelEffect *primitivesEffect;
 
@@ -166,7 +166,7 @@ namespace opengles
 		/**
 		* Creates a particle system with the specified buffersize and sprite.
 		**/
-		ParticleSystem(Image * sprite, unsigned int buffer, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
+		ParticleSystem(Image * sprite, unsigned int buffer, std::stack<love::Matrix*> &projMatrix, std::stack<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
 
 		/**
 		* Deletes any allocated memory.

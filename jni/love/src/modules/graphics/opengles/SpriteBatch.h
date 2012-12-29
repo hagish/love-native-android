@@ -38,7 +38,7 @@
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2platform.h>
 
-#include <queue>
+#include <stack>
 
 namespace love
 {
@@ -73,8 +73,8 @@ namespace opengles
 		VertexBuffer *array_buf;
 		VertexBuffer *element_buf;
 
-		std::queue<love::Matrix*> &projMatrix;
-		std::queue<love::Matrix*> &modelViewMatrix;
+		std::stack<love::Matrix*> &projMatrix;
+		std::stack<love::Matrix*> &modelViewMatrix;
 		float *curColor;
 		PixelEffect *primitivesEffect;
 
@@ -88,7 +88,7 @@ namespace opengles
 			USAGE_MAX_ENUM
 		};
 
-		SpriteBatch(Image * image, int size, int usage, std::queue<love::Matrix*> &projMatrix, std::queue<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
+		SpriteBatch(Image * image, int size, int usage, std::stack<love::Matrix*> &projMatrix, std::stack<love::Matrix*> &modelViewMatrix, float *curColor, PixelEffect *primitivesEffect);
 		virtual ~SpriteBatch();
 
 		int add(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky, int index = -1);

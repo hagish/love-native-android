@@ -44,7 +44,7 @@ namespace thread
 		pthread_mutex_unlock(&mutex);
 	}
 
-	int ThreadBase::thread_runner(void* param)
+	void* ThreadBase::thread_runner(void* param)
 	{
 		ThreadBase* thread = (ThreadBase*)param;
 		thread->main();
@@ -87,7 +87,7 @@ namespace thread
 
 	unsigned int ThreadBase::threadId()
 	{
-		return (unsigned int) gettid();
+		return (unsigned int) pthread_self();
 	}
 
 	Semaphore::Semaphore(unsigned int initial_value)
@@ -165,7 +165,7 @@ namespace thread
 			timespec spec;
 			spec.tv_sec = timeout/1000;
 			spec.tv_nsec = (timeout%1000)*1000000;
-			return (pthread_cond_timedwait(&cond, &mutex->mutex, spec) == 0);
+			return (pthread_cond_timedwait(&cond, &mutex->mutex, &spec) == 0);
 		}
 	}
 
