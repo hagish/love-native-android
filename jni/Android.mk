@@ -46,7 +46,7 @@ LOCAL_SRC_FILES := \
 	${OGG_SRC_PATH}src/bitwise.c \
 
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -85,7 +85,7 @@ LOCAL_SRC_FILES := \
 	${VORBIS_SRC_PATH}lib/vorbisfile.c 
 
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := libogg
 
@@ -147,7 +147,7 @@ LOCAL_SRC_FILES := \
 	${MPG123_SRC_PATH}src/libmpg123/feature.c \
 
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
  LOCAL_STATIC_LIBRARIES := 
 
@@ -201,7 +201,7 @@ LOCAL_SRC_FILES := \
 	${MODPLUG_SRC_PATH}src/modplug.cpp \
 
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := 
 
@@ -249,7 +249,7 @@ LOCAL_SRC_FILES := \
 	${OPENAL_SRC_PATH}Alc/backends/android.c \
 	${OPENAL_SRC_PATH}Alc/backends/wave.c 
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := 
 
@@ -327,7 +327,7 @@ LOCAL_SRC_FILES := \
 	${JPEG_SRC_PATH}jdatadst.c \
 	${JPEG_SRC_PATH}jdinput.c 
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := 
 
@@ -384,7 +384,7 @@ LOCAL_SRC_FILES := \
 	${TIFF_SRC_PATH}libtiff/tif_pixarlog.c \
 	${TIFF_SRC_PATH}port/lfind.c 
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := libjpeg libphysfs
 
@@ -395,7 +395,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := libphysfs
 LOCAL_CFLAGS    := -g -Dlinux -Dunix -DFT2_BUILD_LIBRARY=1 -DPHYSFS_NO_CDROM_SUPPORT=1 -DAL_ALEXT_PROTOTYPES=1 -DHAVE_GCC_DESTRUCTOR=1 -DOPT_GENERIC -DREAL_IS_FLOAT \
-					-DPHYSFS_SUPPORTS_ZIP=1 -DPHYSFS_SUPPORTS_ZIP=1 -DPHYSFS_SUPPORTS_7Z=1 -DPHYSFS_SUPPORTS_GRP=1 -DPHYSFS_SUPPORTS_QPAK=1 -DPHYSFS_SUPPORTS_HOG=1 -DPHYSFS_SUPPORTS_MVL=1 -DPHYSFS_SUPPORTS_WAD=1
+					-DPHYSFS_SUPPORTS_APK=1 -DPHYSFS_SUPPORTS_ZIP=1 -DPHYSFS_SUPPORTS_ZIP=1 -DPHYSFS_SUPPORTS_7Z=1 -DPHYSFS_SUPPORTS_GRP=1 -DPHYSFS_SUPPORTS_QPAK=1 -DPHYSFS_SUPPORTS_HOG=1 -DPHYSFS_SUPPORTS_MVL=1 -DPHYSFS_SUPPORTS_WAD=1
 
 LOCAL_CPPFLAGS  := ${LOCAL_CFLAGS}
 
@@ -420,6 +420,7 @@ LOCAL_SRC_FILES := \
 	${PHYSFS_SRC_PATH}/archivers/qpak.c \
 	${PHYSFS_SRC_PATH}/archivers/wad.c \
 	${PHYSFS_SRC_PATH}/archivers/zip.c \
+	${PHYSFS_SRC_PATH}/archivers/apk.c \
 	${PHYSFS_SRC_PATH}/lzma/C/7zCrc.c \
 	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zBuffer.c \
 	${PHYSFS_SRC_PATH}/lzma/C/Archive/7z/7zDecode.c \
@@ -444,7 +445,7 @@ LOCAL_SRC_FILES := \
 	${PHYSFS_SRC_PATH}/zlib123/uncompr.c \
 	${PHYSFS_SRC_PATH}/zlib123/zutil.c \
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := 
 
@@ -482,7 +483,7 @@ LOCAL_SRC_FILES := \
 	${MNG_SRC_PATH}libmng_hlapi.c \
 	${MNG_SRC_PATH}libmng_chunk_prc.c \
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := libjpeg libphysfs
 
@@ -530,7 +531,7 @@ LOCAL_SRC_FILES := \
 	${LUA_SRC_PATH}src/ldebug.c \
 	${LUA_SRC_PATH}src/lobject.c 
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES :=  
 
@@ -570,7 +571,7 @@ LOCAL_SRC_FILES := \
     $(FREETYPE_SRC_PATH)src/smooth/smooth.c \
     $(FREETYPE_SRC_PATH)src/truetype/truetype.c 
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES :=  
 
@@ -612,7 +613,7 @@ LOCAL_SRC_FILES := \
 	${LCMS_SRC_PATH}src/cmslut.c \
 	${LCMS_SRC_PATH}src/cmsvirt.c \
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES :=  
 
@@ -646,7 +647,7 @@ LOCAL_SRC_FILES := \
 	${PNG_SRC_PATH}pngget.c \
 	${PNG_SRC_PATH}pngread.c \
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := libphysfs
 
@@ -718,7 +719,7 @@ LOCAL_SRC_FILES := \
 	${JASPER_SRC_PATH}src/libjasper/ras/ras_enc.c \
 	${JASPER_SRC_PATH}src/libjasper/mif/mif_cod.c \
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := libjpeg
 
@@ -820,7 +821,7 @@ LOCAL_SRC_FILES := \
 	${DEVIL_SRC_PATH}src-IL/src/il_dpx.c \
 	${DEVIL_SRC_PATH}src-IL/src/il_rawdata.c \
 
-LOCAL_LDLIBS    := -llog -L../lib -lGLESv1_CM
+LOCAL_LDLIBS    := -llog -L../lib -lGLESv2
 
 LOCAL_STATIC_LIBRARIES := \
     libjasper \
@@ -886,6 +887,7 @@ LOCAL_SRC_FILES := love.cpp \
 	${LOVE_SRC_PATH}src/modules/audio/null/Source.cpp \
 	${LOVE_SRC_PATH}src/modules/audio/null/Audio.cpp \
 	${LOVE_SRC_PATH}src/modules/audio/Source.cpp \
+	${LOVE_SRC_PATH}src/modules/audio/Audio.cpp \
    	${LOVE_SRC_PATH}src/modules/timer/wrap_Timer.cpp \
 	${LOVE_SRC_PATH}src/modules/timer/android/Timer.cpp \
 	${LOVE_SRC_PATH}src/modules/thread/threads.cpp \

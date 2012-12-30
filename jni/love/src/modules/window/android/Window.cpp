@@ -94,7 +94,9 @@ namespace android
 	{
 		if(fullscreen && width == gScreenWidth && height == gScreenHeight)
 		  return true;
-		return false;
+		//return false;
+		  // pretend it worked :)
+		  return true;
 	}
 
 	typedef Window::WindowSize WindowSize;

@@ -89,7 +89,7 @@ namespace opengles
 			throw love::Exception("Cannot create shader object.");
 		}
 
-		// compile fragment shader code
+		// compile vertex shader code
 		const char* src = _vertex.c_str();
 		GLint strlen = _vertex.length();
 		glShaderSource(vshader, 1, (const GLchar**)&src, &strlen);
@@ -104,6 +104,8 @@ namespace opengles
 			char *error_str = new char[strlen];
 			glGetShaderInfoLog(vshader, strlen, NULL, error_str);
 			std::string tmp(error_str);
+			tmp += "\n";
+			tmp += _vertex;
 
 			// cleanup before throw
 			delete[] error_str;
@@ -111,7 +113,7 @@ namespace opengles
 			glDeleteProgram(_program);
 
 			// XXX: errorlog may contain escape sequences.
-			throw love::Exception("Cannot compile shader:\n%s", tmp.c_str());
+			throw love::Exception("Cannot compile vertex shader:\n%s", tmp.c_str());
 		}
 		
 		GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -136,6 +138,8 @@ namespace opengles
 			char *error_str = new char[strlen];
 			glGetShaderInfoLog(fshader, strlen, NULL, error_str);
 			std::string tmp(error_str);
+			tmp += "\n";
+			tmp += _fragment;
 
 			// cleanup before throw
 			delete[] error_str;
@@ -144,7 +148,7 @@ namespace opengles
 			glDeleteProgram(_program);
 
 			// XXX: errorlog may contain escape sequences.
-			throw love::Exception("Cannot compile shader:\n%s", tmp.c_str());
+			throw love::Exception("Cannot compile fragment shader:\n%s", tmp.c_str());
 		}
 
 		// link fragment shader

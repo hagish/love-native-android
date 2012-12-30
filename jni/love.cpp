@@ -29,6 +29,7 @@ int gScreenWidth = 0;
 int gScreenHeight = 0;
 bool gDeinitDone = false;
 bool gInitDone = false;
+std::string apkPackageFile;
 
 namespace love { namespace audio { namespace openal { extern float requestedDeviceAudioVolume; } } }
 namespace love { namespace graphics { namespace opengles { Graphics* getGraphicsInstance(void); } } }
@@ -52,6 +53,7 @@ extern "C" {
 	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchUp(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr);
 	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onTouchMove(JNIEnv * env, jobject obj, jint size, jint eventId, jintArray xArr, jintArray yArr);
 	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onSensorChanged(JNIEnv * env, jobject obj, jstring name, jstring type, jfloatArray values);
+	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_setPackageFile(JNIEnv * env, jobject obj, jstring apkFile);
 	JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_activeEvent(JNIEnv * env, jobject obj, jboolean getFocus);
 	JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onJoystickDown(JNIEnv * env, jobject obj, int id, int button);
     JNIEXPORT bool JNICALL Java_net_schattenkind_nativelove_LoveJNI_onJoystickUp(JNIEnv * env, jobject obj, int id, int button);
@@ -398,6 +400,11 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_onSensorChanged(
 	gAndroidEvents.push(ev);
 	pthread_mutex_unlock(&gEventMutex);
 	pthread_cond_signal(&gEventCond);
+}
+
+JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_setPackageFile(JNIEnv * env, jobject obj, jstring apkFile)
+{
+	apkPackageFile = std::string(env->GetStringUTFChars(apkFile, NULL));
 }
 
 JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_activeEvent(JNIEnv * env, jobject obj, jboolean getFocus)

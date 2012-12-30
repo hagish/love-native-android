@@ -50,9 +50,21 @@ namespace opengles
 		resetBoundTexture();
 		
 		const char *effect = 
+			"precision mediump float;\n"
+			"#define number float\n"
+			"#define Image sampler2D\n"
+			"#define extern uniform\n"
+			"#define Texel texture2D\n"
+			"varying vec4 vColour;\n"
+			"varying vec2 vTexCoord;\n"
+			"varying vec4 vPosition;\n"
+			"uniform sampler2D _tex0_;\n"
 			"vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords)\n"
 			"{\n"
 			"	return color;\n"
+			"}\n"
+			"void main() {\n"
+			"	gl_FragColor = effect(vColour, _tex0_, vTexCoord, vPosition.xy);\n"
 			"}\n";
 		PixelEffect *primitivesEffect = newPixelEffect(effect);
 	}
@@ -526,7 +538,7 @@ namespace opengles
 				"{\n"
 				"	vColour = colour;\n"
 				"	vTexCoord = texCoord;\n"
-				"	vPosition = mvp * vec4(position, 0.0, 1.0)\n"
+				"	vPosition = mvp * vec4(position, 0.0, 1.0);\n"
 				"	gl_Position = vPosition;\n"
 				"}\n";
 			effect = new PixelEffect(vertex, code);

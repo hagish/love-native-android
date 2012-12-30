@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.LinkedList;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -37,7 +38,7 @@ public class LoveNative extends Activity implements SensorEventListener {
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mSensorList = new LinkedList<Sensor>();
 
-        String filePath = "/mnt/sdcard/love/iyfct";
+        String filePath = "";
 
         Uri data = getIntent().getData();
         if (data != null) {
@@ -51,9 +52,12 @@ public class LoveNative extends Activity implements SensorEventListener {
         	}
         }
 
+        Log.i("liblove", "apk file/directory: " + getApplicationInfo().sourceDir);
+        Log.i("liblove", "game file/directory: " + filePath);
+
         //setContentView(R.layout.main);
         LoveJNI.setActivity(this);
-        mGLView = new LoveRenderView(this, filePath);
+        mGLView = new LoveRenderView(this, filePath, getApplicationInfo().sourceDir);
         setContentView(mGLView);
         //LoveJNI.step();
     }
@@ -81,7 +85,7 @@ public class LoveNative extends Activity implements SensorEventListener {
     		return super.onKeyDown(keyCode, event);
     	}
 
-    	if(event.getSource() == InputDevice.SOURCE_CLASS_JOYSTICK &&
+    	if(event.getSource() == 0x10 /*InputDevice.SOURCE_CLASS_JOYSTICK*/ &&
     			LoveJNI.onJoystickDown(event.getDeviceId(), keyCode))
     		return true;
     	else if(LoveJNI.onKeyDown(keyCode))
@@ -98,7 +102,7 @@ public class LoveNative extends Activity implements SensorEventListener {
     		return super.onKeyUp(keyCode, event);
     	}
 
-    	if(event.getSource() == InputDevice.SOURCE_CLASS_JOYSTICK &&
+    	if(event.getSource() == 0x10 /*InputDevice.SOURCE_CLASS_JOYSTICK*/ &&
     			LoveJNI.onJoystickDown(event.getDeviceId(), keyCode))
     		return true;
     	else if(LoveJNI.onKeyUp(keyCode))

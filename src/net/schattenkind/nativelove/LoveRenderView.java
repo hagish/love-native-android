@@ -9,14 +9,18 @@ import android.opengl.GLSurfaceView;
 class LoveRenderView extends GLSurfaceView
 {
 	private final String loveFile;
+	private final String apkPackageFile;
 	private boolean loveCreated = false;
 	private boolean mSkipRendering = false;
 
-	public LoveRenderView(Context context, String filePath)
+	public LoveRenderView(Context context, String filePath, String apkFile)
     {
-	    super(context);
+		super(context);
+	 // Create an OpenGL ES 2.0 context
+	    setEGLContextClientVersion(2);
 
 	    loveFile = filePath;
+	    apkPackageFile = apkFile;
 
 	    setRenderer(new Renderer() {
 			@Override
@@ -39,7 +43,7 @@ class LoveRenderView extends GLSurfaceView
 					{
 						LoveJNI.step();
 					}
-					
+
 				}
 				else
 				{
@@ -53,7 +57,8 @@ class LoveRenderView extends GLSurfaceView
 				if (loveCreated == false)
 				{
 					System.out.println("java: init");
-		            LoveJNI.init(width, height, loveFile);	     
+					LoveJNI.setPackageFile(apkPackageFile);
+		            LoveJNI.init(width, height, loveFile);
 		            loveCreated = true;
 				}
 				else
@@ -65,19 +70,19 @@ class LoveRenderView extends GLSurfaceView
 			@Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config)
             {
-				       
+
             }
 	    });
     }
-	
+
 	@Override
 	public void onPause()
     {
 		LoveJNI.saveOpenGLState();
 		super.onPause();
     }
-	
-	@Override 
+
+	@Override
     public void onResume() {
         super.onResume();
         LoveJNI.restoreOpenGLState();
@@ -86,12 +91,12 @@ class LoveRenderView extends GLSurfaceView
 	public void stopRendering()
     {
 	    mSkipRendering = true;
-	    
+
     }
 
 	public void continueRendering()
     {
 		mSkipRendering  = false;
-	    
+
     }
 }

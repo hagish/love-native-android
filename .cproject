@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?fileVersion 4.0.0?>
-
-<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="cdt.managedbuild.config.gnu.cross.exe.debug.499723436">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cross.exe.debug.499723436" moduleId="org.eclipse.cdt.core.settings" name="Debug">
@@ -20,7 +18,7 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.cross.exe.debug.499723436." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.1001285072" name="Linux GCC" resourceTypeBasedDiscovery="true" superClass="cdt.managedbuild.toolchain.gnu.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.100275748" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-							<builder buildPath="${workspace_loc:/love-native-android/jni}" command="/opt/android-ndk-r6b/ndk-build" id="cdt.managedbuild.target.gnu.builder.base.417129099" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" parallelizationNumber="-2" stopOnErr="true" superClass="cdt.managedbuild.target.gnu.builder.base">
+							<builder buildPath="${workspace_loc:/love-native-android/jni}" command="/home/moe/android/android-ndk-r7/ndk-build" id="cdt.managedbuild.target.gnu.builder.base.417129099" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" stopOnErr="true" superClass="cdt.managedbuild.target.gnu.builder.base">
 								<outputEntries>
 									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="jni"/>
 								</outputEntries>
@@ -84,7 +82,7 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.cross.exe.release.215711734." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.exe.release.517247434" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.exe.release">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.204039761" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
-							<builder arguments="" buildPath="${workspace_loc:/love-native-android/Release}" command="/opt/android-ndk-r6b/ndk-build" id="cdt.managedbuild.builder.gnu.cross.1792468273" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" stopOnErr="true" superClass="cdt.managedbuild.builder.gnu.cross"/>
+							<builder arguments="" buildPath="${workspace_loc:/love-native-android/Release}" command="/home/moe/android/android-ndk-r7/ndk-build" id="cdt.managedbuild.builder.gnu.cross.1792468273" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" stopOnErr="true" superClass="cdt.managedbuild.builder.gnu.cross"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.1440215733" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
 								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1660205660" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.debugging.level.1059512776" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
@@ -249,8 +247,13 @@
 		<project id="blub.cdt.managedbuild.target.gnu.exe.1244391365" name="Executable" projectType="cdt.managedbuild.target.gnu.exe"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.pathentry"/>
-	<storageModule moduleId="refreshScope" versionNumber="1">
-		<resource resourceType="PROJECT" workspacePath="/love-native-android"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/love-native-android"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/love-native-android"/>
+		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
@@ -262,10 +265,10 @@
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.debug.499723436;cdt.managedbuild.config.gnu.cross.exe.debug.499723436.;cdt.managedbuild.tool.gnu.cpp.compiler.base.1593176842;cdt.managedbuild.tool.gnu.cpp.compiler.input.1925078956">
 			<autodiscovery enabled="false" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.499960548;cdt.managedbuild.config.gnu.exe.debug.499960548.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.207795261;cdt.managedbuild.tool.gnu.cpp.compiler.input.1710838950">
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.debug.499723436;cdt.managedbuild.config.gnu.cross.exe.debug.499723436.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.954088977;cdt.managedbuild.tool.gnu.cpp.compiler.input.1846787844">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.debug.499723436;cdt.managedbuild.config.gnu.cross.exe.debug.499723436.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.954088977;cdt.managedbuild.tool.gnu.cpp.compiler.input.1846787844">
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.499960548;cdt.managedbuild.config.gnu.exe.debug.499960548.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.207795261;cdt.managedbuild.tool.gnu.cpp.compiler.input.1710838950">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.215711734;cdt.managedbuild.config.gnu.cross.exe.release.215711734.;cdt.managedbuild.tool.gnu.cross.c.compiler.1440215733;cdt.managedbuild.tool.gnu.c.compiler.input.1201628565">
@@ -287,4 +290,5 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 		</scannerConfigBuildInfo>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 </cproject>
