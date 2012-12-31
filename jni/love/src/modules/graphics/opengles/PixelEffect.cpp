@@ -24,6 +24,8 @@
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2platform.h>
 
+#include "loveLog.h"
+
 namespace
 {
 	// temporarily attaches a shader program (for setting uniforms, etc)
@@ -86,6 +88,7 @@ namespace opengles
 		if (vshader == 0)
 		{
 			glDeleteProgram(_program);
+			_program = 0;
 			throw love::Exception("Cannot create shader object.");
 		}
 
@@ -111,6 +114,7 @@ namespace opengles
 			delete[] error_str;
 			glDeleteShader(vshader);
 			glDeleteProgram(_program);
+			_program = 0;
 
 			// XXX: errorlog may contain escape sequences.
 			throw love::Exception("Cannot compile vertex shader:\n%s", tmp.c_str());
@@ -121,6 +125,7 @@ namespace opengles
 		if (fshader == 0)
 		{
 			glDeleteProgram(_program);
+			_program = 0;
 			throw love::Exception("Cannot create shader object.");
 		}
 
@@ -146,6 +151,7 @@ namespace opengles
 			glDeleteShader(fshader);
 			glDeleteShader(vshader);
 			glDeleteProgram(_program);
+			_program = 0;
 
 			// XXX: errorlog may contain escape sequences.
 			throw love::Exception("Cannot compile fragment shader:\n%s", tmp.c_str());
@@ -167,7 +173,8 @@ namespace opengles
 			glDeleteShader(fshader);
 			glDeleteShader(vshader);
 			glDeleteProgram(_program);
-			throw love::Exception("Cannot compile shader:\n%s", tmp.c_str());
+			_program = 0;
+			throw love::Exception("Cannot link shader:\n%s", tmp.c_str());
 		}
 
 		glDeleteShader(fshader);
@@ -183,6 +190,7 @@ namespace opengles
 	void PixelEffect::unloadVolatile()
 	{
 		glDeleteProgram(_program);
+		_program = 0;
 	}
 
 	std::string PixelEffect::getGLSLVersion()
@@ -221,7 +229,7 @@ namespace opengles
 	void PixelEffect::attach()
 	{
 		glUseProgram(_program);
-		current = this;
+ 		current = this;
 	}
 
 	void PixelEffect::detach()

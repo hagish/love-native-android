@@ -365,6 +365,7 @@ lua_State * L = 0;
 
 int main_prepare(int argc, char ** argv)
 {
+	LOGI("%s %i", __FILE__, __LINE__);
 	// Oh, you just want the version? Okay!
 	if (argc > 1 && strcmp(argv[1],"--version") == 0)
 	{
@@ -372,13 +373,16 @@ int main_prepare(int argc, char ** argv)
 		return 0;
 	}
 
+	LOGI("%s %i", __FILE__, __LINE__);
 	// Create the virtual machine.
 	L = lua_open();
 	luaL_openlibs(L);
+	LOGI("%s %i", __FILE__, __LINE__);
 
 	love::luax_preload(L, luaopen_love, "love");
 
 	luaopen_love(L);
+	LOGI("%s %i", __FILE__, __LINE__);
 
 	// Add command line arguments to global arg (like stand-alone Lua).
 	{
@@ -401,6 +405,7 @@ int main_prepare(int argc, char ** argv)
 
 		lua_setglobal(L, "arg");
 	}
+	LOGI("%s %i", __FILE__, __LINE__);
 
 	// Add love.__exe = true.
 	// This indicates that we're running the
@@ -413,8 +418,10 @@ int main_prepare(int argc, char ** argv)
 		lua_pop(L, 1);
 	}
 
+	LOGI("%s %i", __FILE__, __LINE__);
 	// Setup android specific stuff
 	android_prepare(L);
+	LOGI("%s %i", __FILE__, __LINE__);
 
 	// Boot
 	if (luaL_loadbuffer(L, (const char *)love::boot_lua, sizeof(love::boot_lua), "boot.lua") == 0)
@@ -426,6 +433,7 @@ int main_prepare(int argc, char ** argv)
 			lua_pop(L, 1);
 		}
 	}
+	LOGI("%s %i", __FILE__, __LINE__);
 	
 	return 0;
 }

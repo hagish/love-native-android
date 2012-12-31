@@ -206,6 +206,7 @@ namespace love
 		m.e[12] = (right + left) / (right - left);
 		m.e[13] = (top + bottom) / (top - bottom);
 		m.e[14] = (farVal + nearVal) / (farVal - nearVal);
+		m.e[15] = 1.f;
 		
 		*this *= m;
 	}

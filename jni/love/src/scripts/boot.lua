@@ -172,6 +172,18 @@ function love.createhandlers()
 		joystickreleased = function (j,b)
 			if love.joystickreleased then love.joystickreleased(j,b) end
 		end,
+		tp = function (x,y,i)
+			if love.touchpressed then love.touchpressed(x,y,i) end
+		end,
+		tr = function (x,y,i)
+			if love.touchreleased then love.touchreleased(x,y,i) end
+		end,
+		tm = function (x,y,i)
+			if love.touchmove then love.touchmove(x,y,i) end
+		end,
+		s = function(n,t,v)
+			if love.sensorchanged then love.sensorchanged(n,t,v) end
+		end,
 		focus = function (f)
 			if love.focus then love.focus(f) end
 		end,
@@ -200,6 +212,10 @@ function love.boot()
 
 	local o = love.arg.options
 
+	for k,v in pairs(o.game) do
+		print("o",k,v)
+	end
+
 	local arg0 = love.arg.getLow(arg)
 	love.filesystem.init(arg0)
 
@@ -208,10 +224,14 @@ function love.boot()
 	is_fused_game = can_has_game
 
 	if not can_has_game and o.game.set and o.game.arg[1] then
+		print("GAME", o.game.arg[1])
 		local full_source =  love.path.getfull(o.game.arg[1])
+		print("source", full_source)
 		local leaf = love.path.leaf(full_source)
+		print("leaf",leaf)
 		love.filesystem.setIdentity(leaf)
 		can_has_game = pcall(love.filesystem.setSource, full_source)
+		print("can_has_game", can_has_game)
 	end
 
 	if can_has_game and not (love.filesystem.exists("main.lua") or love.filesystem.exists("conf.lua")) then
@@ -302,6 +322,7 @@ function love.init()
 		"physics",
 	} do
 		if c.modules[v] then
+			print("require",v)
 			require("love." .. v)
 		end
 	end
@@ -792,7 +813,47 @@ function love.releaseerrhand(msg)
 	end
 end
 
+function _love_draw()
+	if love.graphics then
+		love.graphics.clear()
+		if love.draw then love.draw() end
+		love.graphics.present()
+	end
+end
 
+-- love.run like method with stepper
+_love_update_loaded = false
+function _love_update()
+	print("update...")
+	if not _love_update_loaded and love.load then 
+		love.load() 
+		_love_update_loaded = true 
+	end
+
+	if love.timer then
+		love.timer.step()
+		dt = love.timer.getDelta()
+		print("timer",dt,love.timer.getTime(),love.timer.getMicroTime())
+	end
+	if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
+
+	-- Process events.
+	if love.event then
+		for e,a,b,c in love.event.poll() do
+			if e == "q" then
+				if not love.quit or not love.quit() then
+					if love.audio then
+						love.audio.stop()
+					end
+					return
+				end
+			end
+			love.handlers[e](a,b,c)
+		end
+	end
+
+	if love.timer then love.timer.sleep(1) end
+end
 -----------------------------------------------------------
 -- The root of all calls.
 -----------------------------------------------------------
@@ -801,5 +862,5 @@ local result = xpcall(love.boot, error_printer)
 if not result then return end
 local result = xpcall(love.init, love._release and love.releaseerrhand or love.errhand)
 if not result then return end
-local result = xpcall(love.run, love._release and love.releaseerrhand or love.errhand)
-if not result then return end
+--local result = xpcall(love.run, love._release and love.releaseerrhand or love.errhand)
+--if not result then return end

@@ -5,6 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 class LoveRenderView extends GLSurfaceView
 {
@@ -21,12 +22,13 @@ class LoveRenderView extends GLSurfaceView
 
 	    loveFile = filePath;
 	    apkPackageFile = apkFile;
+	    Log.i("LoveRenderView", "java: LoveRenderView");
 
 	    setRenderer(new Renderer() {
 			@Override
             public void onDrawFrame(GL10 gl)
             {
-				//System.out.println("java: step");
+				Log.i("LoveRenderView", "java: step");
 				if(!LoveJNI.mExitQueued)
 				{
 					if(mSkipRendering)
@@ -56,10 +58,11 @@ class LoveRenderView extends GLSurfaceView
             {
 				if (loveCreated == false)
 				{
-					System.out.println("java: init");
+					Log.i("LoveRenderView", "java: init");
 					LoveJNI.setPackageFile(apkPackageFile);
 		            LoveJNI.init(width, height, loveFile);
 		            loveCreated = true;
+		            Log.i("LoveRenderView", "java: init done");
 				}
 				else
 				{

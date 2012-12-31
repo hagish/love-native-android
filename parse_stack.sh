@@ -1,8 +1,8 @@
 #!/bin/bash
 
-OBJDUMP=/opt/android-ndk-r6b/./toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin/arm-linux-androideabi-objdump
+OBJDUMP=/home/moe/android/android-ndk-r7/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin/arm-linux-androideabi-objdump
 PARSE_STACK=~/workspace/adt/android-ndk-stacktrace-analyzer-read-only/parse_stack.py
-ADDR2LINE=/opt/android-ndk-r6/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin/arm-linux-androideabi-addr2line
+ADDR2LINE=/home/moe/android/android-ndk-r7/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin/arm-linux-androideabi-addr2line
 
 #~ $OBJDUMP -S libs/armeabi/liblove.so > liblove.asm
 #~ python $PARSE_STACK liblove.asm logcat.txt

@@ -129,7 +129,7 @@ namespace physfs
 		// the assets folder of the apk
 		if(PHYSFS_addToSearchPath(apkPackageFile.c_str(), 1))
 		{
-			LOGE("could not add apk to search paths, content from assets/ will not be available");
+			LOGI("could not add apk to search paths, content from assets/ will not be available");
 		}
 #endif
 

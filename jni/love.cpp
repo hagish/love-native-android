@@ -136,7 +136,9 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_init(JNIEnv * en
 		gScreenWidth = width;
 		gScreenHeight = height;
 
+		LOGI("init a");
 		main_prepare(argc, argv);
+		LOGI("init b");
 
 		delete argv;
 		gInitDone = true;
@@ -148,6 +150,7 @@ JNIEXPORT void JNICALL Java_net_schattenkind_nativelove_LoveJNI_step(JNIEnv * en
 {
 	gEnv = env;
 	gObj = &obj;
+	LOGE("Java_net_schattenkind_nativelove_LoveJNI_step");
 	main_step();
 	gEnv = NULL;
 	gObj = NULL;

@@ -66,7 +66,7 @@ namespace opengles
 			"void main() {\n"
 			"	gl_FragColor = effect(vColour, _tex0_, vTexCoord, vPosition.xy);\n"
 			"}\n";
-		PixelEffect *primitivesEffect = newPixelEffect(effect);
+		primitivesEffect = newPixelEffect(effect);
 	}
 
 	Graphics::~Graphics()
@@ -170,13 +170,13 @@ namespace opengles
 		glEnable(GL_TEXTURE_2D);
 
 		// Set the viewport to top-left corner
-		glViewport(0,0, width, height);
+		glViewport(0,0, gScreenWidth, gScreenHeight);
 
 		// Reset the projection matrix
 		projectionMatrix.top()->setIdentity();
 
 		// Set up orthographic view (no depth)
-		projectionMatrix.top()->ortho(0.0, width, height,0.0, -1.0, 1.0);
+		projectionMatrix.top()->ortho(0.0, gScreenWidth, gScreenHeight,0.0, -1.0, 1.0);
 
 		// Reset modelview matrix
 		modelViewMatrix.top()->setIdentity();
